@@ -4,7 +4,8 @@
   "private": true,
   "description": "ইক্বরা ইন্টারন্যাশনাল মাদরাসা — তাফসীরুল কুরআন মাহফিল ২০২৬ ফটো ফ্রেম (PWA)",
   "scripts": {
-    "dev": "wrangler dev",
+    "dev": "node scripts/serve.js",
+    "dev:wrangler": "wrangler dev",
     "deploy": "wrangler deploy",
     "pages:deploy": "wrangler pages deploy public --project-name iqra-mahfil-frame",
     "icons": "python3 scripts/make-icons.py",
