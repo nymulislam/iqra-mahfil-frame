@@ -54,7 +54,7 @@ function sq(r,h){h=h||g;h.beginPath();h.rect(-r/2,-r/2,r,r);h.rotate(Math.PI/4);
   for(const s of S){
     s.y-=s.v*16;s.a+=s.w;
     if(s.y<-.05){s.y=1.05;s.x=Math.random()}
-    g.fillStyle=`rgba(${s.c},.18)`;
+    g.fillStyle=`rgba(${s.c},.05)`;
     g.save();g.translate(s.x*innerWidth,s.y*innerHeight);g.rotate(s.a);sq(s.r);g.restore();
   }
   for(let i=B.length-1;i>=0;i--){

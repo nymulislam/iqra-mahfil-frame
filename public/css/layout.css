@@ -1,17 +1,17 @@
 /* layout.css — অ্যাপ বার, স্টেজ, একক ফ্রেম ভিউ, ইনফো কার্ড, নিচের প্যানেল */
 .bar{display:flex;align-items:center;gap:10px;padding:calc(8px + env(safe-area-inset-top,0px)) 16px 8px;flex:none}
-.logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--teal),var(--teal2));display:grid;place-items:center;color:#fff;box-shadow:0 6px 14px -5px #1b8f9dbb;flex:none}
+.logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--teal),var(--teal2));display:grid;place-items:center;color:#fff;box-shadow:0 6px 14px -5px rgba(8,93,105,0.45);flex:none}
 .logo .ic{width:22px;height:22px;stroke-width:1.6}
 .tt{flex:1;min-width:0;line-height:1.25}
-.tt b{display:block;font-size:16px;color:var(--teal);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tt b{display:block;font-size:16.5px;font-weight:700;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sub-row{display:flex;align-items:center;gap:6px;margin-top:2px;flex-wrap:nowrap;overflow:hidden}
-.sub-date{font-size:11.5px;color:var(--mut);white-space:nowrap}
-.cd-box{display:inline-flex;align-items:center;gap:4px;background:#e1f5f8;color:#0b5c67;font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;border:1px solid #1b8f9d3d;white-space:nowrap}
-.cd-box b{display:inline;font-weight:700;font-size:12.5px;color:#0e707d}
-.cd-box .cd-ic{width:13px;height:13px;stroke-width:2.2;color:#1b8f9d;flex:none}
+.sub-date{font-size:12px;color:var(--mut);font-weight:600;white-space:nowrap}
+.cd-box{display:inline-flex;align-items:center;gap:4px;background:#e0f3f6;color:var(--teal);font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:99px;border:1.2px solid var(--ln);white-space:nowrap;flex:none}
+.cd-box b{display:inline;font-weight:700;font-size:12.5px;color:var(--teal)}
+.cd-box .cd-ic{width:13px;height:13px;stroke-width:2.2;color:var(--teal);flex:none}
 .nv{display:flex;gap:10px;margin-left:4px}
-.ib{width:38px;height:38px;border-radius:12px;border:1px solid var(--ln);background:#ffffffb8;color:var(--teal);display:grid;place-items:center;cursor:pointer;transition:transform .15s,background .2s;flex:none;position:relative;overflow:hidden}
-.ib:active{transform:scale(.92);background:#fff}
+.ib{width:38px;height:38px;border-radius:12px;border:1.5px solid var(--ln);background:#fff;color:var(--teal);display:grid;place-items:center;cursor:pointer;transition:transform .15s,background .2s;flex:none;position:relative;overflow:hidden;box-shadow:0 2px 6px -2px rgba(9,38,44,0.08)}
+.ib:active{transform:scale(.92);background:var(--fld)}
 
 /* স্টেজ — ফ্রেমের চারপাশে পরিমিত সেফ মার্জিন নিশ্চিতকরণ */
 .stage{flex:1;min-height:0;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 14px 6px;gap:8px}
@@ -19,24 +19,26 @@
 .tip.on{opacity:.94;transform:translate(-50%,0)}
 
 .frame-wrap{position:relative;width:var(--M);max-width:100%;aspect-ratio:1080/1078;display:grid;place-items:center}
-.fc{width:100%;height:100%;border-radius:18px;background:#fff;box-shadow:0 16px 36px -12px #0d3b4466,0 0 0 3px #fff;transition:box-shadow .2s;touch-action:none}
+.fc{width:100%;height:100%;border-radius:18px;background:#fff;box-shadow:0 16px 36px -12px rgba(9,38,44,0.22),0 0 0 3px #fff;transition:box-shadow .2s;touch-action:none}
 .fc.adj{outline:3px dashed var(--teal2);outline-offset:-3px}
 
-/* ফ্রেম নির্বাচক ট্যাব */
-.frame-tabs{display:flex;gap:10px;z-index:4}
-.ftab{border:1.5px solid var(--ln);background:#fff;font:600 13px var(--ff);padding:6px 15px;border-radius:99px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;box-shadow:0 3px 8px -3px #0d3b4422}
-.ftab:active{transform:scale(.95)}
+/* ফ্রেম নির্বাচক ক্যাপসুল বার */
+.frame-tabs{display:flex;background:#ffffff;padding:4px;border-radius:99px;border:1.5px solid var(--ln);box-shadow:0 4px 12px -3px rgba(9,38,44,0.08);gap:4px;z-index:4}
+.ftab{border:0;background:transparent;padding:6px 16px;border-radius:99px;font:700 13.5px var(--ff);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .18s}
+.ftab:active{transform:scale(.96)}
 .tab-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
 
-/* ফ্রেম ১ — সবুজ-নীল */
-.ftab.tab-1{color:#0c6a77;border-color:#1b8f9d44}
-.tab-dot.dot-1{background:#1b8f9d}
-.ftab.tab-1.on{background:#e6f8fa;border-color:#1b8f9d;color:#08525c;font-weight:700;box-shadow:0 4px 12px -3px #1b8f9d44;outline:2px solid #1b8f9d22}
+/* ফ্রেম ১ — সবুজ-নীল (সর্বাবস্থায় ৭০০ বোল্ড, ফলে '১' সবসময় সুন্দর) */
+.ftab.tab-1{color:#085d69}
+.ftab.tab-1 .tab-dot{background:#085d69}
+.ftab.tab-1.on{background:#085d69;color:#ffffff;box-shadow:0 4px 12px -2px rgba(8,93,105,0.45)}
+.ftab.tab-1.on .tab-dot{background:#3fe0f2}
 
-/* ফ্রেম ২ — মাটি রঙ */
-.ftab.tab-2{color:#8c521c;border-color:#b36a2844}
-.tab-dot.dot-2{background:#b36a28}
-.ftab.tab-2.on{background:#fdf5ea;border-color:#b36a28;color:#6e3e11;font-weight:700;box-shadow:0 4px 12px -3px #b36a2844;outline:2px solid #b36a2822}
+/* ফ্রেম ২ — মাটি রঙ (সর্বাবস্থায় ৭০০ বোল্ড) */
+.ftab.tab-2{color:#8a4a15}
+.ftab.tab-2 .tab-dot{background:#8a4a15}
+.ftab.tab-2.on{background:#8a4a15;color:#ffffff;box-shadow:0 4px 12px -2px rgba(138,74,21,0.45)}
+.ftab.tab-2.on .tab-dot{background:#fed7aa}
 
 /* জুম স্লাইডার কন্ট্রোল */
 .zr{display:none;align-items:center;gap:8px;width:100%;max-width:290px;padding:4px 10px;background:#ffffffef;border-radius:99px;box-shadow:0 4px 12px -4px #0d3b4433;border:1px solid var(--ln);color:var(--teal)}
@@ -51,12 +53,12 @@
 
 /* অ্যাকশন কার্ড (ছবি বাটন + নাম-পদবী ট্রিগার) */
 .action-card{display:flex;gap:10px;align-items:stretch;margin-bottom:10px}
-.av{width:68px;height:68px;border-radius:18px;border:1.8px dashed var(--teal2);background:var(--fld);color:var(--teal);display:grid;place-items:center;position:relative;cursor:pointer;flex:none;transition:transform .15s}
+.av{width:68px;height:68px;border-radius:18px;border:2px dashed var(--teal);background:var(--fld);color:var(--teal);display:grid;place-items:center;position:relative;cursor:pointer;flex:none;transition:transform .15s}
 .av:active{transform:scale(.94)}
-.av-empty{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:600;color:var(--teal)}
+.av-empty{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11.5px;font-weight:700;color:var(--teal)}
 .av-empty .ic{width:24px;height:24px}
 .av canvas{position:absolute;inset:0;width:100%;height:100%;border-radius:16px;display:none}
-.av.has{border:2px solid #fff;box-shadow:0 6px 14px -4px #0d3b4466}
+.av.has{border:2px solid var(--teal);box-shadow:0 6px 14px -4px rgba(8,93,105,0.35)}
 .av.has canvas{display:block}
 .av.has .av-empty{display:none}
 .av-edit{position:absolute;right:-5px;bottom:-5px;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--teal2));color:#fff;display:grid;place-items:center;border:2px solid #fff}
@@ -66,13 +68,13 @@
 .info-trigger:active{transform:scale(.98);background:#e2f4f7}
 .info-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
 .info-nm-row,.info-ds-row{display:flex;align-items:center;gap:6px}
-.ic-sm{width:15px;height:15px;color:var(--teal);flex:none;stroke-width:2}
-#prev-nm{font-size:14.5px;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#prev-ds{font-size:12px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.info-trigger.ok{border-color:#3fc4d488;background:#f5fcfe}
+.ic-sm{width:15px;height:15px;color:var(--teal);flex:none;stroke-width:2.2}
+#prev-nm{font-size:15px;font-weight:700;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#prev-ds{font-size:12.5px;font-weight:600;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.info-trigger.ok{border-color:var(--teal);background:#f2fbfd}
 .info-trigger.bad{border-color:var(--coral);animation:shk .4s}
 
-.edit-pill{display:inline-flex;align-items:center;gap:4px;background:#fff;color:var(--teal);border:1px solid var(--ln);font:700 12px var(--ff);padding:5px 11px;border-radius:99px;flex:none;box-shadow:0 2px 6px -2px #0d3b4422}
+.edit-pill{display:inline-flex;align-items:center;gap:4px;background:#fff;color:var(--teal);border:1.5px solid var(--ln);font:700 12px var(--ff);padding:5px 12px;border-radius:99px;flex:none;box-shadow:0 2px 6px -2px rgba(9,38,44,0.15)}
 .edit-pill .ic{width:13px;height:13px;stroke-width:2.2}
 
 .row{display:flex;gap:9px}
