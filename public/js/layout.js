@@ -4,10 +4,13 @@ let moved=0;
 
 function layout(){
   const s=$("#stage").getBoundingClientRect();
-  const maxW=s.width-20;
-  const maxH=s.height-48;
-  const M=Math.min(maxW,maxH,440);
-  $("#app").style.setProperty("--M",Math.max(140,M)+"px");
+  if(!s.width||!s.height)return;
+  const hasZ=$("#zr")&&$("#zr").classList.contains("on");
+  const maxW=Math.floor(s.width-12);
+  const reservedH=hasZ?86:46;
+  const maxH=Math.floor(s.height-reservedH);
+  const M=Math.min(maxW,maxH,480);
+  $("#app").style.setProperty("--M",Math.max(150,M)+"px");
 }
 
 new ResizeObserver(layout).observe($("#stage"));
@@ -25,18 +28,21 @@ if(window.visualViewport){
   f();
 }
 
-// ফ্রেম অদলবদল (ট্যাব ১ ও ২)
+// ফ্রেম অদলবদল (ট্যাব ১ ও ২) এবং গতিশীল ব্যাকগ্রাউন্ড থিম
 function setMain(i,u){
   st.m=i;
   const t0=$("#tab0"),t1=$("#tab1");
   if(t0)t0.classList.toggle("on",i===0);
   if(t1)t1.classList.toggle("on",i===1);
+  document.body.classList.toggle("theme-frame-0",i===0);
+  document.body.classList.toggle("theme-frame-1",i===1);
   draw();
   if(u){
     burst(innerWidth/2,innerHeight*0.35,18);
     navigator.vibrate&&navigator.vibrate(12);
   }
 }
+setMain(0,0);
 
 const t0=$("#tab0"),t1=$("#tab1");
 if(t0)t0.onclick=()=>setMain(0,1);

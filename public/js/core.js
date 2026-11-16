@@ -126,6 +126,7 @@ function state(){
   ["dl","sh"].forEach(i=>{const el=$("#"+i);if(el)el.classList.toggle("dim",!ok)});
   const zr=$("#zr");if(zr)zr.classList.toggle("on",!!st.img);
   syncInfoCard();
+  if(typeof layout==="function")layout();
 }
 
 // মোবাইল ব্রাউজার লাইফসাইকেল নিশ্চিতকরণ — মিনিমাইজ বা ব্যাকগ্রাউন্ড থেকে ফিরলে অটো রি-ড্র
