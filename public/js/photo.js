@@ -40,6 +40,15 @@ $("#file").onchange=async e=>{
 const zm=$("#zm");
 if(zm)zm.oninput=e=>{st.z=+e.target.value;draw()};
 
+// জুম লেবেলে ট্যাপ করলে স্বাভাবিক জুম (১x) ও পজিশন রিসেট
+const zmReset=$("#zm-reset");
+if(zmReset)zmReset.onclick=()=>{
+  st.z=1;st.ox=0;st.oy=0;
+  if(zm)zm.value=1;
+  draw();
+  toast("জুম স্বাভাবিক (১x) করা হয়েছে");
+};
+
 const rst=$("#rst");
 if(rst)rst.onclick=async()=>{
   const v=await dlg({ic:"tr",warm:1,t:"ছবি মুছে ফেলবেন?",p:"ফ্রেম থেকে আপনার ছবি সরে যাবে। চাইলে আবার নতুন ছবি দিতে পারবেন।",b:[{l:"থাক",c:"ghost",v:0},{l:"মুছুন",c:"warm",v:1}]});
