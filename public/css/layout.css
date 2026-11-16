@@ -1,5 +1,5 @@
 /* layout.css — অ্যাপ বার, স্টেজ, একক ফ্রেম ভিউ, ইনফো কার্ড, নিচের প্যানেল */
-.bar{display:flex;align-items:center;gap:10px;padding:calc(8px + env(safe-area-inset-top,0px)) 16px 8px;flex:none}
+.bar{display:flex;align-items:center;gap:10px;padding:calc(9px + env(safe-area-inset-top,0px)) 16px 9px;background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1.2px solid rgba(8,93,105,0.12);box-shadow:0 4px 16px -4px rgba(9,38,44,0.06);position:relative;z-index:10;flex:none}
 .logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--teal),var(--teal2));display:grid;place-items:center;color:#fff;box-shadow:0 6px 14px -5px rgba(8,93,105,0.45);flex:none}
 .logo .ic{width:22px;height:22px;stroke-width:1.6}
 .tt{flex:1;min-width:0;line-height:1.25}
@@ -19,8 +19,8 @@
 .tip.on{opacity:.94;transform:translate(-50%,0)}
 
 .frame-wrap{position:relative;width:var(--M);max-width:100%;aspect-ratio:1080/1078;display:grid;place-items:center}
-.fc{width:100%;height:100%;border-radius:18px;background:#fff;box-shadow:0 16px 36px -12px rgba(9,38,44,0.22),0 0 0 3px #fff;transition:box-shadow .2s;touch-action:none}
-.fc.adj{outline:3px dashed var(--teal2);outline-offset:-3px}
+.fc{width:100%;height:100%;border-radius:18px;background:#fff;box-shadow:0 0 0 1.2px rgba(8,93,105,0.18),0 4px 16px -2px rgba(8,93,105,0.12),0 20px 42px -10px rgba(8,93,105,0.28);transition:box-shadow .2s;touch-action:none}
+.fc.adj{outline:3px dashed var(--teal2);outline-offset:2px}
 
 /* ফ্রেম নির্বাচক ক্যাপসুল বার */
 .frame-tabs{display:flex;background:#ffffff;padding:4px;border-radius:99px;border:1.5px solid var(--ln);box-shadow:0 4px 12px -3px rgba(9,38,44,0.08);gap:4px;z-index:4}
@@ -55,7 +55,7 @@
 .ib.sq-sm.dng{color:var(--coral)}
 
 /* নিচের প্যানেল */
-.panel{flex:none;background:#fff;border-radius:24px 24px 0 0;padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 30px -15px #0d3b4444;position:relative;z-index:5}
+.panel{flex:none;background:#fff;border-radius:24px 24px 0 0;padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 30px -15px rgba(9,38,44,0.22);border-top:1.2px solid rgba(8,93,105,0.12);position:relative;z-index:5}
 
 /* অ্যাকশন কার্ড (ছবি বাটন + নাম-পদবী ট্রিগার) */
 .action-card{display:flex;gap:10px;align-items:stretch;margin-bottom:10px}
