@@ -50,6 +50,8 @@
 <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
 <symbol id="i-fb" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></symbol>
 <symbol id="i-wa" viewBox="0 0 24 24"><path d="M3 21l1.7-5A9 9 0 1 1 8 19.3z"/><path d="M9 9.5c.3 1.6 1.9 3.3 3.5 3.8l1-1.1 1.9.9v1.3c-3.5.6-8-3.5-7.4-7.2h1.3l.9 1.9z"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></symbol>
+<symbol id="i-edit" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></symbol>
 <symbol id="i-code" viewBox="0 0 24 24"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></symbol>
 <symbol id="i-gh" viewBox="0 0 24 24"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1-.3-3 1-2.6-.5-5.4-.5-8 0-2-1.3-3-1-3-1-.28 1.15-.28 2.35 0 3.5a5.4 5.4 0 0 0-1 3.5c0 3.5 3 5.5 6 5.5a4.8 4.8 0 0 0-1 3.5v4"/><path d="M9 18c-4.5 1.5-5-2.5-7-3"/></symbol>
 </defs></svg>
@@ -58,33 +60,92 @@
 <div id="app">
   <div class="bar">
     <div class="logo"><svg class="ic"><use href="#i-st"/></svg></div>
-    <div class="tt"><b>ইক্বরা মাহফিল ২০২৬</b><small id="sub">৫ ডিসেম্বর · শনিবার, বাদ যোহর</small></div>
-    <div class="nv"><button class="ib" id="np" aria-label="পোস্টার"><svg class="ic"><use href="#i-img"/></svg></button><button class="ib" id="nc" aria-label="যোগাযোগ"><svg class="ic"><use href="#i-ph"/></svg></button></div>
-  </div>
-  <div class="stage" id="stage">
-    <div class="tip" id="tip">টেনে সরান · দুই আঙুলে বড়-ছোট করুন</div>
-    <div class="deck idle" id="deck">
-      <canvas class="fc main" id="c0" width="1080" height="1078"></canvas>
-      <canvas class="fc alt" id="c1" width="1080" height="1078"></canvas>
-      <button class="lbl" id="lbl"><svg class="ic"><use href="#i-ly"/></svg><span id="lt">ফ্রেম ২ নিন</span></button>
-    </div>
-  </div>
-  <div class="panel">
-    <div class="zr" id="zr"><svg class="ic" style="width:18px;height:18px"><use href="#i-img"/></svg><input type="range" id="zm" min="1" max="3" step="0.01" value="1" aria-label="ছবি বড়-ছোট"><svg class="ic"><use href="#i-img"/></svg></div>
-    <div class="chips" id="chips"></div>
-    <div class="fields">
-      <label class="av" id="pick" for="file" aria-label="ছবি বাছুন"><canvas id="av" width="140" height="140"></canvas><svg class="ic" style="width:28px;height:28px"><use href="#i-cam"/></svg><i><svg class="ic"><use href="#i-cam"/></svg></i></label>
-      <div class="fl">
-        <div class="f" id="fn"><svg class="ic"><use href="#i-user"/></svg><input id="nm" type="text" maxlength="40" placeholder="আপনার নাম" autocomplete="name" enterkeyhint="next"></div>
-        <div class="f" id="fd"><svg class="ic"><use href="#i-badge"/></svg><input id="ds" type="text" maxlength="46" placeholder="পদবী / পরিচয়" autocomplete="off" enterkeyhint="done"></div>
+    <div class="tt">
+      <b>ইক্বরা মাহফিল ২০২৬</b>
+      <div class="sub-row">
+        <span class="sub-date">৫ ডিসেম্বর · বাদ যোহর</span>
+        <span class="cd-box" id="sub"><svg class="ic cd-ic"><use href="#i-clock"/></svg><span id="cd-txt">গণনা হচ্ছে...</span></span>
       </div>
     </div>
+    <div class="nv">
+      <button class="ib" id="np" aria-label="পোস্টার"><svg class="ic"><use href="#i-img"/></svg></button>
+      <button class="ib" id="nc" aria-label="যোগাযোগ"><svg class="ic"><use href="#i-ph"/></svg></button>
+    </div>
+  </div>
+
+  <div class="stage" id="stage">
+    <div class="tip" id="tip">টেনে সরান · দুই আঙুলে জুম করুন</div>
+    <div class="frame-wrap" id="fwrap">
+      <canvas class="fc" id="c0" width="1080" height="1078"></canvas>
+    </div>
+    <div class="frame-tabs" id="ftabs">
+      <button class="ftab on" id="tab0"><span class="tab-dot" style="background:#1b8f9d"></span>🌿 ফ্রেম ১ (সবুজ-নীল)</button>
+      <button class="ftab" id="tab1"><span class="tab-dot" style="background:#b36a28"></span>🍂 ফ্রেম ২ (মাটি রঙ)</button>
+    </div>
+    <div class="zr" id="zr">
+      <span class="zr-lbl">জুম:</span>
+      <input type="range" id="zm" min="1" max="3" step="0.01" value="1" aria-label="ছবি বড়-ছোট">
+      <button class="ib sq-sm dng" id="rst" aria-label="ছবি মুছুন" title="ছবি মুছুন"><svg class="ic"><use href="#i-tr"/></svg></button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="action-card">
+      <label class="av" id="pick" for="file" aria-label="ছবি বাছুন">
+        <canvas id="av" width="140" height="140"></canvas>
+        <div class="av-empty">
+          <svg class="ic"><use href="#i-cam"/></svg>
+          <span>ছবি দিন</span>
+        </div>
+        <i class="av-edit"><svg class="ic"><use href="#i-cam"/></svg></i>
+      </label>
+
+      <div class="info-trigger" id="open-info" role="button" tabindex="0" aria-label="নাম ও পদবী পরিবর্তন করুন">
+        <div class="info-text">
+          <div class="info-nm-row">
+            <svg class="ic ic-sm"><use href="#i-user"/></svg>
+            <b id="prev-nm">আপনার নাম লিখুন</b>
+          </div>
+          <div class="info-ds-row">
+            <svg class="ic ic-sm"><use href="#i-badge"/></svg>
+            <span id="prev-ds">পদবী / পরিচয় দিন</span>
+          </div>
+        </div>
+        <div class="edit-pill">
+          <svg class="ic"><use href="#i-edit"/></svg>
+          <span>লিখুন</span>
+        </div>
+      </div>
+    </div>
+
     <input type="file" id="file" accept="image/*" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;left:-9px">
+
     <div class="row">
-      <button class="ib sq dng hide" id="rst" aria-label="ছবি মুছুন"><svg class="ic"><use href="#i-tr"/></svg></button>
-      <button class="ib sq hide" id="adjb" aria-label="ছবি সরান"><svg class="ic"><use href="#i-mv"/></svg></button>
       <button class="btn" id="dl"><svg class="ic"><use href="#i-dl"/></svg>ডাউনলোড</button>
       <button class="btn warm" id="sh"><svg class="ic"><use href="#i-sh"/></svg>শেয়ার</button>
+    </div>
+  </div>
+</div>
+
+<div class="sheet" id="info-sheet">
+  <div class="shc">
+    <div class="sh">
+      <button class="ib" id="info-cl" aria-label="বন্ধ"><svg class="ic"><use href="#i-x"/></svg></button>
+      <b>নাম ও পদবী দিন</b>
+      <button class="btn-text-done" id="info-done-top">সম্পন্ন</button>
+    </div>
+    <div class="sc pad">
+      <div class="f" id="fn">
+        <svg class="ic"><use href="#i-user"/></svg>
+        <input id="nm" type="text" maxlength="40" placeholder="আপনার পুরো নাম লিখুন" autocomplete="name" enterkeyhint="next">
+      </div>
+      <div class="f" id="fd" style="margin-top:12px">
+        <svg class="ic"><use href="#i-badge"/></svg>
+        <input id="ds" type="text" maxlength="46" placeholder="পদবী বা পরিচয় (বা নিচে বাছুন)" autocomplete="off" enterkeyhint="done">
+      </div>
+      <div class="chips-title">দ্রুত পদবী নির্বাচন করুন:</div>
+      <div class="chips on" id="chips"></div>
+      <button class="btn" id="info-done-btn" style="width:100%;margin-top:16px"><svg class="ic"><use href="#i-ok"/></svg>তথ্য সেভ করুন</button>
     </div>
   </div>
 </div>
