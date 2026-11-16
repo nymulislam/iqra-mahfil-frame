@@ -1,0 +1,11 @@
+/* components.css — বাটন, ইনপুট, রিপল ইত্যাদি */
+.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:7px;height:50px;font:700 15px var(--ff);color:#fff;background:linear-gradient(135deg,var(--teal),var(--teal2));border:0;border-radius:16px;padding:0 14px;cursor:pointer;box-shadow:0 10px 20px -8px #1b8f9dcc;transition:transform .15s;text-decoration:none;flex:1}
+.btn:active{transform:scale(.95)}
+.btn.warm{background:linear-gradient(135deg,var(--coral),#f39a86);box-shadow:0 10px 20px -8px #ec6b7ccc}
+.btn.ghost{background:#fff;color:var(--teal);border:1.5px solid var(--teal);box-shadow:none}
+.ib.sq{width:50px;height:50px;border-radius:16px;flex:none;background:var(--fld)}
+.ib.sq.on{background:var(--teal);color:#fff}
+.ib.sq.dng{color:var(--coral)}
+.hide{display:none!important}
+.rp{position:absolute;border-radius:50%;background:#ffffff77;transform:scale(0);animation:rp .6s ease-out forwards;pointer-events:none}
+@keyframes rp{to{transform:scale(3);opacity:0}}

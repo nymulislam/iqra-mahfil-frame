@@ -1,0 +1,10 @@
+/* base.css — টোকেন (রঙ/ফন্ট), রিসেট, বডি */
+:root{--bg:#f1fafd;--bg2:#dff4f3;--tx:#0d3b44;--mut:#5b7f87;--teal:#1b8f9d;--teal2:#3fc4d4;--sky:#8fdcf0;--mint:#a9ebdc;--coral:#ec6b7c;--ln:#1b8f9d26;--fld:#eef8fb;--M:300px;
+--ff:"Hind Siliguri","Noto Sans Bengali","Kalpurush",system-ui,sans-serif}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none}
+body{font-family:var(--ff);color:var(--tx);background:linear-gradient(180deg,var(--bg),var(--bg2));user-select:none;-webkit-user-select:none}
+input{user-select:text;-webkit-user-select:text}
+.ic{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+#fx,#fb{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}#fb{z-index:90}
+#app{position:fixed;left:0;right:0;top:0;height:var(--vh,100dvh);display:flex;flex-direction:column;z-index:1}

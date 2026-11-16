@@ -1,0 +1,10 @@
+/* features.css — রেজাল্ট শিট, চিপ, কিবোর্ড মোড, লোডিং, রিডিউসড-মোশন */
+#rimg,#pm{-webkit-touch-callout:default;-webkit-user-select:auto;user-select:auto}.sc img#rimg{width:auto;max-width:100%;max-height:46dvh;display:block;margin:0 auto}.hint{font-size:12.5px;color:#9cc0c8;text-align:center;margin:8px 0 0}.iab{display:none;margin-top:10px;padding:10px 12px;border-radius:14px;background:#fdecef;color:#8a2f3c;font-size:13px;line-height:1.45}.iab.on{display:block}
+.fc{touch-action:pan-y}.fc.ld{background:linear-gradient(90deg,#fff,#dff4f3,#fff);background-size:200% 100%;animation:shim 1.2s linear infinite}@keyframes shim{to{background-position:-200% 0}}
+.chips{display:none;gap:8px;overflow-x:auto;margin-bottom:10px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}.chips.on{display:flex;animation:up .25s}
+.chips button{flex:none;border:1px solid var(--ln);background:var(--fld);color:var(--teal);font:600 14px var(--ff);padding:8px 15px;border-radius:99px;cursor:pointer}.chips button:active{background:var(--teal);color:#fff}
+.btn.dim{opacity:.6}
+#app.kb .deck{height:calc(var(--M) + 6px)}#app.kb .fc.alt,#app.kb .lbl{opacity:0;pointer-events:none}
+.fbr{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}.fbr .fbk{margin-top:0;padding:8px 13px}
+.sc img#pm.zoom{width:200%;max-width:none;margin:0}
+@media(prefers-reduced-motion:reduce){.deck.idle,.fc.alt{animation:none}}

@@ -1,0 +1,27 @@
+# Cloudflare Pages ও Workers Static Assets — দুই জায়গাতেই কাজ করে।
+# HTML/JS/CSS/SW: প্রতিবার যাচাই (ETag দিয়ে সস্তা), তাই নতুন ডিপ্লয় সাথে সাথে পৌঁছায়।
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+/
+  Cache-Control: no-cache
+/index.html
+  Cache-Control: no-cache
+/sw.js
+  Cache-Control: no-cache
+/manifest.webmanifest
+  Cache-Control: no-cache
+/js/*
+  Cache-Control: no-cache
+/css/*
+  Cache-Control: no-cache
+
+# ফ্রেম/পোস্টার/আইকন: ৭ দিন (নাম বদলে বা SW VERSION বাড়িয়ে নতুন ফাইল চালু করুন)
+/assets/*
+  Cache-Control: public, max-age=604800
+
+# ঐচ্ছিক কঠোর CSP — চালু করার আগে পুরো সাইট টেস্ট করুন (docs/DEPLOYMENT.md দেখুন)
+# /*
+#   Content-Security-Policy: default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self'; connect-src 'self' blob:; manifest-src 'self'; base-uri 'self'; form-action 'self'
