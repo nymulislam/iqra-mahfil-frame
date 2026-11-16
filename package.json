@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "node scripts/serve.js",
     "dev:wrangler": "wrangler dev",
+    "build": "echo 'Static site ready for deployment'",
     "deploy": "wrangler deploy",
     "pages:deploy": "wrangler pages deploy public --project-name iqra-mahfil-frame",
     "icons": "python3 scripts/make-icons.py",
