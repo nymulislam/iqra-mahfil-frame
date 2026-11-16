@@ -2,7 +2,7 @@
  * ডিপ্লয়ের সময় কোড/ফ্রেম/পোস্টার বদলালে VERSION বদলান — নইলে পুরনো ক্যাশ থেকে যেতে পারে।
  * কৌশল: নেভিগেশন = আগে নেটওয়ার্ক, না পেলে ক্যাশ; নিজের ফাইল = ক্যাশ আগে + পেছনে আপডেট;
  *        Google Fonts = ক্যাশ আগে + পেছনে আপডেট (আলাদা ক্যাশে)। */
-const VERSION = "2026.11.2";
+const VERSION = "2026.11.3";
 const CACHE = `mahfil-frame-${VERSION}`;
 const FONTS = "mahfil-fonts";
 const PRECACHE = [
@@ -11,7 +11,19 @@ const PRECACHE = [
   "/js/config.js", "/js/core.js", "/js/layout.js", "/js/photo.js", "/js/fields.js",
   "/js/gestures.js", "/js/ui.js", "/js/share.js", "/js/fx.js", "/js/pwa.js",
   "/assets/frames/frame-1.webp", "/assets/frames/frame-2.webp", "/assets/poster.jpg",
-  "/assets/icons/icon-192.png", "/assets/icons/icon-512.png"
+  "/assets/icons/icon-192.png", "/assets/icons/icon-512.png",
+  "/assets/fonts/hind-siliguri-bengali-400.woff2",
+  "/assets/fonts/hind-siliguri-bengali-500.woff2",
+  "/assets/fonts/hind-siliguri-bengali-600.woff2",
+  "/assets/fonts/hind-siliguri-bengali-700.woff2",
+  "/assets/fonts/hind-siliguri-latin-400.woff2",
+  "/assets/fonts/hind-siliguri-latin-500.woff2",
+  "/assets/fonts/hind-siliguri-latin-600.woff2",
+  "/assets/fonts/hind-siliguri-latin-700.woff2",
+  "/assets/fonts/hind-siliguri-latin-ext-400.woff2",
+  "/assets/fonts/hind-siliguri-latin-ext-500.woff2",
+  "/assets/fonts/hind-siliguri-latin-ext-600.woff2",
+  "/assets/fonts/hind-siliguri-latin-ext-700.woff2"
 ];
 
 self.addEventListener("install", e => {

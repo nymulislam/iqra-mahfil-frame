@@ -7,7 +7,7 @@ async function save(blob,name){
 async function share(blob,name){const f=new File([blob],name,{type:blob.type});
   if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],text:CAP()});return}catch(e){if(e.name=="AbortError")return}}
   try{await navigator.clipboard.writeText(CAP());toast("টেক্সট কপি হয়েছে — ছবি ডাউনলোড করে শেয়ার করুন")}catch(_){toast("ছবি ডাউনলোড করে শেয়ার করুন")}}
-const SITE="";const link=()=>SITE||location.href.split("#")[0];
+const SITE="https://iqra.annujum.org/";const link=()=>SITE||location.href.split("#")[0];
 const CAP=()=>"ইনশাআল্লাহ, আমি আসছি! ৫ ডিসেম্বর ২০২৬, শনিবার বাদ যোহর — ইক্বরা ইন্টারন্যাশনাল মাদরাসার বার্ষিক তাফসীরুল কুরআন মাহফিল, মাদরাসা সংলগ্ন বালুর মাঠ, পাটওয়ারী বাজার, ফরিদগঞ্জ, চাঁদপুর। আপনি আসছেন তো?\n\n"+link();
 async function ensureFonts(){try{await Promise.all([document.fonts.load("700 50px 'Hind Siliguri'","আপনার"),document.fonts.load("500 40px 'Hind Siliguri'","আপনার"),document.fonts.load("600 27px 'Hind Siliguri'","ছবি")])}catch(_){}
   if(!document.fonts.check("700 50px 'Hind Siliguri'","আপনার"))toast("ফন্ট লোড হয়নি — ছবিতে ফন্ট আলাদা হতে পারে")}

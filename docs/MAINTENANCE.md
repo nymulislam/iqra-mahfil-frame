@@ -54,9 +54,11 @@
 
 ## লঞ্চ চেকলিস্ট
 
-- [ ] `og:image`/`og:url` ডোমেইন বসানো
-- [ ] `SITE` (share.js) বসানো
-- [ ] `sw.js` VERSION বাড়ানো
+- [x] `og:image`/`og:url` ডোমেইন বসানো (`https://iqra.annujum.org/`)
+- [x] `SITE` (share.js) বসানো (`https://iqra.annujum.org/`)
+- [x] Hind Siliguri সেলফ-হোস্টেড ফন্ট ডাউনলোড ও লিঙ্ক করা
+- [x] `sw.js` VERSION বাড়ানো (`2026.11.3`)
+- [ ] Cloudflare Pages-এ `iqra.annujum.org` কাস্টম ডোমেইন ম্যাপ করা
 - [ ] দুই ফ্রেমে ছবি-নাম-পদবী দিয়ে ডাউনলোড টেস্ট
 - [ ] শেয়ার (WhatsApp/Messenger) টেস্ট
 - [ ] PWA ইনস্টল ও অফলাইন টেস্ট

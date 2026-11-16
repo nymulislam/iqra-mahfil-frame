@@ -35,15 +35,14 @@ npx wrangler deploy
 
 ## ডোমেইন
 
-Pages/Workers প্রজেক্ট → **Custom domains** → ডোমেইন যোগ। ডোমেইন Cloudflare DNS-এ থাকলে সার্টিফিকেট নিজে নিজে হয়।
+Pages/Workers প্রজেক্ট → **Custom domains** → `iqra.annujum.org` যোগ করুন। ডোমেইন Cloudflare DNS-এ থাকলে SSL সার্টিফিকেট নিজে নিজে সক্রিয় হয়।
 
-## ডিপ্লয়ের পরে অবশ্যই (একবার)
+## ডিপ্লয়ের পরে চেকলিস্ট
 
-1. **`public/index.html`**-এ `YOUR-DOMAIN.example` খুঁজে আসল ডোমেইন বসান (`og:image`, `og:url`)। না করলে ফেসবুক/হোয়াটসঅ্যাপে লিংক প্রিভিউতে ছবি আসবে না।
-2. **`public/js/share.js`**-এ `SITE` ঘরে আসল লিংক বসান (শেয়ার ক্যাপশনে যাবে)। `SITE` ফাঁকা থাকলে বর্তমান পেজের লিংক যায়।
-3. **`public/sw.js`**-এ `VERSION` বাড়ান (প্রতিবার কোড/ফাইল বদলালে)।
-4. ফোনে খুলে ইনস্টল করে দেখুন (Chrome: মেনু → Install app; Safari: Share → Add to Home Screen)।
-5. লিংক প্রিভিউ যাচাই: Facebook Sharing Debugger-এ URL দিয়ে "Scrape Again"।
+1. **ডোমেইন কনফিগারেশন:** `public/index.html` ও `public/js/share.js`-এ ইতোমধ্যে `https://iqra.annujum.org/` সেট করা আছে।
+2. **সার্ভিস ওয়ার্কার:** `public/sw.js`-এ `VERSION` বাড়ানো আছে (`2026.11.3`) এবং Hind Siliguri ফন্টগুলো সেলফ-হোস্টেড হিসেবে প্রি-ক্যাশ করা হয়েছে।
+3. **ফোনে খুলে ইনস্টল করে দেখুন:** (Chrome: মেনু → Install app; Safari: Share → Add to Home Screen)।
+4. **লিংক প্রিভিউ যাচাই:** Facebook Sharing Debugger-এ `https://iqra.annujum.org/` দিয়ে "Scrape Again" চাপুন।
 
 ## ক্যাশ ও আপডেট
 
