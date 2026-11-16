@@ -2,7 +2,7 @@
 const PWA={
   ev:null,
   ios:/iphone|ipad|ipod/i.test(navigator.userAgent)&&!navigator.standalone,
-  btn(){return (this.ev||this.ios)?'<a class="fbk" id="pwa-i" href="#">'+ico("dl")+'অ্যাপ ইনস্টল</a>':""}
+  btn(){return (this.ev||this.ios)?'<a class="fbk" id="pwa-i" href="#">'+ico("dl")+'<span>অ্যাপ ইনস্টল</span></a>':""}
 };
 addEventListener("beforeinstallprompt",e=>{e.preventDefault();PWA.ev=e});
 addEventListener("appinstalled",()=>{PWA.ev=null;toast("অ্যাপ ইনস্টল হয়েছে")});

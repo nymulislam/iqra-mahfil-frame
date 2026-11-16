@@ -62,7 +62,23 @@ function dlg(o){
 
 $("#nc").onclick=()=>dlg({
   ic:"ph",t:"যোগাযোগ",
-  p:'প্রয়োজনে কল করুন<div class="num">'+PHONE+'<span class="pay"><b class="bk">বিকাশ</b><b class="ng">নগদ</b></span></div><div class="fbr"><a class="fbk" href="'+CFG.fb+'" target="_blank" rel="noopener">'+ico("fb")+'ফেসবুক</a><a class="fbk" href="'+MAP+'" target="_blank" rel="noopener">'+ico("pin")+'ম্যাপ</a><a class="fbk" href="'+CAL+'" target="_blank" rel="noopener">'+ico("cal")+'ক্যালেন্ডার</a>'+PWA.btn()+'</div>',
+  p:'প্রয়োজনে সরাসরি কল বা আর্থিক সহযোগিতা পাঠাতে পারেন' +
+    '<div class="contact-box">' +
+      '<div class="contact-num-row">' +
+        '<div class="contact-phone">'+PHONE+'</div>' +
+        '<div class="contact-pay">' +
+          '<span class="pay bk">বিকাশ</span>' +
+          '<span class="pay ng">নগদ</span>' +
+          '<span class="pay-sub">পার্সোনাল</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="contact-grid">' +
+        '<a class="fbk" href="'+CFG.fb+'" target="_blank" rel="noopener">'+ico("fb")+'<span>ফেসবুক পেজ</span></a>' +
+        '<a class="fbk" href="'+MAP+'" target="_blank" rel="noopener">'+ico("pin")+'<span>গুগল ম্যাপ</span></a>' +
+        '<a class="fbk" href="'+CAL+'" target="_blank" rel="noopener">'+ico("cal")+'<span>ক্যালেন্ডার</span></a>' +
+        (PWA.btn() || '<a class="fbk" href="https://wa.me/8801797091817" target="_blank" rel="noopener">'+ico("wa")+'<span>হোয়াটসঅ্যাপ</span></a>') +
+      '</div>' +
+    '</div>',
   b:[
     {l:"কপি",c:"ghost",i:"cp",v:0,f:()=>{try{navigator.clipboard.writeText("01797091817");toast("নম্বর কপি হয়েছে")}catch(_){}}},
     {l:"কল করুন",i:"ph",h:"tel:01797091817",v:1}

@@ -8,10 +8,24 @@
 .dic.warm{background:linear-gradient(135deg,var(--coral),#f39a86)}
 .dic .ic{width:28px;height:28px}
 .dg h3{margin:0 0 4px;font-size:19px;color:var(--tx)}
-.dg p{margin:0;color:var(--mut);font-size:14.5px}
-.num{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 10px;font-size:28px;font-weight:700;color:var(--teal);letter-spacing:.5px;margin:6px 0 0}
-.pay{display:inline-flex;gap:6px}.pay b{font:700 12px var(--ff);letter-spacing:0;color:#fff;padding:4px 10px;border-radius:99px}.pay .bk{background:#e2136e}.pay .ng{background:#f6921e}
-.dx{display:flex;gap:9px;margin-top:18px}
+.dg p{margin:0;color:var(--mut);font-size:13.5px;line-height:1.4}
+
+/* যোগাযোগ পপআপ কার্ড ও গ্রিড */
+.contact-box{margin-top:12px}
+.contact-num-row{background:var(--fld);border:1.5px solid var(--ln);border-radius:18px;padding:12px 14px 10px;margin-bottom:12px;text-align:center}
+.contact-phone{font-size:26px;font-weight:700;color:var(--teal);letter-spacing:.5px;line-height:1.2}
+.contact-pay{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:6px}
+.pay{font:700 11px var(--ff);letter-spacing:0;color:#fff;padding:2px 9px;border-radius:99px;display:inline-flex;align-items:center}
+.pay.bk{background:#e2136e}
+.pay.ng{background:#f6921e}
+.pay-sub{font-size:11.5px;color:var(--mut);font-weight:600}
+
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fbk{display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 12px;border-radius:14px;background:var(--fld);color:var(--teal);font:600 13px var(--ff);text-decoration:none;border:1.5px solid var(--ln);transition:all .15s;white-space:nowrap}
+.fbk:active{transform:scale(.97);background:#e2f4f7;border-color:var(--teal2)}
+.fbk .ic{width:16px;height:16px;flex:none;stroke-width:2;color:var(--teal)}
+
+.dx{display:flex;gap:9px;margin-top:16px}
 .sheet{position:fixed;inset:0;z-index:55;background:#0a2d3599;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;flex-direction:column;justify-content:flex-end;visibility:hidden;opacity:0;transition:opacity .3s,visibility .5s}
 .sheet.on{visibility:visible;opacity:1}
 .shc{background:#0a2d35;border-radius:26px 26px 0 0;display:flex;flex-direction:column;max-height:calc(100% - env(safe-area-inset-top,0px) - 10px);transform:translateY(100%);transition:transform .5s cubic-bezier(.25,1,.35,1)}

@@ -2,7 +2,7 @@
  * ডিপ্লয়ের সময় কোড/ফ্রেম/পোস্টার বদলালে VERSION বদলান — নইলে পুরনো ক্যাশ থেকে যেতে পারে।
  * কৌশল: নেভিগেশন = আগে নেটওয়ার্ক, না পেলে ক্যাশ; নিজের ফাইল = ক্যাশ আগে + পেছনে আপডেট;
  *        Google Fonts = ক্যাশ আগে + পেছনে আপডেট (আলাদা ক্যাশে)। */
-const VERSION = "2026.11.4";
+const VERSION = "2026.11.5";
 const CACHE = `mahfil-frame-${VERSION}`;
 const FONTS = "mahfil-fonts";
 const PRECACHE = [
