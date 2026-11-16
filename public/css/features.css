@@ -10,8 +10,9 @@
 #info-sheet .sh{color:var(--tx);border-bottom:1px solid var(--ln);padding:10px 16px}
 #info-sheet .sh b{font-size:16.5px}
 #info-sheet .sh .ib{background:var(--fld);color:var(--tx);border-color:var(--ln)}
-.btn-text-done{background:none;border:0;color:var(--teal);font:700 15px var(--ff);cursor:pointer;padding:6px 12px;border-radius:99px}
-.btn-text-done:active{background:var(--fld)}
+.btn-text-done{background:#e2f5f7;color:#0b6672;border:1.2px solid #1b8f9d44;font:700 13px var(--ff);cursor:pointer;padding:5px 13px;border-radius:99px;display:inline-flex;align-items:center;gap:4px;transition:all .15s;box-shadow:0 2px 6px -2px #1b8f9d33}
+.btn-text-done:active{background:var(--teal);color:#fff;border-color:var(--teal);transform:scale(.95)}
+.ic-xs{width:13px;height:13px;stroke-width:2.4;color:inherit}
 .sc.pad{padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px))}
 
 .chips-title{font-size:12.5px;font-weight:600;color:var(--mut);margin:14px 0 8px}

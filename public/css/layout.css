@@ -23,11 +23,20 @@
 .fc.adj{outline:3px dashed var(--teal2);outline-offset:-3px}
 
 /* ফ্রেম নির্বাচক ট্যাব */
-.frame-tabs{display:flex;gap:8px;z-index:4}
-.ftab{border:1.5px solid var(--ln);background:#ffffffef;color:var(--teal);font:600 12.5px var(--ff);padding:6px 14px;border-radius:99px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;box-shadow:0 3px 8px -3px #0d3b4422}
+.frame-tabs{display:flex;gap:10px;z-index:4}
+.ftab{border:1.5px solid var(--ln);background:#fff;font:600 13px var(--ff);padding:6px 15px;border-radius:99px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;box-shadow:0 3px 8px -3px #0d3b4422}
 .ftab:active{transform:scale(.95)}
-.ftab.on{background:var(--teal);color:#fff;border-color:var(--teal);box-shadow:0 5px 14px -4px #1b8f9d66}
 .tab-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+/* ফ্রেম ১ — সবুজ-নীল */
+.ftab.tab-1{color:#0c6a77;border-color:#1b8f9d44}
+.tab-dot.dot-1{background:#1b8f9d}
+.ftab.tab-1.on{background:#e6f8fa;border-color:#1b8f9d;color:#08525c;font-weight:700;box-shadow:0 4px 12px -3px #1b8f9d44;outline:2px solid #1b8f9d22}
+
+/* ফ্রেম ২ — মাটি রঙ */
+.ftab.tab-2{color:#8c521c;border-color:#b36a2844}
+.tab-dot.dot-2{background:#b36a28}
+.ftab.tab-2.on{background:#fdf5ea;border-color:#b36a28;color:#6e3e11;font-weight:700;box-shadow:0 4px 12px -3px #b36a2844;outline:2px solid #b36a2822}
 
 /* জুম স্লাইডার কন্ট্রোল */
 .zr{display:none;align-items:center;gap:8px;width:100%;max-width:290px;padding:4px 10px;background:#ffffffef;border-radius:99px;box-shadow:0 4px 12px -4px #0d3b4433;border:1px solid var(--ln);color:var(--teal)}

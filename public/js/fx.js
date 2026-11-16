@@ -8,18 +8,18 @@ document.addEventListener("pointerdown",e=>{
   b.appendChild(p);setTimeout(()=>p.remove(),650);
 });
 
-// লাইভ ঘড়ি কাউন্টডাউন (দিন ও ঘণ্টা)
+// লাইভ ঘড়ি কাউন্টডাউন (কমপ্যাক্ট দিন বাকি)
 function updateCD(){
   const t=new Date(CFG.date[0],CFG.date[1],CFG.date[2],14,0,0),n=new Date(),diff=t-n;
   const el=$("#cd-txt");if(!el)return;
   if(diff<=0){el.textContent="মাহফিল সম্পন্ন";return}
-  const d=Math.floor(diff/864e5),h=Math.floor((diff%864e5)/36e5),m=Math.floor((diff%36e5)/6e4);
-  if(d>0){
-    el.innerHTML=`<b>${bn(d)}</b> দিন <b>${bn(h)}</b> ঘণ্টা বাকি`;
-  }else if(h>0){
-    el.innerHTML=`<b>${bn(h)}</b> ঘণ্টা <b>${bn(m)}</b> মিনিট বাকি`;
+  const d=Math.ceil(diff/864e5);
+  if(d>1){
+    el.innerHTML=`<b>${bn(d)}</b> দিন বাকি`;
+  }else if(d===1){
+    el.innerHTML=`<b>আগামীকাল</b> মাহফিল`;
   }else{
-    el.innerHTML=`<b>${bn(m)}</b> মিনিট বাকি`;
+    el.innerHTML=`<b>আজ</b> বাদ যোহর`;
   }
 }
 updateCD();

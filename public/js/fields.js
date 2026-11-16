@@ -10,6 +10,14 @@
 nm.addEventListener("keydown",e=>{if(e.key=="Enter"){e.preventDefault();ds.focus()}});
 ds.addEventListener("keydown",e=>{if(e.key=="Enter"){e.preventDefault();ds.blur();if(window.INFO)INFO.cl()}});
 
+[nm,ds].forEach(i=>{
+  i.addEventListener("focus",()=>{
+    setTimeout(()=>{
+      try{i.scrollIntoView({behavior:"smooth",block:"center"})}catch(_){}
+    },280);
+  });
+});
+
 const ch=$("#chips");
 if(ch){
   CFG.titles.forEach(s=>{

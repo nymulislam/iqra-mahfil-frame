@@ -15,10 +15,14 @@ layout();
 
 if(window.visualViewport){
   const v=visualViewport,f=()=>{
-    $("#app").style.setProperty("--vh",v.height+"px");
+    const h=Math.round(v.height);
+    document.documentElement.style.setProperty("--vh",h+"px");
+    $("#app").style.setProperty("--vh",h+"px");
     layout();
   };
   v.addEventListener("resize",f);
+  v.addEventListener("scroll",f);
+  f();
 }
 
 // ফ্রেম অদলবদল (ট্যাব ১ ও ২)

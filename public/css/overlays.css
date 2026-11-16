@@ -26,14 +26,14 @@
 .fbk .ic{width:16px;height:16px;flex:none;stroke-width:2;color:var(--teal)}
 
 .dx{display:flex;gap:9px;margin-top:16px}
-.sheet{position:fixed;inset:0;z-index:55;background:#0a2d3599;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;flex-direction:column;justify-content:flex-end;visibility:hidden;opacity:0;transition:opacity .3s,visibility .5s}
+.sheet{position:fixed;left:0;right:0;top:0;height:var(--vh,100dvh);z-index:55;background:#0a2d3599;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;flex-direction:column;justify-content:flex-end;visibility:hidden;opacity:0;transition:opacity .25s,visibility .35s}
 .sheet.on{visibility:visible;opacity:1}
-.shc{background:#0a2d35;border-radius:26px 26px 0 0;display:flex;flex-direction:column;max-height:calc(100% - env(safe-area-inset-top,0px) - 10px);transform:translateY(100%);transition:transform .5s cubic-bezier(.25,1,.35,1)}
+.shc{background:#0a2d35;border-radius:26px 26px 0 0;display:flex;flex-direction:column;max-height:100%;transform:translateY(100%);transition:transform .4s cubic-bezier(.25,1,.35,1);overflow:hidden}
 .sheet.on .shc{transform:none}
-.sh{display:flex;align-items:center;gap:8px;padding:8px 12px;color:#fff}
+.sh{display:flex;align-items:center;gap:8px;padding:8px 14px;color:#fff;flex:none}
 .sh b{flex:1;font-size:16px}
 .sh .ib{background:#ffffff1f;color:#fff;border-color:#ffffff22}
-.sc{overflow:auto;padding:2px 14px calc(14px + env(safe-area-inset-bottom,0px));-webkit-overflow-scrolling:touch}
+.sc{overflow-y:auto;padding:2px 14px calc(14px + env(safe-area-inset-bottom,0px));-webkit-overflow-scrolling:touch;flex:1;min-height:0}
 .sc img{width:100%;max-width:520px;display:block;margin:0 auto;border-radius:14px}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);background:var(--tx);color:#fff;padding:10px 18px;border-radius:99px;font-size:14px;opacity:0;transition:.3s;z-index:99;pointer-events:none;max-width:90vw;text-align:center}
 .toast.on{opacity:1;transform:translate(-50%,0)}
