@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { OFFICIAL_POSTER } from '@/lib/poster';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Download, Calendar, FileText, Image as ImageIcon, Briefcase } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
@@ -14,10 +15,41 @@ interface ModalProps {
 export function CalendarModal({ isOpen, onClose, type }: ModalProps) {
   const { lang, t } = useLanguage();
 
+  const panel = useRef<HTMLDivElement | null>(null);
+  const [zoomed, setZoomed] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    setZoomed(false);
+    setImageError(false);
+    const previous = document.activeElement as HTMLElement | null;
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    panel.current?.focus();
+    const key = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+      if (event.key !== 'Tab') return;
+      const controls = panel.current?.querySelectorAll<HTMLElement>('button, a[href]');
+      if (!controls?.length) return;
+      const first = controls[0], last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && (document.activeElement === last || document.activeElement === panel.current)) {
+        event.preventDefault(); first.focus();
+      }
+    };
+    document.addEventListener('keydown', key);
+    return () => {
+      document.body.style.overflow = overflow;
+      document.removeEventListener('keydown', key);
+      previous?.focus();
+    };
+  }, [isOpen, onClose, type]);
+
   if (!isOpen) return null;
 
-  let imageSrc = '/assets/posters/mahfil-banner.jpg';
-  let downloadFileName = 'iqra-mahfil-2026-banner.jpg';
+  let imageSrc = OFFICIAL_POSTER.src;
+  let downloadFileName = OFFICIAL_POSTER.filename;
   let title =
     lang === 'bn'
       ? 'বার্ষিক তাফসীরুল কুরআন মাহফিল ২০২৬ অফিসিয়াল ব্যানার'
@@ -63,6 +95,7 @@ export function CalendarModal({ isOpen, onClose, type }: ModalProps) {
         onClick={onClose}
       >
         <motion.div
+          ref={panel} role="dialog" aria-modal="true" aria-labelledby="poster-modal-title" tabIndex={-1}
           initial={{ opacity: 0, scale: 0.94 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.94 }}
@@ -73,15 +106,15 @@ export function CalendarModal({ isOpen, onClose, type }: ModalProps) {
           {/* Header */}
           <div className="flex items-center justify-between px-4 sm:px-5 py-3 border-b border-slate-100 bg-white shrink-0">
             <div className="min-w-0 pr-2">
-              <h3 className="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2 truncate">
+              <h3 id="poster-modal-title" className="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2 truncate">
                 {type === 'calendar' ? (
                   <Calendar className="w-4 h-4 text-sky-600 shrink-0" />
                 ) : type === 'brochure' ? (
-                  <FileText className="w-4 h-4 text-teal-600 shrink-0" />
+                  <FileText className="w-4 h-4 text-sky-600 shrink-0" />
                 ) : type === 'sponsor' ? (
-                  <Briefcase className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <Briefcase className="w-4 h-4 text-sky-600 shrink-0" />
                 ) : (
-                  <ImageIcon className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <ImageIcon className="w-4 h-4 text-sky-600 shrink-0" />
                 )}
                 <span className="truncate">{title}</span>
               </h3>
@@ -91,22 +124,27 @@ export function CalendarModal({ isOpen, onClose, type }: ModalProps) {
             <button
               onClick={onClose}
               className="p-1.5 sm:p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-800 transition shrink-0 cursor-pointer"
-              aria-label="Close"
+              aria-label={lang === 'bn' ? 'বন্ধ করুন' : 'Close'}
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* Form-fitting Scrollable Image Container with Minimal Padding */}
-          <div className="flex-1 overflow-y-auto p-1.5 sm:p-2.5 flex items-center justify-center bg-slate-900/5">
+          <div className="min-h-0 flex-1 overflow-auto p-1.5 sm:p-2.5 bg-slate-900/5" style={{ touchAction: 'pan-x pan-y pinch-zoom' }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={imageSrc}
+              onError={() => setImageError(true)}
               alt={title}
-              className="w-auto h-auto max-w-full rounded-xl shadow-md ring-1 ring-slate-900/10 object-contain max-h-[75vh] sm:max-h-[78vh]"
+              className={zoomed ? 'max-w-none w-[1066px] h-auto' : 'w-auto h-auto max-w-full mx-auto rounded-xl object-contain max-h-[70vh]'}
             />
           </div>
 
+          {imageError && <p role="alert" className="p-3 text-sm">{lang === 'bn' ? 'ছবি লোড হয়নি। আবার চেষ্টা করুন।' : 'Image failed to load. Please try again.'}</p>}
+          <button type="button" onClick={() => setZoomed(value => !value)} className="px-4 py-2 text-sm">
+            {zoomed ? (lang === 'bn' ? 'স্বাভাবিক আকার' : 'Fit image') : (lang === 'bn' ? 'বড় করে দেখুন' : 'Zoom image')}
+          </button>
           {/* Compact Footer Controls */}
           <div className="px-4 sm:px-5 py-2.5 sm:py-3 border-t border-slate-100 bg-slate-50 flex items-center justify-between gap-3 shrink-0">
             <span className="text-[11px] text-slate-500 hidden sm:inline font-medium">
@@ -119,7 +157,7 @@ export function CalendarModal({ isOpen, onClose, type }: ModalProps) {
               <a
                 href={imageSrc}
                 download={downloadFileName}
-                className="inline-flex items-center justify-center gap-1.5 px-4 sm:px-5 py-2 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-110 text-white shadow-sm transition active:scale-95 w-full sm:w-auto cursor-pointer"
+                className="inline-flex items-center justify-center gap-1.5 px-4 sm:px-5 py-2 rounded-xl font-bold text-xs sm:text-sm primary-action text-white shadow-sm transition active:scale-95 w-full sm:w-auto cursor-pointer"
               >
                 <Download className="w-4 h-4" />
                 <span>{lang === 'bn' ? 'এইচডি ডাউনলোড' : 'Download HD'}</span>

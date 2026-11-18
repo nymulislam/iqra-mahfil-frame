@@ -1,9 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
-import { LanguageProvider } from '@/context/LanguageContext';
-import { LiveTrackingProvider } from '@/context/LiveTrackingContext';
-import { ThemeProvider } from '@/context/ThemeContext';
-import { FrameModalProvider } from '@/context/FrameModalContext';
+import { Providers } from '@/components/Providers';
 import { SmoothScroll } from '@/components/SmoothScroll';
 
 export const metadata: Metadata = {
@@ -52,7 +49,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#f8fafc',
+  themeColor: '#f0f9ff',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
@@ -78,21 +75,36 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased selection:bg-sky-600 selection:text-white transition-colors duration-500">
-        <ThemeProvider>
-          <LanguageProvider>
-            <LiveTrackingProvider>
-              <FrameModalProvider>
-                <SmoothScroll />
-                {children}
-              </FrameModalProvider>
-            </LiveTrackingProvider>
-          </LanguageProvider>
-        </ThemeProvider>
+        <Providers>
+          <SmoothScroll />
+          {children}
+        </Providers>
         <script
           dangerouslySetInnerHTML={{
             __html: `
               if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
+                  const isLocal = window.location.hostname === 'localhost' ||
+                    window.location.hostname === '127.0.0.1' ||
+                    window.location.hostname === '[::1]' ||
+                    window.location.hostname.endsWith('.local');
+
+                  if (isLocal) {
+                    navigator.serviceWorker.getRegistrations().then((regs) => {
+                      for (const reg of regs) {
+                        reg.unregister();
+                      }
+                    });
+                    if ('caches' in window) {
+                      caches.keys().then((keys) => {
+                        for (const key of keys) {
+                          caches.delete(key);
+                        }
+                      });
+                    }
+                    return;
+                  }
+
                   navigator.serviceWorker.register('/sw.js').then((reg) => {
                     reg.update();
                   }).catch(() => {});

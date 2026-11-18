@@ -1,3 +1,7 @@
+import { MAHFIL_COORDS } from '@/lib/geo';
+
+const CONTACT_PHONES = ['01710-516985', '01797-091817'];
+
 export const SITE = {
   name: {
     bn: 'ইক্বরা ইন্টারন্যাশনাল মাদরাসা',
@@ -8,7 +12,7 @@ export const SITE = {
     en: 'Iqra Madrasah',
   },
   tagline: {
-    bn: 'শারয়ী ও জেনারেল শিক্ষার সমন্বয়ে যুগোপযোগী শিক্ষা মিশন',
+    bn: 'শারয়ী ও জেনারেল শিক্ষার সমন্বয়ে যুগোপযোগী শিক্ষা প্রদান',
     en: 'A Modern Educational Mission Combining Shariah & Academic Excellence',
   },
   location: {
@@ -19,15 +23,15 @@ export const SITE = {
     bn: 'মাদরাসা সংলগ্ন বালুর মাঠ, পাটওয়ারী বাজার দক্ষিণ মাথা, ফরিদগঞ্জ, চাঁদপুর।',
     en: 'Madrasah Central Grounds (Balur Math), South End of Patwari Bazar, Faridganj, Chandpur.',
   },
-  phones: ['01710-516985', '01797-091817'],
+  phones: CONTACT_PHONES,
   email: 'iqramadrasa25@gmail.com',
   facebook: 'https://facebook.com/iqramadrasa25',
-  mapUrl: 'https://maps.google.com/?q=Faridganj+Chandpur+Bangladesh',
+  mapUrl: `https://www.google.com/maps/dir/?api=1&destination=${MAHFIL_COORDS.latitude},${MAHFIL_COORDS.longitude}`,
   url: 'https://iqra.annujum.org',
   logo: '/assets/logo.png',
   donation: {
-    bkash: '01710-516985',
-    nagad: '01797-091817',
+    bkash: CONTACT_PHONES[0],
+    nagad: CONTACT_PHONES[1],
     accountType: {
       bn: 'পার্সোনাল (Send Money)',
       en: 'Personal (Send Money)',

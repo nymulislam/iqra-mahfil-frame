@@ -1,0 +1,20 @@
+/* Color roles shared by the portal and both frame studios. */
+:root {
+  --brand-royal-blue: #025ba9;
+  --brand-ocean: #026fba;
+  --brand-blue-ink: #014779;
+  --bg-primary: #fff;
+  --bg-subtle: #f5faff;
+  --surface-card: #fff;
+  --tint-blue: #ebf5ff;
+  --accent-highlight: #e0f2fe;
+  --deep-blue: #063b63;
+  --deep-navy: #082f49;
+  --text-primary: #0c2340;
+  --text-muted: #475569;
+  --border-subtle: rgba(2, 91, 169, 0.13);
+  --border-highlight: rgba(2, 91, 169, 0.26);
+  --action-glow: rgba(2, 91, 169, 0.28);
+  --primary-gradient: linear-gradient(105deg, #026fba 0%, #026fba 55%, #0380d5 100%);
+  --depth-gradient: linear-gradient(135deg, var(--deep-blue), var(--deep-navy));
+}

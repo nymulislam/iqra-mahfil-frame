@@ -1,9 +1,16 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import confetti from 'canvas-confetti';
 import { useFrameModal } from '@/context/FrameModalContext';
 import { useLiveTracking } from '@/context/LiveTrackingContext';
+import { MAHFIL } from '@/content/mahfil';
+import { mahfilCalendarUrl } from '@/lib/calendar';
+import { displayPhone, phoneHref } from '@/lib/phone';
+import { usePhoneCopy } from '@/lib/usePhoneCopy';
+import { useLanguage } from '@/context/LanguageContext';
+import { studioText } from '@/content/studio';
+import { formatNumber } from '@/lib/numbers';
 import { SITE } from '@/content/site';
 import {
   CANVAS_WIDTH,
@@ -13,6 +20,9 @@ import {
   FrameStudioState,
   renderFrame,
 } from './frameDraw';
+import { useFrameTemplates } from './useFrameTemplates';
+import { readPhoto, exportFrame, downloadBlob } from './frameExport';
+import { OFFICIAL_POSTER, sharePoster } from '@/lib/poster';
 import './mobileApp.css';
 
 const TITLES = [
@@ -26,25 +36,16 @@ const TITLES = [
   'প্রাক্তন ছাত্র',
 ];
 
-const CAPTION =
-  'ইনশাআল্লাহ, আমি আসছি! ৫ ডিসেম্বর ২০২৬, শনিবার বাদ যোহর — ইক্বরা ইন্টারন্যাশনাল মাদরাসার বার্ষিক তাফসীরুল কুরআন মাহফিল, মাদরাসা সংলগ্ন বালুর মাঠ, পাটওয়ারী বাজার, ফরিদগঞ্জ, চাঁদপুর। আপনি আসছেন তো?\n\nhttps://iqra.annujum.org';
-
-const MAP_URL =
-  'https://www.google.com/maps/search/?api=1&query=' +
-  encodeURIComponent('পাটওয়ারী বাজার, বালিথুবা, ফরিদগঞ্জ, চাঁদপুর, বাংলাদেশ');
-
-const CALENDAR_URL =
-  'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' +
-  encodeURIComponent('তাফসীরুল কুরআন মাহফিল ২০২৬') +
-  '&dates=20261205T070000Z/20261205T140000Z&location=' +
-  encodeURIComponent('ইক্বরা ইন্টারন্যাশনাল মাদরাসা, পাটওয়ারী বাজার, ফরিদগঞ্জ, চাঁদপুর');
-
-const bn = (num: number | string) =>
-  String(num).replace(/\d/g, (d) => '০১২৩৪৫৬৭৮৯'[parseInt(d, 10)]);
+const CAPTION_BN =
+  'ইনশাআল্লাহ, আমি আসছি! ৫ ডিসেম্বর ২০২৬, শনিবার বাদ যোহর — ইক্বরা ইন্টারন্যাশনাল মাদরাসার বার্ষিক তাফসীরুল কুরআন মাহফিল, মাদরাসা সংলগ্ন বালুর মাঠ, পাটওয়ারী বাজার, ফরিদগঞ্জ, চাঁদপুর। আপনি আসছেন তো?\n\nhttps://iqra.annujum.org';
 
 export function MobileAppStudio() {
   const { isFrameModalOpen, closeFrameModal } = useFrameModal();
   const { recordFrameCreated } = useLiveTracking();
+  const { lang } = useLanguage();
+  const text = (value: string) => studioText(value, lang);
+  const caption = lang === 'bn' ? CAPTION_BN : 'InshaAllah, I am attending Iqra Mahfil on 5 December 2026, after Zohr, at the Madrasah Sand Field, Patwari Bazar, Faridganj, Chandpur. Join us!\n\nhttps://iqra.annujum.org';
+  const { status: copyStatus, copyPhone } = usePhoneCopy();
 
   // Root & Canvas Refs
   const appRef = useRef<HTMLDivElement | null>(null);
@@ -53,7 +54,12 @@ export function MobileAppStudio() {
   const avatarCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const fxCanvasRef = useRef<HTMLCanvasElement | null>(null);
-  const templateImagesRef = useRef<(HTMLImageElement | null)[]>([null, null]);
+  const { templates: templateImagesRef, status: templateStatus, retry: retryTemplates } = useFrameTemplates(isFrameModalOpen);
+  const photoRequest = useRef(0);
+  const exportInProgress = useRef(false);
+  const [isPreparing, setIsPreparing] = useState(false);
+  const [isSharingPoster, setIsSharingPoster] = useState(false);
+  const [isReadingPhoto, setIsReadingPhoto] = useState(false);
 
   // Pointer state for touch gestures
   const pointersRef = useRef<Map<number, [number, number]>>(new Map());
@@ -69,6 +75,11 @@ export function MobileAppStudio() {
   const [name, setName] = useState<string>('');
   const [designation, setDesignation] = useState<string>('');
 
+  const snapshot = useMemo(() => ({ frameIndex, userImage, zoom, offsetX, offsetY, name, designation: studioText(designation, lang), language: lang }),
+    [frameIndex, userImage, zoom, offsetX, offsetY, name, designation, lang]);
+  const latestSnapshot = useRef<FrameStudioState | null>(snapshot);
+  latestSnapshot.current = isFrameModalOpen ? snapshot : null;
+
   // UI Flow State
   const [activeSheet, setActiveSheet] = useState<'none' | 'info' | 'result' | 'poster'>('none');
   const [dialogState, setDialogState] = useState<'none' | 'contact' | 'delete' | 'prompt-photo'>('none');
@@ -78,7 +89,7 @@ export function MobileAppStudio() {
   const [toastText, setToastText] = useState<string | null>(null);
   const [showTip, setShowTip] = useState<boolean>(false);
   const [isZoomOn, setIsZoomOn] = useState<boolean>(false);
-  const [countdownText, setCountdownText] = useState<string>('১৭ দিন বাকি');
+  const [countdownText, setCountdownText] = useState<string>('…');
 
   // Load Saved Name / Designation
   useEffect(() => {
@@ -99,34 +110,34 @@ export function MobileAppStudio() {
     }, 2400);
   }, []);
 
-  // Countdown Calculator matching live fx.js
+  // Event times use Bangladesh time regardless of the visitor's timezone.
   useEffect(() => {
-    const target = new Date(2026, 11, 5, 14, 0, 0).getTime();
+    const target = new Date(MAHFIL.dateISO).getTime();
     const updateCountdown = () => {
       const now = Date.now();
       const diff = target - now;
       if (diff <= 0) {
-        setCountdownText('মাহফিল সম্পন্ন');
+        setCountdownText(now < new Date(MAHFIL.endDateISO).getTime() ? (lang === 'bn' ? 'মাহফিল চলছে' : 'Event in progress') : (lang === 'bn' ? 'মাহফিল সম্পন্ন' : 'Event ended'));
         return;
       }
       const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
       if (days > 1) {
-        setCountdownText(`${bn(days)} দিন বাকি`);
+        setCountdownText(lang === 'bn' ? `${formatNumber(days, lang)} দিন বাকি` : `${formatNumber(days, lang)} days remaining`);
       } else if (days === 1) {
-        setCountdownText('আগামীকাল মাহফিল');
+        setCountdownText(lang === 'bn' ? '২৪ ঘণ্টার মধ্যে মাহফিল' : 'Event within 24 hours');
       } else {
-        setCountdownText('আজ বাদ যোহর');
+        setCountdownText(lang === 'bn' ? 'আজ বাদ যোহর' : 'Today after Zohr');
       }
     };
 
     updateCountdown();
     const interval = setInterval(updateCountdown, 60000);
     return () => clearInterval(interval);
-  }, []);
+  }, [lang]);
 
   // Background floating stars loop
   useEffect(() => {
-    if (!isFrameModalOpen) return;
+    if (!isFrameModalOpen || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const canvas = fxCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -248,31 +259,26 @@ export function MobileAppStudio() {
       offsetX,
       offsetY,
       name,
-      designation,
+      designation: studioText(designation, lang),
+      language: lang,
     };
     renderFrame(canvasRef.current, currentState, templateImagesRef.current);
-  }, [frameIndex, userImage, zoom, offsetX, offsetY, name, designation]);
-
-  // Preload new PNG frame templates (Frame 1: Royal Blue & Teal, Frame 2: Poster Theme)
-  useEffect(() => {
-    const f1 = new Image();
-    f1.src = '/assets/frames/frame-1.png';
-    f1.onload = () => {
-      templateImagesRef.current[0] = f1;
-      draw();
-    };
-
-    const f2 = new Image();
-    f2.src = '/assets/frames/frame-2.png';
-    f2.onload = () => {
-      templateImagesRef.current[1] = f2;
-      draw();
-    };
-  }, [draw]);
+  }, [frameIndex, userImage, zoom, offsetX, offsetY, name, designation, lang]);
 
   useEffect(() => {
-    draw();
-  }, [draw]);
+    if (isFrameModalOpen) draw();
+  }, [isFrameModalOpen, draw, templateStatus]);
+
+  useEffect(() => {
+    setResultBlob(null);
+    setResultUrl(null);
+  }, [snapshot]);
+
+  useEffect(() => () => {
+    if (resultUrl) URL.revokeObjectURL(resultUrl);
+  }, [resultUrl]);
+
+  useEffect(() => () => { photoRequest.current += 1; }, []);
 
   // Re-draw on visibility or focus return
   useEffect(() => {
@@ -304,50 +310,48 @@ export function MobileAppStudio() {
         userImage.height * s
       );
     }
-  }, [userImage]);
+  }, [userImage, isFrameModalOpen]);
 
   const triggerBurst = () => {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     confetti({
       particleCount: 26,
       spread: 60,
       origin: { y: 0.45 },
-      colors: ['#085d69', '#0d9488', '#0284c7', '#c8102e', '#3fe0f2'],
+      colors: ['#025ba9', '#014779', '#e0f2fe', '#026fba'],
     });
   };
 
   // Image File Upload
-  const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     e.target.value = '';
     if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const src = event.target?.result as string;
-      const img = new Image();
-      img.onload = () => {
-        setUserImage(img);
-        setZoom(1);
-        setOffsetX(0);
-        // Initial center with slight vertical offset matching photo.js
-        const s = Math.max(PHOTO_BOUNDS.w / img.width, PHOTO_BOUNDS.h / img.height);
-        const my = (img.height * s - PHOTO_BOUNDS.h) / 2;
-        setOffsetY(Math.max(0, my) * 0.6);
-
-        setIsZoomOn(true);
-        setShowTip(true);
-        setTimeout(() => setShowTip(false), 3500);
-        triggerBurst();
-        toast('ছবি শুধু আপনার ফোনেই থাকে, কোথাও আপলোড হয় না');
-      };
-      img.src = src;
-    };
-    reader.readAsDataURL(file);
+    const request = ++photoRequest.current;
+    setIsReadingPhoto(true);
+    try {
+      const image = await readPhoto(file);
+      if (photoRequest.current !== request) return;
+      setUserImage(image);
+      setZoom(1);
+      setOffsetX(0);
+      setOffsetY(0);
+      setIsZoomOn(true);
+      setShowTip(true);
+      setTimeout(() => setShowTip(false), 3500);
+      toast(lang === 'bn' ? 'ছবি যুক্ত হয়েছে' : 'Photo added');
+    } catch {
+      if (photoRequest.current === request) toast(lang === 'bn'
+        ? 'ছবিটি খোলা যায়নি। JPEG, PNG বা WebP ছবি বেছে নিন।'
+        : 'Cannot open this photo. Choose a JPEG, PNG or WebP image.');
+    } finally {
+      if (photoRequest.current === request) setIsReadingPhoto(false);
+    }
   };
 
   // Pointer Handlers on Canvas (1-finger pan, 2-finger pinch-to-zoom)
   const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    movedRef.current = false;
+    if (pointersRef.current.size === 0) movedRef.current = false;
     if (!userImage) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -355,6 +359,7 @@ export function MobileAppStudio() {
     canvas.setPointerCapture(e.pointerId);
     pointersRef.current.set(e.pointerId, [e.clientX, e.clientY]);
     if (pointersRef.current.size === 2) {
+      movedRef.current = true;
       const pts = [...pointersRef.current.values()];
       pinchDistRef.current = Math.hypot(pts[0][0] - pts[1][0], pts[0][1] - pts[1][1]) || 1;
     }
@@ -382,7 +387,8 @@ export function MobileAppStudio() {
       const pts = [...pointersRef.current.values()];
       const dist = Math.hypot(pts[0][0] - pts[1][0], pts[0][1] - pts[1][1]) || 1;
       if (pinchDistRef.current) {
-        setZoom((z) => Math.max(1, Math.min(3, (z * dist) / pinchDistRef.current)));
+        const ratio = dist / pinchDistRef.current;
+        setZoom(z => Math.max(1, Math.min(3, z * ratio)));
       }
       pinchDistRef.current = dist;
     }
@@ -390,17 +396,28 @@ export function MobileAppStudio() {
 
   const handlePointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
     pointersRef.current.delete(e.pointerId);
-    pinchDistRef.current = 0;
+    if (pointersRef.current.size < 2) pinchDistRef.current = 0;
     setTimeout(() => {
       movedRef.current = false;
     }, 120);
   };
 
-  const handleWheel = (e: React.WheelEvent<HTMLCanvasElement>) => {
-    if (!userImage) return;
-    e.preventDefault();
-    setZoom((z) => Math.max(1, Math.min(3, z - e.deltaY * 0.002)));
-  };
+  useEffect(() => {
+    if (!isFrameModalOpen) {
+      pointersRef.current.clear();
+      pinchDistRef.current = 0;
+      movedRef.current = false;
+      return;
+    }
+    const canvas = canvasRef.current;
+    if (!canvas || !userImage) return;
+    const wheel = (event: WheelEvent) => {
+      event.preventDefault();
+      setZoom(value => Math.max(1, Math.min(3, value - event.deltaY * 0.002)));
+    };
+    canvas.addEventListener('wheel', wheel, { passive: false });
+    return () => canvas.removeEventListener('wheel', wheel);
+  }, [isFrameModalOpen, userImage]);
 
   // Canvas Click: Name box -> #info-sheet, Photo window -> file picker
   const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -448,7 +465,7 @@ export function MobileAppStudio() {
     setZoom(1);
     setOffsetX(0);
     setOffsetY(0);
-    toast('জুম স্বাভাবিক (১x) করা হয়েছে');
+    toast(text("জুম স্বাভাবিক (১x) করা হয়েছে"));
   };
 
   const handleDeletePhotoConfirm = () => {
@@ -458,7 +475,7 @@ export function MobileAppStudio() {
     setOffsetY(0);
     setIsZoomOn(false);
     setDialogState('none');
-    toast('ছবি মুছে ফেলা হয়েছে');
+    toast(text("ছবি মুছে ফেলা হয়েছে"));
   };
 
   const handleSaveInfo = () => {
@@ -473,7 +490,7 @@ export function MobileAppStudio() {
     setActiveSheet('none');
     if (name.trim() && designation.trim()) {
       triggerBurst();
-      toast('তথ্য সংরক্ষিত হয়েছে');
+      toast(text("তথ্য সংরক্ষিত হয়েছে"));
     }
   };
 
@@ -485,114 +502,83 @@ export function MobileAppStudio() {
     }
     if (!name.trim()) {
       setActiveSheet('info');
-      toast('অনুগ্রহ করে আপনার নাম লিখুন');
+      toast(text("অনুগ্রহ করে আপনার নাম লিখুন"));
       return false;
     }
     if (!designation.trim()) {
       setActiveSheet('info');
-      toast('অনুগ্রহ করে আপনার পদবী বা পরিচয় বাছুন');
+      toast(text("অনুগ্রহ করে আপনার পদবী বা পরিচয় বাছুন"));
       return false;
     }
     return true;
   };
 
-  // Render Double Resolution Frame (2160x2156)
-  const renderDoubleResBlob = async (): Promise<Blob | null> => {
-    const c = document.createElement('canvas');
-    c.width = CANVAS_WIDTH * 2;
-    c.height = CANVAS_HEIGHT * 2;
-    const ctx = c.getContext('2d');
-    if (!ctx) return null;
-
-    ctx.save();
-    ctx.scale(2, 2);
-    renderFrame(
-      c,
-      {
-        frameIndex,
-        userImage,
-        zoom,
-        offsetX,
-        offsetY,
-        name,
-        designation,
-      },
-      templateImagesRef.current
-    );
-    ctx.restore();
-
-    return new Promise((resolve) => {
-      c.toBlob((blob) => resolve(blob), 'image/png', 0.95);
-    });
+  const prepareResult = async () => {
+    const current = snapshot;
+    const blob = resultBlob || await exportFrame(current, templateImagesRef.current, 2);
+    if (latestSnapshot.current !== current) return null;
+    if (!resultBlob) {
+      recordFrameCreated();
+      setResultBlob(blob);
+      setResultUrl(URL.createObjectURL(blob));
+    }
+    return blob;
   };
 
   const handleDownloadClick = async () => {
-    if (!validateReady()) return;
-    const blob = await renderDoubleResBlob();
-    if (!blob) return;
-
-    if (resultUrl) URL.revokeObjectURL(resultUrl);
-    const url = URL.createObjectURL(blob);
-    setResultBlob(blob);
-    setResultUrl(url);
-    setActiveSheet('result');
-    triggerBurst();
-    recordFrameCreated();
-    if (navigator.vibrate) navigator.vibrate([12, 40, 12]);
+    if (exportInProgress.current || isReadingPhoto || !validateReady()) return;
+    exportInProgress.current = true;
+    setIsPreparing(true);
+    try {
+      if (!await prepareResult()) return;
+      setActiveSheet('result');
+      triggerBurst();
+    } catch {
+      toast(lang === 'bn' ? 'ফ্রেম তৈরি করা যায়নি। আবার চেষ্টা করুন।' : 'Frame export failed. Please try again.');
+    } finally {
+      exportInProgress.current = false;
+      setIsPreparing(false);
+    }
   };
 
   const handleDirectDownload = () => {
     if (!resultBlob) return;
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(resultBlob);
-    a.download = `iqra-mahfil-2026-frame-${frameIndex + 1}.png`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    toast('ডাউনলোড শুরু হয়েছে');
+    downloadBlob(resultBlob, `iqra-mahfil-2026-frame-${frameIndex + 1}.png`);
+    toast(lang === 'bn' ? 'ডাউনলোড শুরু হয়েছে। ছবিতে চেপে ধরেও সেভ করতে পারেন।' : 'Download started. You can also save the preview image.');
   };
 
   const handleShareClick = async () => {
-    if (!validateReady()) return;
-    const blob = resultBlob || (await renderDoubleResBlob());
-    if (!blob) return;
-
-    const file = new File([blob], `iqra-mahfil-2026-frame-${frameIndex + 1}.png`, {
-      type: 'image/png',
-    });
-
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      try {
-        await navigator.share({
-          files: [file],
-          text: CAPTION,
-        });
-        recordFrameCreated();
-      } catch (err: unknown) {
-        if ((err as Error)?.name !== 'AbortError') {
-          handleFallbackShare();
+    if (exportInProgress.current || isReadingPhoto || !validateReady()) return;
+    exportInProgress.current = true;
+    setIsPreparing(true);
+    try {
+      const blob = await prepareResult();
+      if (!blob) return;
+      const file = new File([blob], `iqra-mahfil-2026-frame-${frameIndex + 1}.png`, { type: 'image/png' });
+      if (navigator.share && navigator.canShare?.({ files: [file] })) {
+        try {
+          await navigator.share({ files: [file], text: caption });
+          return;
+        } catch (error) {
+          if ((error as Error).name === 'AbortError') return;
         }
       }
-    } else {
-      handleFallbackShare();
-    }
-  };
-
-  const handleFallbackShare = async () => {
-    try {
-      await navigator.clipboard.writeText(CAPTION);
-      toast('টেক্সট কপি হয়েছে — ছবি ডাউনলোড করে শেয়ার করুন');
+      setActiveSheet('result');
+      toast(lang === 'bn' ? 'ছবিটি সেভ করে শেয়ার করুন। নিচে ক্যাপশন কপি করতে পারেন।' : 'Save the image to share it. You can copy the caption below.');
     } catch {
-      toast('ছবি ডাউনলোড করে শেয়ার করুন');
+      toast(lang === 'bn' ? 'ফ্রেম তৈরি করা যায়নি। আবার চেষ্টা করুন।' : 'Frame export failed. Please try again.');
+    } finally {
+      exportInProgress.current = false;
+      setIsPreparing(false);
     }
   };
 
   const handleCopyCaption = async () => {
     try {
-      await navigator.clipboard.writeText(CAPTION);
-      toast('ক্যাপশন কপি হয়েছে — পোস্টে পেস্ট করুন');
+      await navigator.clipboard.writeText(caption);
+      toast(text("ক্যাপশন কপি হয়েছে — পোস্টে পেস্ট করুন"));
     } catch {
-      toast('কপি করা যায়নি');
+      toast(text("কপি করা যায়নি"));
     }
   };
 
@@ -693,16 +679,16 @@ export function MobileAppStudio() {
       <div className="bar">
         <div className="logo" title={SITE.name.bn}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={SITE.logo} alt="ইক্বরা লোগো" className="logo-img" />
+          <img src={SITE.logo} alt={text("ইক্বরা লোগো")} className="logo-img" />
         </div>
         <div className="tt">
           <div className="tt-brand">
-            <span className="t-dark">ইক্বরা</span>
-            <span className="t-accent">ইন্টারন্যাশনাল</span>
-            <span className="t-dark">মাদরাসা</span>
+            <span className="t-dark">{text("ইক্বরা")}</span>
+            <span className="t-accent">{text("ইন্টারন্যাশনাল")}</span>
+            <span className="t-dark">{text("মাদরাসা")}</span>
           </div>
           <div className="sub-row">
-            <span className="sub-date">৫ ডিসেম্বর · বাদ যোহর</span>
+            <span className="sub-date">{text("৫ ডিসেম্বর · বাদ যোহর")}</span>
             <span className="cd-box" id="sub">
               <svg className="ic cd-ic">
                 <use href="#i-clock" />
@@ -718,8 +704,8 @@ export function MobileAppStudio() {
             type="button"
             className="ib"
             id="np"
-            aria-label="পোস্টার"
-            title="মাহফিলের পোস্টার"
+            aria-label={text("পোস্টার")}
+            title={text("মাহফিলের পোস্টার")}
             onClick={() => setActiveSheet('poster')}
           >
             <svg className="ic">
@@ -730,8 +716,8 @@ export function MobileAppStudio() {
             type="button"
             className="ib ib-call"
             id="nc"
-            aria-label="যোগাযোগ"
-            title="যোগাযোগ ও হেল্পলাইন"
+            aria-label={text("যোগাযোগ")}
+            title={text("যোগাযোগ ও হেল্পলাইন")}
             onClick={() => setDialogState('contact')}
           >
             <svg className="ic">
@@ -743,9 +729,9 @@ export function MobileAppStudio() {
             type="button"
             className="ib"
             id="app-close"
-            aria-label="বন্ধ করুন"
+            aria-label={text("বন্ধ করুন")}
             onClick={closeFrameModal}
-            title="সাইটে ফিরুন"
+            title={text("সাইটে ফিরুন")}
           >
             <svg className="ic">
               <use href="#i-x" />
@@ -755,10 +741,16 @@ export function MobileAppStudio() {
       </div>
 
       {/* Stage Area */}
+      <p role="status" className="text-sm text-center px-3">
+        {isPreparing ? (lang === 'bn' ? 'ফ্রেম তৈরি হচ্ছে…' : 'Preparing frame…')
+          : isReadingPhoto ? (lang === 'bn' ? 'ছবি খোলা হচ্ছে…' : 'Opening photo…')
+          : templateStatus[frameIndex] === 'loading' ? (lang === 'bn' ? 'ফ্রেম লোড হচ্ছে…' : 'Loading frame…') : ''}
+        {templateStatus[frameIndex] === 'error' && <button type="button" onClick={retryTemplates}>
+          {lang === 'bn' ? 'ফ্রেম লোড হয়নি। আবার চেষ্টা করুন' : 'Frame failed to load. Retry'}
+        </button>}
+      </p>
       <div className="stage" id="stage" ref={stageRef}>
-        <div className={`tip ${showTip ? 'on' : ''}`} id="tip">
-          টেনে সরান · দুই আঙুলে জুম করুন
-        </div>
+        <div className={`tip ${showTip ? 'on' : ''}`} id="tip">{text("টেনে সরান · দুই আঙুলে জুম করুন")}</div>
 
         <div className="frame-wrap" id="fwrap">
           <canvas
@@ -772,7 +764,7 @@ export function MobileAppStudio() {
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             onPointerCancel={handlePointerUp}
-            onWheel={handleWheel}
+            onLostPointerCapture={handlePointerUp}
           />
         </div>
 
@@ -784,16 +776,14 @@ export function MobileAppStudio() {
             id="tab0"
             onClick={() => handleSelectFrame(0)}
           >
-            <span className="tab-dot dot-1" />🔷 ফ্রেম ১ (রয়েল ব্লু)
-          </button>
+            <span className="tab-dot dot-1" />{text("🔷 ফ্রেম ১ (রয়েল ব্লু)")}</button>
           <button
             type="button"
             className={`ftab tab-2 ${frameIndex === 1 ? 'on' : ''}`}
             id="tab1"
             onClick={() => handleSelectFrame(1)}
           >
-            <span className="tab-dot dot-2" />💠 ফ্রেম ২ (পোস্টার থিম)
-          </button>
+            <span className="tab-dot dot-2" />{text("💠 ফ্রেম ২ (পোস্টার থিম)")}</button>
         </div>
 
         {/* Zoom Slider Row */}
@@ -804,10 +794,8 @@ export function MobileAppStudio() {
               className="zr-lbl-btn"
               id="zm-reset"
               onClick={handleResetZoom}
-              title="স্বাভাবিক আকারে ফিরতে ট্যাপ করুন"
-            >
-              জুম:
-            </button>
+              title={text("স্বাভাবিক আকারে ফিরতে ট্যাপ করুন")}
+            >{text("জুম:")}</button>
             <input
               type="range"
               id="zm"
@@ -816,7 +804,7 @@ export function MobileAppStudio() {
               step="0.01"
               value={zoom}
               onChange={(e) => setZoom(parseFloat(e.target.value))}
-              aria-label="ছবি বড়-ছোট"
+              aria-label={text("ছবি বড়-ছোট")}
             />
             <span className="zr-sep" />
             <button
@@ -824,13 +812,13 @@ export function MobileAppStudio() {
               className="zr-del"
               id="rst"
               onClick={() => setDialogState('delete')}
-              aria-label="ছবি মুছুন"
-              title="ছবি মুছে ফেলুন"
+              aria-label={text("ছবি মুছুন")}
+              title={text("ছবি মুছে ফেলুন")}
             >
               <svg className="ic">
                 <use href="#i-tr" />
               </svg>
-              <span>মুছুন</span>
+              <span>{text("মুছুন")}</span>
             </button>
           </div>
         )}
@@ -844,7 +832,7 @@ export function MobileAppStudio() {
             className={`av ${userImage ? 'has' : ''}`}
             id="pick"
             htmlFor="app-file"
-            aria-label="ছবি বাছুন"
+            aria-label={text("ছবি বাছুন")}
             onClick={() => fileInputRef.current?.click()}
           >
             <canvas id="av" ref={avatarCanvasRef} width="140" height="140" />
@@ -852,7 +840,7 @@ export function MobileAppStudio() {
               <svg className="ic">
                 <use href="#i-cam" />
               </svg>
-              <span>ছবি দিন</span>
+              <span>{text("ছবি দিন")}</span>
             </div>
             <i className="av-edit">
               <svg className="ic">
@@ -867,7 +855,7 @@ export function MobileAppStudio() {
             id="open-info"
             role="button"
             tabIndex={0}
-            aria-label="নাম ও পদবী পরিবর্তন করুন"
+            aria-label={text("নাম ও পদবী পরিবর্তন করুন")}
             onClick={() => setActiveSheet('info')}
           >
             <div className="info-text">
@@ -875,20 +863,20 @@ export function MobileAppStudio() {
                 <svg className="ic ic-sm">
                   <use href="#i-user" />
                 </svg>
-                <b id="prev-nm">{name.trim() ? name : 'আপনার নাম লিখুন'}</b>
+                <b id="prev-nm">{name.trim() ? name : text("আপনার নাম লিখুন")}</b>
               </div>
               <div className="info-ds-row">
                 <svg className="ic ic-sm">
                   <use href="#i-badge" />
                 </svg>
-                <span id="prev-ds">{designation.trim() ? designation : 'পদবী / পরিচয় দিন'}</span>
+                <span id="prev-ds">{designation.trim() ? text(designation) : text("পদবী / পরিচয় দিন")}</span>
               </div>
             </div>
             <div className="edit-pill">
               <svg className="ic">
                 <use href="#i-edit" />
               </svg>
-              <span>লিখুন</span>
+              <span>{text("লিখুন")}</span>
             </div>
           </div>
         </div>
@@ -908,25 +896,21 @@ export function MobileAppStudio() {
           <button
             type="button"
             className={`btn ${!isFormComplete ? 'dim' : ''}`}
-            id="dl"
+            id="dl" disabled={isPreparing || isReadingPhoto || templateStatus[frameIndex] !== 'ready'}
             onClick={handleDownloadClick}
           >
             <svg className="ic">
               <use href="#i-dl" />
-            </svg>
-            ডাউনলোড
-          </button>
+            </svg>{text("ডাউনলোড")}</button>
           <button
             type="button"
             className={`btn warm ${!isFormComplete ? 'dim' : ''}`}
-            id="sh"
+            id="sh" disabled={isPreparing || isReadingPhoto || templateStatus[frameIndex] !== 'ready'}
             onClick={handleShareClick}
           >
             <svg className="ic">
               <use href="#i-sh" />
-            </svg>
-            শেয়ার
-          </button>
+            </svg>{text("শেয়ার")}</button>
         </div>
       </div>
 
@@ -940,14 +924,14 @@ export function MobileAppStudio() {
               type="button"
               className="ib"
               id="info-cl"
-              aria-label="বন্ধ"
+              aria-label={text("বন্ধ")}
               onClick={() => setActiveSheet('none')}
             >
               <svg className="ic">
                 <use href="#i-x" />
               </svg>
             </button>
-            <b>নাম ও পদবী দিন</b>
+            <b>{text("নাম ও পদবী দিন")}</b>
             <button
               type="button"
               className="btn-text-done"
@@ -956,9 +940,7 @@ export function MobileAppStudio() {
             >
               <svg className="ic ic-xs">
                 <use href="#i-ok" />
-              </svg>
-              সম্পন্ন
-            </button>
+              </svg>{text("সম্পন্ন")}</button>
           </div>
           <div className="sc pad">
             <div className={`f ${name.trim() ? 'ok' : ''}`} id="fn">
@@ -969,7 +951,7 @@ export function MobileAppStudio() {
                 id="nm"
                 type="text"
                 maxLength={40}
-                placeholder="আপনার পুরো নাম লিখুন"
+                placeholder={text("আপনার পুরো নাম লিখুন")}
                 autoComplete="name"
                 enterKeyHint="next"
                 value={name}
@@ -990,10 +972,10 @@ export function MobileAppStudio() {
                 id="ds"
                 type="text"
                 maxLength={46}
-                placeholder="পদবী বা পরিচয় (বা নিচে বাছুন)"
+                placeholder={text("পদবী বা পরিচয় (বা নিচে বাছুন)")}
                 autoComplete="off"
                 enterKeyHint="done"
-                value={designation}
+                value={text(designation)}
                 onChange={(e) => setDesignation(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
@@ -1003,7 +985,7 @@ export function MobileAppStudio() {
                 }}
               />
             </div>
-            <div className="chips-title">দ্রুত পদবী নির্বাচন করুন:</div>
+            <div className="chips-title">{text("দ্রুত পদবী নির্বাচন করুন:")}</div>
             <div className="chips on" id="chips">
               {TITLES.map((role) => (
                 <button
@@ -1012,7 +994,7 @@ export function MobileAppStudio() {
                   className={designation === role ? 'sel' : ''}
                   onClick={() => setDesignation(role)}
                 >
-                  {role}
+                  {text(role)}
                 </button>
               ))}
             </div>
@@ -1025,9 +1007,7 @@ export function MobileAppStudio() {
             >
               <svg className="ic">
                 <use href="#i-ok" />
-              </svg>
-              তথ্য সেভ করুন
-            </button>
+              </svg>{text("তথ্য সেভ করুন")}</button>
           </div>
         </div>
       </div>
@@ -1042,35 +1022,29 @@ export function MobileAppStudio() {
               type="button"
               className="ib"
               id="rcl"
-              aria-label="বন্ধ"
+              aria-label={text("বন্ধ")}
               onClick={() => setActiveSheet('none')}
             >
               <svg className="ic">
                 <use href="#i-x" />
               </svg>
             </button>
-            <b>আপনার ফ্রেম তৈরি হয়েছে</b>
+            <b>{text("আপনার ফ্রেম তৈরি হয়েছে")}</b>
           </div>
           <div className="sc">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            {resultUrl && <img id="rimg" src={resultUrl} alt="আপনার ফটো ফ্রেম" />}
-            <p className="hint">ছবিতে চেপে ধরে সেভ করলেও গ্যালারিতে যাবে</p>
-            <div className="iab on" id="iab">
-              ফেসবুক/মেসেঞ্জারের ব্রাউজারে সেভ বাটন কাজ নাও করতে পারে। ছবিতে চেপে ধরে সেভ করুন, অথবা উপরের ⋮ মেনু থেকে “ব্রাউজারে খুলুন” চাপুন।
-            </div>
+            {resultUrl && <img id="rimg" src={resultUrl} alt={text("আপনার ফটো ফ্রেম")} />}
+            <p className="hint">{text("ছবিতে চেপে ধরে সেভ করলেও গ্যালারিতে যাবে")}</p>
+            <div className="iab on" id="iab">{text("ফেসবুক/মেসেঞ্জারের ব্রাউজারে সেভ বাটন কাজ নাও করতে পারে। ছবিতে চেপে ধরে সেভ করুন, অথবা উপরের ⋮ মেনু থেকে “ব্রাউজারে খুলুন” চাপুন।")}</div>
             <div className="row" style={{ marginTop: 12 }}>
               <button type="button" className="btn" id="rsv" onClick={handleDirectDownload}>
                 <svg className="ic">
                   <use href="#i-dl" />
-                </svg>
-                সেভ
-              </button>
-              <button type="button" className="btn warm" id="rsh" onClick={handleShareClick}>
+                </svg>{text("সেভ")}</button>
+              <button type="button" className="btn warm" id="rsh" disabled={isPreparing || isReadingPhoto || templateStatus[frameIndex] !== 'ready'} onClick={handleShareClick}>
                 <svg className="ic">
                   <use href="#i-sh" />
-                </svg>
-                শেয়ার
-              </button>
+                </svg>{text("শেয়ার")}</button>
             </div>
             <button
               type="button"
@@ -1081,9 +1055,7 @@ export function MobileAppStudio() {
             >
               <svg className="ic">
                 <use href="#i-cp" />
-              </svg>
-              ক্যাপশন কপি
-            </button>
+              </svg>{text("ক্যাপশন কপি")}</button>
           </div>
         </div>
       </div>
@@ -1098,20 +1070,20 @@ export function MobileAppStudio() {
               type="button"
               className="ib"
               id="pcl"
-              aria-label="বন্ধ"
+              aria-label={text("বন্ধ")}
               onClick={() => setActiveSheet('none')}
             >
               <svg className="ic">
                 <use href="#i-x" />
               </svg>
             </button>
-            <b>মাহফিলের পোস্টার</b>
+            <b>{text("মাহফিলের পোস্টার")}</b>
             <a
-              href="/assets/poster.jpg"
-              download="iqra-mahfil-2026-poster.jpg"
+              href={OFFICIAL_POSTER.src}
+              download={OFFICIAL_POSTER.filename}
               className="ib"
               id="pd"
-              aria-label="ডাউনলোড"
+              aria-label={text("ডাউনলোড")}
             >
               <svg className="ic">
                 <use href="#i-dl" />
@@ -1120,20 +1092,21 @@ export function MobileAppStudio() {
             <button
               type="button"
               className="ib"
-              id="psh"
-              aria-label="শেয়ার"
+              id="psh" disabled={isSharingPoster}
+              aria-label={text("শেয়ার")}
               onClick={async () => {
+                setIsSharingPoster(true);
                 try {
-                  const res = await fetch('/assets/poster.jpg');
-                  const blob = await res.blob();
-                  const file = new File([blob], 'iqra-mahfil-2026-poster.jpg', { type: 'image/jpeg' });
-                  if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    await navigator.share({ files: [file], text: CAPTION });
-                  } else {
-                    handleFallbackShare();
-                  }
-                } catch {
-                  handleFallbackShare();
+                  const result = await sharePoster(lang);
+                  toast(result === 'copied'
+                    ? (lang === 'bn' ? 'পোস্টারের লিংক কপি হয়েছে' : 'Poster link copied')
+                    : (lang === 'bn' ? 'পোস্টার শেয়ার হয়েছে' : 'Poster shared'));
+                } catch (error) {
+                  if ((error as Error).name !== 'AbortError') toast(lang === 'bn'
+                    ? 'শেয়ার করা যায়নি। ডাউনলোড করুন বা ছবিতে চেপে ধরে সেভ করুন।'
+                    : 'Sharing failed. Download or save the poster image.');
+                } finally {
+                  setIsSharingPoster(false);
                 }
               }}
             >
@@ -1146,12 +1119,14 @@ export function MobileAppStudio() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               id="pm"
-              src="/assets/poster.jpg"
-              alt="মাহফিলের পোস্টার"
+              src={OFFICIAL_POSTER.src}
+              width={OFFICIAL_POSTER.width} height={OFFICIAL_POSTER.height}
+              onError={() => toast(lang === 'bn' ? 'পোস্টার লোড হয়নি। আবার খুলে দেখুন।' : 'Poster failed to load. Please reopen it.')}
+              alt={text("মাহফিলের পোস্টার")}
               className={isPosterZoomed ? 'zoom' : ''}
               onClick={() => setIsPosterZoomed((z) => !z)}
             />
-            <p className="hint">ছোট লেখা পড়তে পোস্টারে ট্যাপ করে জুম করুন</p>
+            <p className="hint">{text("ছোট লেখা পড়তে পোস্টারে ট্যাপ করে জুম করুন")}</p>
           </div>
         </div>
       </div>
@@ -1167,95 +1142,88 @@ export function MobileAppStudio() {
         }}
       >
         {dialogState === 'contact' && (
-          <div className="dg" id="dg">
+          <div className="dg max-h-[calc(100dvh-32px)] overflow-y-auto" id="dg">
             <div className="dic">
               <svg className="ic">
                 <use href="#i-ph" />
               </svg>
             </div>
-            <h3 id="dt">যোগাযোগ</h3>
-            <p id="dp">প্রয়োজনে সরাসরি কল বা আর্থিক সহযোগিতা পাঠাতে পারেন</p>
+            <h3 id="dt">{text("যোগাযোগ")}</h3>
+            <p id="dp">{text("প্রয়োজনে সরাসরি কল বা আর্থিক সহযোগিতা পাঠাতে পারেন")}</p>
             <div className="contact-box">
-              <div className="contact-num-row">
-                <div className="contact-phone">01797-091817</div>
-                <div className="contact-pay">
-                  <span className="pay bk">বিকাশ</span>
-                  <span className="pay ng">নগদ</span>
-                  <span className="pay-sub">পার্সোনাল</span>
+              {(['bkash', 'nagad'] as const).map(service => (
+                <div className="contact-num-row mb-4" key={service}>
+                  <div className="contact-phone select-all">{displayPhone(SITE.donation[service], lang)}</div>
+                  <div className="contact-pay">
+                    <span className={`pay ${service === 'bkash' ? 'bk' : 'ng'}`}>
+                      {service === 'bkash' ? (lang === 'bn' ? 'বিকাশ' : 'bKash') : (lang === 'bn' ? 'নগদ' : 'Nagad')}
+                    </span>
+                    <span className="pay-sub">{SITE.donation.accountType[lang]}</span>
+                    <button type="button" className="fbk" disabled={copyStatus?.state === 'pending'}
+                      onClick={() => copyPhone(SITE.donation[service], service)}>
+                      {lang === 'bn' ? 'কপি' : 'Copy'}
+                    </button>
+                  </div>
                 </div>
-              </div>
+              ))}
+              <p role="status" className="text-sm mb-3">
+                {copyStatus?.state === 'copied' && (lang === 'bn' ? 'নম্বর কপি হয়েছে' : 'Number copied')}
+                {copyStatus?.state === 'error' && (lang === 'bn'
+                  ? 'কপি করা যায়নি। নম্বরটি চেপে ধরে নির্বাচন করে কপি করুন।'
+                  : 'Copy failed. Select the number and copy it manually.')}
+              </p>
               <div className="contact-grid">
                 <a
                   className="fbk"
-                  href="https://www.facebook.com/iqramadrasah25"
+                  href={SITE.facebook}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <svg className="ic">
                     <use href="#i-fb" />
                   </svg>
-                  <span>ফেসবুক পেজ</span>
+                  <span>{text("ফেসবুক পেজ")}</span>
                 </a>
                 <a
                   className="fbk"
-                  href={MAP_URL}
+                  href={SITE.mapUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <svg className="ic">
                     <use href="#i-pin" />
                   </svg>
-                  <span>গুগল ম্যাপ</span>
+                  <span>{text("গুগল ম্যাপ")}</span>
                 </a>
                 <a
                   className="fbk"
-                  href={CALENDAR_URL}
+                  href={mahfilCalendarUrl(lang)}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <svg className="ic">
                     <use href="#i-cal" />
                   </svg>
-                  <span>ক্যালেন্ডার</span>
+                  <span>{text("ক্যালেন্ডার")}</span>
                 </a>
                 <a
                   className="fbk"
-                  href="https://wa.me/8801797091817"
+                  href={`https://wa.me/${MAHFIL.helplinePhone.replace(/\D/g, '').replace(/^0/, '880')}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <svg className="ic">
                     <use href="#i-wa" />
                   </svg>
-                  <span>হোয়াটসঅ্যাপ</span>
+                  <span>{text("হোয়াটসঅ্যাপ")}</span>
                 </a>
               </div>
             </div>
             <div className="dx">
-              <button
-                type="button"
-                className="btn ghost"
-                onClick={() => {
-                  try {
-                    navigator.clipboard.writeText('01797091817');
-                    toast('নম্বর কপি হয়েছে');
-                  } catch {
-                    // ignore
-                  }
-                  setDialogState('none');
-                }}
-              >
-                <svg className="ic">
-                  <use href="#i-cp" />
-                </svg>
-                কপি
-              </button>
-              <a href="tel:01797091817" className="btn" onClick={() => setDialogState('none')}>
+              <a href={phoneHref(MAHFIL.helplinePhone)} className="btn" onClick={() => setDialogState('none')}>
                 <svg className="ic">
                   <use href="#i-ph" />
-                </svg>
-                কল করুন
-              </a>
+                </svg>{text("কল করুন")}</a>
             </div>
             <div className="dev">
               <svg className="ic">
@@ -1300,23 +1268,19 @@ export function MobileAppStudio() {
                 <use href="#i-tr" />
               </svg>
             </div>
-            <h3 id="dt">ছবি মুছে ফেলবেন?</h3>
-            <p id="dp">ফ্রেম থেকে আপনার ছবি সরে যাবে। চাইলে আবার নতুন ছবি দিতে পারবেন।</p>
+            <h3 id="dt">{text("ছবি মুছে ফেলবেন?")}</h3>
+            <p id="dp">{text("ফ্রেম থেকে আপনার ছবি সরে যাবে। চাইলে আবার নতুন ছবি দিতে পারবেন।")}</p>
             <div className="dx">
               <button
                 type="button"
                 className="btn ghost"
                 onClick={() => setDialogState('none')}
-              >
-                থাক
-              </button>
+              >{text("থাক")}</button>
               <button
                 type="button"
                 className="btn warm"
                 onClick={handleDeletePhotoConfirm}
-              >
-                মুছুন
-              </button>
+              >{text("মুছুন")}</button>
             </div>
           </div>
         )}
@@ -1328,8 +1292,8 @@ export function MobileAppStudio() {
                 <use href="#i-cam" />
               </svg>
             </div>
-            <h3 id="dt">ছবি যোগ করুন</h3>
-            <p id="dp">ফ্রেমে বসানোর জন্য আপনার একটি ছবি বেছে নিন।</p>
+            <h3 id="dt">{text("ছবি যোগ করুন")}</h3>
+            <p id="dp">{text("ফ্রেমে বসানোর জন্য আপনার একটি ছবি বেছে নিন।")}</p>
             <div className="dx">
               <button
                 type="button"
@@ -1338,16 +1302,14 @@ export function MobileAppStudio() {
                   setDialogState('none');
                   fileInputRef.current?.click();
                 }}
-              >
-                ছবি বাছুন
-              </button>
+              >{text("ছবি বাছুন")}</button>
             </div>
           </div>
         )}
       </div>
 
       {/* Toast Notification identical to live site */}
-      <div className={`toast ${toastText ? 'on' : ''}`} id="ts">
+      <div role="status" className={`toast ${toastText ? 'on' : ''}`} id="ts">
         {toastText}
       </div>
     </div>

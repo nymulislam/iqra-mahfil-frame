@@ -5,17 +5,15 @@
    ========================================================================== */
 
 .mobile-frame-app {
-  --bg: #edf6f8;
-  --bg2: #daeef2;
-  --tx: #09262c;
-  --mut: #2d4f56;
-  --teal: #085d69;
-  --teal2: #0e8fa0;
-  --sky: #8fdcf0;
-  --mint: #a9ebdc;
-  --coral: #dc2626;
-  --ln: #b5d3da;
-  --fld: #f1f8fa;
+  --bg: var(--surface-sky);
+  --bg2: var(--bg-surface);
+  --tx: var(--text-primary);
+  --mut: var(--text-muted);
+  --teal: var(--brand-blue-ink);
+  --teal2: var(--brand-primary);
+  --coral: var(--brand-primary);
+  --ln: var(--border-subtle);
+  --fld: var(--tint-blue);
   --M: 300px;
   --ff: "Hind Siliguri", "Noto Sans Bengali", "Kalpurush", system-ui, sans-serif;
   font-family: var(--ff);
@@ -45,15 +43,6 @@
   -webkit-user-select: text;
 }
 
-.mobile-frame-app.theme-frame-1 {
-  --bg: #f0f7ff;
-  --bg2: #e0f2fe;
-  --ln: #bae6fd;
-  --fld: #f8fbff;
-  --teal: #0284c7;
-  --teal2: #0ea5e9;
-}
-
 .mobile-frame-app #fx,
 .mobile-frame-app #fb {
   position: absolute;
@@ -73,18 +62,14 @@
   align-items: center;
   gap: 10px;
   padding: calc(6px + env(safe-area-inset-top, 0px)) 12px 6px;
-  background: rgba(255, 255, 255, 0.94);
+  background: var(--surface-glass);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1.2px solid rgba(2, 108, 182, 0.12);
-  box-shadow: 0 4px 16px -4px rgba(2, 108, 182, 0.08);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
   position: relative;
   z-index: 10;
   flex: none;
-}
-
-.mobile-frame-app.theme-frame-1 .bar {
-  border-bottom-color: rgba(2, 132, 199, 0.15);
 }
 
 .mobile-frame-app .logo {
@@ -92,7 +77,7 @@
   height: 38px;
   border-radius: 12px;
   background: #ffffff;
-  border: 1.2px solid rgba(2, 108, 182, 0.15);
+  border: 1px solid var(--brand-indigo);
   box-shadow: 0 3px 10px -2px rgba(2, 108, 182, 0.18);
   display: grid;
   place-items: center;
@@ -125,14 +110,14 @@
 .mobile-frame-app .tt-brand .t-dark {
   font-size: 15px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--text-primary);
   letter-spacing: -0.01em;
 }
 
 .mobile-frame-app .tt-brand .t-accent {
   font-size: 13px;
   font-weight: 700;
-  color: #0284c7;
+  color: var(--brand-blue-ink);
   letter-spacing: -0.01em;
 }
 
@@ -147,7 +132,7 @@
 
 .mobile-frame-app .sub-date {
   font-size: 11px;
-  color: #64748b;
+  color: var(--text-muted);
   font-weight: 600;
   white-space: nowrap;
 }
@@ -156,8 +141,8 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: #e0f2fe;
-  color: #0369a1;
+  background: var(--surface-sky);
+  color: var(--brand-blue-ink);
   font-size: 10.5px;
   font-weight: 700;
   padding: 1.5px 7px;
@@ -167,33 +152,19 @@
   flex: none;
 }
 
-.mobile-frame-app.theme-frame-1 .cd-box {
-  background: #e0f2fe;
-  color: #0284c7;
-  border-color: #bae6fd;
-}
-
 .mobile-frame-app .cd-box b {
   display: inline;
   font-weight: 800;
   font-size: 11.5px;
-  color: #0284c7;
-}
-
-.mobile-frame-app.theme-frame-1 .cd-box b {
-  color: #0284c7;
+  color: var(--brand-blue-ink);
 }
 
 .mobile-frame-app .cd-box .cd-ic {
   width: 12px;
   height: 12px;
   stroke-width: 2.2;
-  color: #0284c7;
+  color: var(--brand-blue-ink);
   flex: none;
-}
-
-.mobile-frame-app.theme-frame-1 .cd-box .cd-ic {
-  color: #0284c7;
 }
 
 .mobile-frame-app .nv {
@@ -210,7 +181,7 @@
   border-radius: 11px;
   border: 1.2px solid rgba(2, 108, 182, 0.16);
   background: #ffffff;
-  color: #026cb6;
+  color: var(--brand-primary);
   display: grid;
   place-items: center;
   cursor: pointer;
@@ -222,7 +193,7 @@
 
 .mobile-frame-app .ib:active {
   transform: scale(0.92);
-  background: #f0f7ff;
+  background: var(--surface-sky);
 }
 
 .mobile-frame-app .ib .ic {
@@ -238,28 +209,22 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #10b981;
+  background: var(--brand-blue-ink);
   box-shadow: 0 0 0 2px #ffffff;
-  animation: pulseGreen 2s infinite;
 }
 
-@keyframes pulseGreen {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-  70% { transform: scale(1); box-shadow: 0 0 0 5px rgba(16, 185, 129, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-}
 
 .mobile-frame-app .ib#app-close {
-  background: #f8fafc;
+  background: var(--bg-subtle);
   border-color: #cbd5e1;
-  color: #64748b;
+  color: var(--text-muted);
 }
 
 .mobile-frame-app .ib#app-close:hover,
 .mobile-frame-app .ib#app-close:active {
-  background: #fee2e2;
-  color: #dc2626;
-  border-color: #fca5a5;
+  background: var(--surface-sky);
+  color: var(--brand-blue-ink);
+  border-color: var(--border-card);
 }
 
 /* Stage Area */
@@ -305,7 +270,7 @@
   aspect-ratio: 1080/1078;
   display: grid;
   place-items: center;
-  transition: width 0.2s ease;
+  touch-action: pan-x pan-y pinch-zoom;
 }
 
 .mobile-frame-app .fc {
@@ -313,8 +278,8 @@
   height: 100%;
   border-radius: 18px;
   background: #fff;
-  box-shadow: 0 0 0 1.2px rgba(8, 93, 105, 0.18), 0 4px 16px -2px rgba(8, 93, 105, 0.12),
-    0 20px 42px -10px rgba(8, 93, 105, 0.28);
+  box-shadow: 0 0 0 1.2px rgba(2,91,169, 0.18), 0 4px 16px -2px rgba(2,91,169, 0.12),
+    0 20px 42px -10px rgba(2,91,169, 0.28);
   transition: box-shadow 0.3s ease;
   touch-action: none;
   cursor: pointer;
@@ -331,7 +296,7 @@
 }
 
 .mobile-frame-app .fc.ld {
-  background: linear-gradient(90deg, #fff, #dff4f3, #fff);
+  background: linear-gradient(90deg, #fff, var(--tint-blue), #fff);
   background-size: 200% 100%;
   animation: shim 1.2s linear infinite;
 }
@@ -349,7 +314,7 @@
   padding: 4px;
   border-radius: 99px;
   border: 1.5px solid var(--ln);
-  box-shadow: 0 4px 12px -3px rgba(9, 38, 44, 0.08);
+  box-shadow: 0 4px 12px -3px rgba(12,35,64, 0.08);
   gap: 4px;
   z-index: 4;
 }
@@ -379,13 +344,13 @@
 }
 
 .mobile-frame-app .ftab.tab-1 {
-  color: #026cb6;
+  color: var(--brand-primary);
 }
 .mobile-frame-app .ftab.tab-1 .tab-dot {
-  background: #026cb6;
+  background: var(--brand-primary);
 }
 .mobile-frame-app .ftab.tab-1.on {
-  background: #026cb6;
+  background: var(--brand-primary);
   color: #ffffff;
   box-shadow: 0 4px 12px -2px rgba(2, 108, 182, 0.45);
 }
@@ -394,13 +359,13 @@
 }
 
 .mobile-frame-app .ftab.tab-2 {
-  color: #0284c7;
+  color: var(--brand-blue-ink);
 }
 .mobile-frame-app .ftab.tab-2 .tab-dot {
-  background: #0284c7;
+  background: var(--brand-blue-ink);
 }
 .mobile-frame-app .ftab.tab-2.on {
-  background: #0284c7;
+  background: var(--brand-blue-ink);
   color: #ffffff;
   box-shadow: 0 4px 12px -2px rgba(2, 132, 199, 0.45);
 }
@@ -418,7 +383,7 @@
   padding: 5px 8px 5px 12px;
   background: #ffffffef;
   border-radius: 99px;
-  box-shadow: 0 4px 14px -3px rgba(9, 38, 44, 0.12);
+  box-shadow: 0 4px 14px -3px rgba(12,35,64, 0.12);
   border: 1.5px solid var(--ln);
   color: var(--teal);
 }
@@ -468,19 +433,19 @@
   height: 28px;
   padding: 0 10px;
   border-radius: 99px;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #dc2626;
+  background: var(--surface-sky);
+  border: 1px solid var(--border-card);
+  color: var(--brand-blue-ink);
   font: 700 12px var(--ff);
   cursor: pointer;
   flex: none;
   transition: all 0.15s;
-  box-shadow: 0 2px 6px -2px rgba(220, 38, 38, 0.18);
+  box-shadow: 0 2px 6px -2px var(--accent-blue-glow);
 }
 
 .mobile-frame-app .zr-del:active {
   transform: scale(0.94);
-  background: #fee2e2;
+  background: var(--surface-sky);
 }
 
 .mobile-frame-app .zr-del .ic {
@@ -504,14 +469,10 @@
   background: #fff;
   border-radius: 24px 24px 0 0;
   padding: 12px 14px calc(12px + env(safe-area-inset-bottom, 0px));
-  box-shadow: 0 -10px 30px -15px rgba(9, 38, 44, 0.22);
-  border-top: 1.2px solid rgba(8, 93, 105, 0.12);
+  box-shadow: 0 -10px 30px -15px rgba(12,35,64, 0.22);
+  border-top: 1.2px solid rgba(2,91,169, 0.12);
   position: relative;
   z-index: 5;
-}
-
-.mobile-frame-app.theme-frame-1 .panel {
-  border-top-color: rgba(138, 74, 21, 0.12);
 }
 
 /* Action Card (Avatar + Info Trigger) */
@@ -567,7 +528,7 @@
 
 .mobile-frame-app .av.has {
   border: 2px solid var(--teal);
-  box-shadow: 0 6px 14px -4px rgba(8, 93, 105, 0.35);
+  box-shadow: 0 6px 14px -4px rgba(2,91,169, 0.35);
 }
 
 .mobile-frame-app .av.has canvas {
@@ -585,7 +546,7 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--teal), var(--teal2));
+  background: var(--primary-gradient);
   color: #fff;
   display: grid;
   place-items: center;
@@ -616,7 +577,7 @@
 
 .mobile-frame-app .info-trigger:active {
   transform: scale(0.98);
-  background: #e2f4f7;
+  background: var(--surface-sky);
 }
 
 .mobile-frame-app .info-text {
@@ -662,7 +623,7 @@
 
 .mobile-frame-app .info-trigger.ok {
   border-color: var(--teal);
-  background: #f2fbfd;
+  background: var(--bg-subtle);
 }
 
 .mobile-frame-app .info-trigger.bad {
@@ -681,7 +642,7 @@
   padding: 5px 12px;
   border-radius: 99px;
   flex: none;
-  box-shadow: 0 2px 6px -2px rgba(9, 38, 44, 0.15);
+  box-shadow: 0 2px 6px -2px rgba(12,35,64, 0.15);
 }
 
 .mobile-frame-app .edit-pill .ic {
@@ -705,12 +666,12 @@
   height: 50px;
   font: 700 15.5px var(--ff);
   color: #fff;
-  background: linear-gradient(135deg, #085d69, #0d9488);
+  background: var(--primary-gradient);
   border: 0;
   border-radius: 16px;
   padding: 0 14px;
   cursor: pointer;
-  box-shadow: 0 8px 18px -5px rgba(8, 93, 105, 0.45);
+  box-shadow: 0 8px 18px -5px rgba(2,91,169, 0.45);
   transition: transform 0.15s;
   text-decoration: none;
   flex: 1;
@@ -720,16 +681,15 @@
   transform: scale(0.96);
 }
 
-.mobile-frame-app .btn.warm {
-  background: linear-gradient(135deg, #dc2626, #ea580c);
-  box-shadow: 0 8px 18px -5px rgba(220, 38, 38, 0.45);
+.mobile-frame-app .btn:not(.ghost):hover {
+  background: var(--brand-primary);
 }
 
 .mobile-frame-app .btn.ghost {
   background: #fff;
   color: var(--teal);
   border: 1.5px solid var(--teal);
-  box-shadow: 0 2px 8px -2px rgba(8, 93, 105, 0.15);
+  box-shadow: 0 2px 8px -2px rgba(2,91,169, 0.15);
 }
 
 .mobile-frame-app .btn.dim {
@@ -760,7 +720,7 @@
   top: 0;
   height: var(--vh, 100dvh);
   z-index: 55;
-  background: rgba(10, 45, 53, 0.6);
+  background: rgba(9,43,72, 0.6);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   display: flex;
@@ -777,7 +737,7 @@
 }
 
 .mobile-frame-app .shc {
-  background: #0a2d35;
+  background: #092b48;
   border-radius: 26px 26px 0 0;
   display: flex;
   flex-direction: column;
@@ -812,7 +772,7 @@
 }
 
 .mobile-frame-app .sc {
-  overflow-y: auto;
+  overflow: auto;
   padding: 2px 14px calc(14px + env(safe-area-inset-bottom, 0px));
   -webkit-overflow-scrolling: touch;
   flex: 1;
@@ -821,6 +781,7 @@
 
 .mobile-frame-app .sc img {
   width: 100%;
+  height: auto;
   max-width: 520px;
   display: block;
   margin: 0 auto;
@@ -864,8 +825,8 @@
   margin-top: 10px;
   padding: 10px 12px;
   border-radius: 14px;
-  background: #fdecef;
-  color: #8a2f3c;
+  background: var(--tint-blue);
+  color: var(--brand-blue-ink);
   font-size: 13px;
   line-height: 1.45;
 }
@@ -900,7 +861,7 @@
 
 .mobile-frame-app .btn-text-done {
   background: #e2f5f7;
-  color: #0b6672;
+  color: #025ba9;
   border: 1.2px solid rgba(27, 143, 157, 0.27);
   font: 700 13px var(--ff);
   cursor: pointer;
@@ -1001,11 +962,11 @@
   font: 500 16px var(--ff);
   color: var(--tx);
   padding: 0 34px 0 10px;
-  outline: 0;
+
 }
 
 .mobile-frame-app .f input::placeholder {
-  color: #8aa8af;
+  color: var(--text-muted);
 }
 
 .mobile-frame-app .f::after {
@@ -1033,7 +994,7 @@
   position: fixed;
   inset: 0;
   z-index: 60;
-  background: rgba(10, 45, 53, 0.6);
+  background: rgba(9,43,72, 0.6);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   display: none;
@@ -1065,11 +1026,11 @@
   display: grid;
   place-items: center;
   color: #fff;
-  background: linear-gradient(135deg, var(--teal), var(--teal2));
+  background: var(--primary-gradient);
 }
 
 .mobile-frame-app .dic.warm {
-  background: linear-gradient(135deg, var(--coral), #f39a86);
+  background: var(--brand-blue-ink);
 }
 
 .mobile-frame-app .dic .ic {
@@ -1130,10 +1091,10 @@
 }
 
 .mobile-frame-app .pay.bk {
-  background: #e2136e;
+  background: var(--brand-royal-blue);
 }
 .mobile-frame-app .pay.ng {
-  background: #f6921e;
+  background: var(--brand-gold-ink);
 }
 .mobile-frame-app .pay-sub {
   font-size: 11.5px;
@@ -1165,7 +1126,7 @@
 
 .mobile-frame-app .fbk:active {
   transform: scale(0.97);
-  background: #e2f4f7;
+  background: var(--surface-sky);
   border-color: var(--teal2);
 }
 

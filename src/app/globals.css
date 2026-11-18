@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "../../public/css/palette.css";
 
 @font-face {
   font-family: 'Hind Siliguri';
@@ -36,30 +37,51 @@
   unicode-range: U+0964-0965, U+0981-09FB, U+200C-200D, U+20B9, U+25CC;
 }
 
-/* ==========================================================================
-   OFFICIAL IQRA MADRASAH LOGO & POSTER BRAND PALETTE
-   Colors: Royal Blue (#026CB6), Sky Cyan (#0EA5E9), Poster Crimson (#C8102E),
-   Midnight Navy (#0C2340), Luminous Slate-White (#F8FAFC).
-   Zero Yellow. Colors derived 100% from Official Logo & Poster.
-   ========================================================================== */
-
+/* Shared screen palette for the portal and studio controls. */
 :root {
-  --bg-page: #f8fafc;
-  --bg-surface: #ffffff;
-  --bg-surface-subtle: #f0f7ff;
-  --text-main: #0c2340;
-  --text-muted: #475569;
-  --accent-primary: #026cb6;
-  --accent-secondary: #0ea5e9;
-  --accent-crimson: #c8102e;
-  --accent-teal: #0d9488;
-  --accent-blue-glow: rgba(2, 108, 182, 0.18);
-  --border-subtle: rgba(2, 108, 182, 0.12);
-  --border-card: rgba(2, 108, 182, 0.18);
-  --ticker-bg: #07192f;
-  --ticker-text: #ffffff;
-  --nav-bg: rgba(255, 255, 255, 0.9);
-  --pattern-stroke: rgba(2, 108, 182, 0.05);
+  --brand-primary: var(--brand-royal-blue);
+  --brand-indigo: var(--brand-primary);
+  --brand-sky: var(--accent-highlight);
+  --brand-gold: var(--accent-highlight);
+  --brand-gold-ink: var(--brand-blue-ink);
+  --brand-crimson: #e81c25;
+  --surface-sky: var(--bg-subtle);
+  --surface-glass: rgb(255 255 255 / 90%);
+  --glass-border: var(--border-subtle);
+  --glass-shadow: 0 4px 16px rgba(2, 91, 169, 0.08);
+  --bg-page: var(--bg-primary);
+  --bg-surface: var(--surface-card);
+  --bg-surface-subtle: var(--tint-blue);
+  --text-main: var(--text-primary);
+  --accent-primary: var(--brand-primary);
+  --accent-secondary: var(--accent-highlight);
+  --accent-teal: var(--brand-blue-ink);
+  --accent-blue-glow: var(--action-glow);
+  --border-card: var(--border-subtle);
+  --ticker-bg: var(--deep-blue);
+  --ticker-text: #fff;
+}
+
+/* Keep utility colors on the same scale as component surfaces. */
+:root {
+  --color-slate-50: var(--bg-subtle);
+  --color-slate-100: var(--tint-blue);
+  --color-slate-200: var(--accent-highlight);
+  --color-slate-500: var(--text-muted);
+  --color-slate-700: var(--brand-blue-ink);
+  --color-slate-800: var(--deep-navy);
+  --color-slate-900: var(--text-primary);
+  --color-slate-950: var(--deep-navy);
+  --color-sky-50: var(--bg-subtle);
+  --color-sky-100: var(--tint-blue);
+  --color-sky-200: var(--accent-highlight);
+  --color-sky-600: var(--brand-royal-blue);
+  --color-sky-700: var(--brand-royal-blue);
+  --color-sky-800: var(--brand-blue-ink);
+  --color-sky-950: var(--deep-navy);
+  --color-teal-600: var(--brand-blue-ink);
+  --color-emerald-600: var(--brand-blue-ink);
+  --color-emerald-700: var(--brand-blue-ink);
 }
 
 @layer base {
@@ -124,39 +146,68 @@
   overflow: visible;
 }
 
-/* Official Logo/Poster Royal Blue & Cyan Fluid Silk Shimmer */
-@keyframes royalShimmer {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-.gold-shimmer,
 .accent-shimmer {
-  background: linear-gradient(90deg, #026cb6 0%, #0284c7 25%, #0ea5e9 50%, #0284c7 75%, #026cb6 100%);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
+  color: var(--brand-blue-ink);
+  background-image: var(--primary-gradient);
   background-clip: text;
-  color: transparent;
-  animation: royalShimmer 5s ease-in-out infinite;
-  display: inline-block;
-  padding-right: 0.45em;
-  padding-left: 0.08em;
-  overflow: visible;
+  -webkit-text-fill-color: transparent;
 }
 
-/* Official Poster Crimson Accent Shimmer */
-.crimson-shimmer {
-  background: linear-gradient(90deg, #b91c1c 0%, #dc2626 25%, #c8102e 50%, #dc2626 75%, #b91c1c 100%);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: royalShimmer 5s ease-in-out infinite;
-  display: inline-block;
-  padding-right: 0.35em;
-  padding-left: 0.05em;
-  overflow: visible;
+.mahfil-hero {
+  --hero-gradient: var(--primary-gradient);
+}
+
+.mahfil-hero .accent-shimmer,
+.mahfil-hero .primary-action {
+  background-image: var(--hero-gradient);
+}
+
+.nav-glass {
+  background: var(--surface-glass);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(8px);
+}
+
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--brand-primary);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px white;
+}
+
+.event-date, .next-event {
+  padding: 0.28em 0.85em;
+  border-radius: 999px;
+}
+
+.event-date {
+  background: var(--brand-blue-ink);
+  color: var(--brand-gold);
+}
+
+.next-event, .catalis-pill {
+  background: var(--tint-blue);
+  color: var(--brand-blue-ink);
+}
+
+.primary-action {
+  background: var(--primary-gradient);
+  box-shadow: 0 8px 24px var(--action-glow);
+  color: white;
+}
+
+.primary-action:hover {
+  background: var(--brand-primary);
+}
+
+.brand-live-dot {
+  background: var(--brand-crimson);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-ping, .brand-live-dot {
+    animation: none;
+  }
 }
 
 /* Marquee scrolling ticker animation */
@@ -175,6 +226,14 @@
   animation-play-state: paused;
 }
 
+.catalis-card.countdown-card {
+  background: var(--depth-gradient);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee { animation: none; }
+}
+
 /* Theme Adaptive Surfaces */
 .catalis-card {
   background: var(--bg-surface);
@@ -185,7 +244,7 @@
 }
 
 .catalis-card:hover {
-  border-color: rgba(2, 108, 182, 0.45);
+  border-color: var(--border-highlight);
   box-shadow: 0 20px 25px -5px rgba(2, 108, 182, 0.08), 0 8px 10px -6px rgba(2, 108, 182, 0.04);
   transform: translateY(-2px);
 }
@@ -196,11 +255,9 @@
   gap: 0.5rem;
   padding: 0.4rem 0.9rem;
   border-radius: 9999px;
-  background-color: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--text-main);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
@@ -217,14 +274,25 @@
   color: var(--text-muted);
 }
 
-/* Authentic Islamic 8-Point Star Geometric Rosette Watermark Pattern (All Blue/Cyan, Zero Yellow) */
+/* Subtle geometric pattern behind the hero arch. */
 .bg-islamic-pattern {
-  background-color: var(--bg-page);
+  background-color: var(--surface-sky);
   background-image:
     radial-gradient(ellipse 70% 40% at 50% 0%, rgba(2, 108, 182, 0.06) 0%, transparent 70%),
     radial-gradient(ellipse 50% 50% at 90% 40%, rgba(14, 165, 233, 0.05) 0%, transparent 60%),
     url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg stroke='%23026cb6' stroke-width='0.65' stroke-opacity='0.08'%3E%3Cpath d='M40 0l40 40-40 40L0 40z'/%3E%3Cpath d='M0 0l80 80M80 0L0 80' stroke-dasharray='2,3' stroke-opacity='0.04'/%3E%3Ccircle cx='40' cy='40' r='14' stroke='%230ea5e9' stroke-opacity='0.08'/%3E%3Cpath d='M40 16l24 24-24 24-24-24z' stroke='%23026cb6' stroke-opacity='0.06'/%3E%3Ccircle cx='40' cy='40' r='5' fill='%230284c7' fill-opacity='0.04'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   background-size: 100% 100%, 100% 100%, 80px 80px;
+}
+
+.hero-arch {
+  position: absolute;
+  inset: 1rem 0 0;
+  margin-inline: auto;
+  width: min(92%, 62rem);
+  height: min(90%, 46rem);
+  color: var(--brand-blue-ink);
+  opacity: 0.065;
+  pointer-events: none;
 }
 
 /* Custom scrollbar */
@@ -244,3 +312,16 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent-primary);
 }
+
+footer { background: var(--depth-gradient); }
+@media (forced-colors: active) {
+  .accent-shimmer { -webkit-text-fill-color: currentColor; }
+}
+
+@media (min-width: 1024px) and (max-width: 1150px) {
+  .portal-header { padding-inline: 8px; }
+  .portal-header .nav-glass { width: 100%; padding-inline: 8px; gap: 4px; }
+}
+
+/* Allow the event name to wrap while keeping its final word with the year. */
+.mahfil-hero .hero-event-name { display: inline; padding-inline: 0 0.18em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }

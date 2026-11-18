@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { MAHFIL } from '@/content/mahfil';
+import { displayPhone, phoneHref } from '@/lib/phone';
 import { SITE } from '@/content/site';
 
 export function Ticker() {
@@ -38,14 +39,16 @@ export function Ticker() {
       href: '#mahfil',
     },
     {
-      icon: <Calendar className="w-3.5 h-3.5 text-cyan-300 shrink-0" />,
+      icon: <Calendar className="w-3.5 h-3.5 shrink-0" />,
+      dateStyle: 'next-event',
       tag: lang === 'bn' ? 'পরবর্তী মাহফিল ২০২৭' : 'Next Year 2027',
       text: lang === 'bn' ? `ইনশাআল্লাহ আগামী বছর মাহফিল: ${MAHFIL.nextYearMahfil.bn}` : `Next Year Annual Mahfil: ${MAHFIL.nextYearMahfil.en}`,
       highlight: true,
       href: '#mahfil',
     },
     {
-      icon: <Calendar className="w-3.5 h-3.5 text-rose-400 shrink-0" />,
+      icon: <Calendar className="w-3.5 h-3.5 shrink-0" />,
+      dateStyle: 'event-date border-white/30',
       tag: lang === 'bn' ? 'তারিখ' : 'Date',
       text: MAHFIL.dateDisplay[lang],
       highlight: false,
@@ -59,7 +62,7 @@ export function Ticker() {
       href: '#mahfil',
     },
     {
-      icon: <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0" />,
+      icon: <MapPin className="w-3.5 h-3.5 text-teal-400 shrink-0" />,
       tag: lang === 'bn' ? 'স্থান' : 'Venue',
       text: `${MAHFIL.venue[lang]} (${SITE.location[lang]})`,
       highlight: false,
@@ -71,7 +74,7 @@ export function Ticker() {
       tag: lang === 'bn' ? 'প্রধান মেহমানবৃন্দ' : 'Key Scholars',
       text:
         lang === 'bn'
-          ? 'শায়খ আব্দুল হক্ব, পীর সাহেব উজানী আল্লামা আশেকে এলাহী ও প্রখ্যাত ওলামায়ে কেরাম'
+          ? 'শায়খ আব্দুল হক, পীর সাহেব উজানী আল্লামা আশেকে এলাহী ও প্রখ্যাত ওলামায়ে কেরাম'
           : 'Shaykh Abdul Haque, Pir Shaheb Ujani Allama Asheke Elahi & Scholars',
       highlight: true,
       href: '#speakers',
@@ -87,7 +90,7 @@ export function Ticker() {
       href: '#frame',
     },
     {
-      icon: <ShieldCheck className="w-3.5 h-3.5 text-indigo-300 shrink-0" />,
+      icon: <ShieldCheck className="w-3.5 h-3.5 text-sky-300 shrink-0" />,
       tag: lang === 'bn' ? 'মা-বোনদের সুব্যবস্থা' : 'Sisters Enclosure',
       text:
         lang === 'bn'
@@ -97,7 +100,7 @@ export function Ticker() {
       href: '#mahfil',
     },
     {
-      icon: <GraduationCap className="w-3.5 h-3.5 text-emerald-300 shrink-0" />,
+      icon: <GraduationCap className="w-3.5 h-3.5 text-teal-300 shrink-0" />,
       tag: lang === 'bn' ? 'ভর্তি বিজ্ঞপ্তি ২০২৭' : 'Admission 2027',
       text:
         lang === 'bn'
@@ -109,9 +112,9 @@ export function Ticker() {
     {
       icon: <PhoneCall className="w-3.5 h-3.5 text-sky-300 shrink-0" />,
       tag: lang === 'bn' ? 'যোগাযোগ' : 'Helpline',
-      text: `${SITE.phones[0]} | ${SITE.phones[1]}`,
+      text: `${displayPhone(SITE.phones[0], lang)} | ${displayPhone(SITE.phones[1], lang)}`,
       highlight: false,
-      href: `tel:${SITE.phones[0]}`,
+      href: phoneHref(SITE.phones[0]),
     },
   ];
 
@@ -135,12 +138,12 @@ export function Ticker() {
           }}
         >
           <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full brand-live-dot opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 brand-live-dot"></span>
           </span>
           <span className="font-extrabold text-[11px] sm:text-xs tracking-wider uppercase text-white flex items-center gap-1.5">
             <Volume2 className="w-3.5 h-3.5 text-sky-300 shrink-0" />
-            <span>{lang === 'bn' ? 'মাহফিল বার্তা' : 'LIVE BULLETIN'}</span>
+            <span>{lang === 'bn' ? 'ঘোষণা' : 'ANNOUNCEMENTS'}</span>
           </span>
         </div>
 
@@ -163,13 +166,13 @@ export function Ticker() {
                 target={item.external ? '_blank' : '_self'}
                 rel={item.external ? 'noopener noreferrer' : undefined}
                 className={`inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all hover:scale-105 ${
-                  item.highlight
+                  item.dateStyle ?? (item.highlight
                     ? 'bg-white/10 text-white border-white/20 shadow-xs'
-                    : 'bg-black/20 text-slate-200 border-white/10'
+                    : 'bg-black/20 text-slate-200 border-white/10')
                 }`}
               >
                 {item.icon}
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/15 text-sky-200 uppercase tracking-wider">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border border-current/25 uppercase tracking-wider">
                   {item.tag}
                 </span>
                 <span>{item.text}</span>
@@ -184,13 +187,13 @@ export function Ticker() {
                 target={item.external ? '_blank' : '_self'}
                 rel={item.external ? 'noopener noreferrer' : undefined}
                 className={`inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all hover:scale-105 ${
-                  item.highlight
+                  item.dateStyle ?? (item.highlight
                     ? 'bg-white/10 text-white border-white/20 shadow-xs'
-                    : 'bg-black/20 text-slate-200 border-white/10'
+                    : 'bg-black/20 text-slate-200 border-white/10')
                 }`}
               >
                 {item.icon}
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/15 text-sky-200 uppercase tracking-wider">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
                   {item.tag}
                 </span>
                 <span>{item.text}</span>

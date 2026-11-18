@@ -1,7 +1,8 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { calculateDistanceKm, MAHFIL_COORDS } from '@/lib/geo';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useRef } from 'react';
+import { calculateDistanceKm } from '@/lib/geo';
+import { useLanguage } from './LanguageContext';
 
 export interface ActivityEvent {
   id: string;
@@ -12,14 +13,13 @@ export interface ActivityEvent {
 }
 
 interface LiveTrackingContextType {
-  onlineVisitors: number;
-  totalFrames: number;
-  pledgedAttendees: number;
+  onlineVisitors: number | null;
+  totalFrames: number | null;
+  pledgedAttendees: number | null;
   hasPledged: boolean;
   userDistance: number | null;
   isLocating: boolean;
   locationError: string | null;
-  activityFeed: ActivityEvent[];
   latestToast: ActivityEvent | null;
   recordPledge: (name?: string) => void;
   recordFrameCreated: () => void;
@@ -29,151 +29,93 @@ interface LiveTrackingContextType {
 
 const LiveTrackingContext = createContext<LiveTrackingContextType | undefined>(undefined);
 
-const SEED_FEED: ActivityEvent[] = [
-  { id: '1', name: 'হাফেজ মোঃ রায়হান', location: 'চাঁদপুর', action: 'frame', time: Date.now() - 40000 },
-  { id: '2', name: 'তানভীর আহমেদ', location: 'ঢাকা', action: 'pledge', time: Date.now() - 95000 },
-  { id: '3', name: 'প্রবাসী ভাই', location: 'রিয়াদ, কেএসএ', action: 'frame', time: Date.now() - 160000 },
-  { id: '4', name: 'মাওলানা সাইফুল ইসলাম', location: 'কুমিল্লা', action: 'calendar', time: Date.now() - 240000 },
-  { id: '5', name: 'মোঃ মাহদী হাসান', location: 'ফরিদগঞ্জ', action: 'pledge', time: Date.now() - 320000 },
-  { id: '6', name: 'আব্দুর রহমান', location: 'চট্টগ্রাম', action: 'visit', time: Date.now() - 410000 },
-  { id: '7', name: 'ইমরান হোসাইন', location: 'দুবাই, ইউএই', action: 'frame', time: Date.now() - 500000 },
-];
-
-const SIMULATED_ACTIONS: Array<Omit<ActivityEvent, 'id' | 'time'>> = [
-  { name: 'শুভাকাঙ্ক্ষী ভাই', location: 'ফরিদগঞ্জ, চাঁদপুর', action: 'frame' },
-  { name: 'কুরআনপ্রেমী ভাই', location: 'মতিঝিল, ঢাকা', action: 'pledge' },
-  { name: 'প্রবাসী দ্বীনি ভাই', location: 'জেদ্দা, কেএসএ', action: 'frame' },
-  { name: 'হাফেজ তানযীম', location: 'হাজীগঞ্জ, চাঁদপুর', action: 'pledge' },
-  { name: 'নূরুল ইসলাম', location: 'আগ্রাবাদ, চট্টগ্রাম', action: 'calendar' },
-  { name: 'মুশফিকুর রহমান', location: 'লন্ডন, ইউকে', action: 'frame' },
-  { name: 'আহমাদুল্লাহ', location: 'সিলেট সদর', action: 'visit' },
-  { name: 'মোস্তফা কামাল', location: 'হাইমচর, চাঁদপুর', action: 'pledge' },
-];
-
 export const LiveTrackingProvider = ({ children }: { children: ReactNode }) => {
-  const [onlineVisitors, setOnlineVisitors] = useState<number>(58);
-  const [totalFrames, setTotalFrames] = useState<number>(1428);
-  const [pledgedAttendees, setPledgedAttendees] = useState<number>(3892);
+  const { lang } = useLanguage();
+  const onlineVisitors = null;
+  const [totalFrames, setTotalFrames] = useState<number | null>(null);
+  const pledgeRef = useRef(false);
+  const framesRef = useRef(0);
   const [hasPledged, setHasPledged] = useState<boolean>(false);
+  const pledgedAttendees = totalFrames === null ? null : hasPledged ? 1 : 0;
 
   const [userDistance, setUserDistance] = useState<number | null>(null);
   const [isLocating, setIsLocating] = useState<boolean>(false);
-  const [locationError, setLocationError] = useState<string | null>(null);
+  const [locationErrorCode, setLocationErrorCode] = useState<'unsupported' | 'denied' | 'timeout' | 'unavailable' | null>(null);
+  const locationMessages = {
+    unsupported: { bn: 'আপনার ব্রাউজার লোকেশন সমর্থন করে না।', en: 'Your browser does not support location.' },
+    denied: { bn: 'অনুগ্রহ করে ব্রাউজারে লোকেশন পারমিশন দিন।', en: 'Allow location access in your browser.' },
+    timeout: { bn: 'লোকেশন পেতে সময় শেষ হয়েছে। আবার চেষ্টা করুন।', en: 'Location request timed out. Please try again.' },
+    unavailable: { bn: 'দূরত্ব পরিমাপ করা সম্ভব হয়নি। আবার চেষ্টা করুন।', en: 'Location is unavailable. Please try again.' },
+  };
+  const locationError = locationErrorCode ? locationMessages[locationErrorCode][lang] : null;
 
-  const [activityFeed, setActivityFeed] = useState<ActivityEvent[]>(SEED_FEED);
   const [latestToast, setLatestToast] = useState<ActivityEvent | null>(null);
 
   // Initialize and check saved status
   useEffect(() => {
     try {
       const pledged = localStorage.getItem('iqra_has_pledged') === 'true';
-      if (pledged) setHasPledged(true);
+      pledgeRef.current = pledged;
+      setHasPledged(pledged);
 
-      const savedFrames = localStorage.getItem('iqra_frames_count');
-      if (savedFrames) setTotalFrames(parseInt(savedFrames, 10));
-
-      const savedPledges = localStorage.getItem('iqra_pledges_count');
-      if (savedPledges) setPledgedAttendees(parseInt(savedPledges, 10));
+      const savedFrames = Number(localStorage.getItem('iqra_local_frames_count') || '0');
+      framesRef.current = Number.isSafeInteger(savedFrames) && savedFrames >= 0 ? savedFrames : 0;
 
       const savedDistance = localStorage.getItem('iqra_user_distance');
-      if (savedDistance) setUserDistance(parseFloat(savedDistance));
+      const distance = Number(savedDistance);
+      if (savedDistance && Number.isFinite(distance) && distance >= 0) setUserDistance(distance);
     } catch {
-      // ignore
+      // Browser storage is optional.
+    } finally {
+      setTotalFrames(framesRef.current);
     }
-  }, []);
-
-  // Natural live pulse: slight fluctuation in online visitors
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setOnlineVisitors((prev) => {
-        const delta = Math.floor(Math.random() * 5) - 2; // -2 to +2
-        const next = Math.max(32, Math.min(180, prev + delta));
-        return next;
-      });
-    }, 6000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Periodic simulated live stream events
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const template = SIMULATED_ACTIONS[Math.floor(Math.random() * SIMULATED_ACTIONS.length)];
-      const newEvent: ActivityEvent = {
-        id: String(Date.now()),
-        name: template.name,
-        location: template.location,
-        action: template.action,
-        time: Date.now(),
-      };
-
-      setActivityFeed((prev) => [newEvent, ...prev.slice(0, 15)]);
-      setLatestToast(newEvent);
-
-      if (template.action === 'frame') {
-        setTotalFrames((n) => n + 1);
-      } else if (template.action === 'pledge') {
-        setPledgedAttendees((n) => n + 1);
+    const syncStorage = (event: StorageEvent) => {
+      if (event.key === 'iqra_has_pledged') {
+        pledgeRef.current = event.newValue === 'true';
+        setHasPledged(pledgeRef.current);
       }
-    }, 14000); // New activity every 14 seconds
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const recordPledge = useCallback((customName?: string) => {
-    setHasPledged(true);
-    setPledgedAttendees((prev) => {
-      const next = prev + 1;
-      try {
-        localStorage.setItem('iqra_has_pledged', 'true');
-        localStorage.setItem('iqra_pledges_count', String(next));
-      } catch {
-        // ignore
+      if (event.key === 'iqra_local_frames_count') {
+        const count = Number(event.newValue || '0');
+        if (Number.isSafeInteger(count) && count >= 0) { framesRef.current = count; setTotalFrames(count); }
       }
-      return next;
-    });
-
-    const newEvent: ActivityEvent = {
-      id: String(Date.now()),
-      name: customName || 'আপনি (অংশগ্রহণকারী)',
-      location: 'বাংলাদেশ',
-      action: 'pledge',
-      time: Date.now(),
     };
+    window.addEventListener('storage', syncStorage);
+    return () => window.removeEventListener('storage', syncStorage);
+  }, []);
 
-    setActivityFeed((prev) => [newEvent, ...prev.slice(0, 15)]);
-    setLatestToast(newEvent);
+  const recordPledge = useCallback(() => {
+    if (pledgeRef.current) return;
+    pledgeRef.current = true;
+    setHasPledged(true);
+    try { localStorage.setItem('iqra_has_pledged', 'true'); } catch { /* Storage may be unavailable. */ }
+    setLatestToast({ id: String(Date.now()), name: '', location: '', action: 'pledge', time: Date.now() });
   }, []);
 
   const recordFrameCreated = useCallback(() => {
-    setTotalFrames((prev) => {
-      const next = prev + 1;
+    const increment = () => {
+      let current = framesRef.current;
       try {
-        localStorage.setItem('iqra_frames_count', String(next));
-      } catch {
-        // ignore
-      }
-      return next;
-    });
-
-    const newEvent: ActivityEvent = {
-      id: String(Date.now()),
-      name: 'একটি নতুন ফটো ফ্রেম',
-      location: 'চাঁদপুর',
-      action: 'frame',
-      time: Date.now(),
+        const saved = Number(localStorage.getItem('iqra_local_frames_count'));
+        if (Number.isSafeInteger(saved) && saved >= 0) current = Math.max(current, saved);
+      } catch { /* Browser storage is optional. */ }
+      const next = Math.min(Number.MAX_SAFE_INTEGER, current + 1);
+      framesRef.current = next;
+      setTotalFrames(next);
+      try { localStorage.setItem('iqra_local_frames_count', String(next)); } catch { /* Browser storage is optional. */ }
     };
-
-    setActivityFeed((prev) => [newEvent, ...prev.slice(0, 15)]);
+    if (navigator.locks) void navigator.locks.request('iqra_local_frames_count', increment).catch(increment);
+    else increment();
   }, []);
 
   const trackUserDistance = useCallback(() => {
     if (!navigator.geolocation) {
-      setLocationError('আপনার ব্রাউজার লোকেশন সমর্থন করে না।');
+      setLocationErrorCode('unsupported');
       return;
     }
 
+    setUserDistance(null);
     setIsLocating(true);
-    setLocationError(null);
+    setLocationErrorCode(null);
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -190,12 +132,14 @@ export const LiveTrackingProvider = ({ children }: { children: ReactNode }) => {
       (err) => {
         setIsLocating(false);
         if (err.code === err.PERMISSION_DENIED) {
-          setLocationError('অনুগ্রহ করে ব্রাউজারে লোকেশন পারমিশন দিন।');
+          setLocationErrorCode('denied');
+        } else if (err.code === err.TIMEOUT) {
+          setLocationErrorCode('timeout');
         } else {
-          setLocationError('দূরত্ব পরিমাপ করা সম্ভব হয়নি।');
+          setLocationErrorCode('unavailable');
         }
       },
-      { timeout: 10000, enableHighAccuracy: true }
+      { timeout: 10000, maximumAge: 0, enableHighAccuracy: true }
     );
   }, []);
 
@@ -213,7 +157,6 @@ export const LiveTrackingProvider = ({ children }: { children: ReactNode }) => {
         userDistance,
         isLocating,
         locationError,
-        activityFeed,
         latestToast,
         recordPledge,
         recordFrameCreated,

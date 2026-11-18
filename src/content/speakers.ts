@@ -25,7 +25,7 @@ export const SPEAKERS: Speaker[] = [
     },
     photo: '/assets/speakers/shaykh-abdul-haque.jpg',
     topic: {
-      bn: 'মাশককুল কুরআনের দারস ও তাহফিজের গুরুত্ব',
+      bn: 'মাশকুল কুরআনের দারস ও তাহফিজের গুরুত্ব',
       en: 'Importance of Quranic Recitation & Memorization',
     },
     highlight: true,
@@ -41,7 +41,7 @@ export const SPEAKERS: Speaker[] = [
       en: 'Pir Shaheb of Ujani, Kachua, Chandpur',
     },
     role: {
-      bn: 'প্রধান তাফসিরকারক ও উপদেষ্টা',
+      bn: 'প্রধান মুফাসসির ও উপদেষ্টা',
       en: 'Keynote Mufassir & Chief Advisor',
     },
     affiliation: {
@@ -49,7 +49,7 @@ export const SPEAKERS: Speaker[] = [
       en: 'Advisor, Iqra International Madrasah',
     },
     badge: {
-      bn: 'প্রধান তাফসিরকারক',
+      bn: 'প্রধান মুফাসসির',
       en: 'Keynote Speaker',
     },
     photo: '/assets/speakers/allama-asheke-elahi.jpg',
@@ -232,7 +232,7 @@ export const SPEAKERS: Speaker[] = [
       en: '1st Place, Saudi Arabia & Dubai International Quran Contests',
     },
     role: {
-      bn: 'পবিত্র কুরআনের মধুর সুর পরিবেশন',
+      bn: 'মধুর সুরে পবিত্র কুরআনের তিলাওয়াত',
       en: 'Melodious Quranic Recitation & Qirat',
     },
     affiliation: {
@@ -307,8 +307,8 @@ export const ORGANIZERS: Organizer[] = [
       en: 'Mufti Abu Taher Siddiqui',
     },
     role: {
-      bn: 'প্রতিষ্ঠাতা মুহতামীম ও সার্বিক পরিচালনা',
-      en: 'Founder Principal & Director',
+      bn: 'প্রতিষ্ঠাতা মুহতামীম',
+      en: 'Founder Principal',
     },
     title: {
       bn: 'প্রতিষ্ঠাতা মুহতামীম, ইক্বরা ইন্টারন্যাশনাল মাদরাসা',
@@ -322,7 +322,7 @@ export const ORGANIZERS: Organizer[] = [
       bn: 'প্রতিষ্ঠাতা মুহতামীম',
       en: 'Founder Principal',
     },
-    photo: '/assets/speakers/mufti-abu-taher.jpg',
+    // Portrait pending verification by the organizers.
   },
   {
     id: 'hafiz-alauddin',
@@ -346,6 +346,6 @@ export const ORGANIZERS: Organizer[] = [
       bn: 'ভাইস প্রিন্সিপাল',
       en: 'Vice Principal',
     },
-    photo: '/assets/speakers/hafiz-alauddin.jpg',
+    // Portrait pending verification by the organizers.
   },
 ];

@@ -1,3 +1,4 @@
+import { SITE } from './site';
 import { ScheduleSlot, HighlightItem } from './types';
 
 export const MAHFIL = {
@@ -12,12 +13,13 @@ export const MAHFIL = {
     en: 'A grand spiritual gathering to illuminate hearts with the Holy Quran and Islamic guidance',
   },
   dateISO: '2026-12-05T14:00:00+06:00', // 5 Dec 2026 Bad Zohr
+  endDateISO: '2026-12-06T00:00:00+06:00',
   dateDisplay: {
     bn: '৫ ডিসেম্বর ২০২৬, শনিবার',
     en: 'Saturday, December 5, 2026',
   },
   timeDisplay: {
-    bn: 'বাদ যোহর হইতে মধ্যরাত পর্যন্ত',
+    bn: 'বাদ যোহর হতে মধ্যরাত পর্যন্ত',
     en: 'From Afternoon (Zohr) to Midnight',
   },
   venue: {
@@ -29,7 +31,7 @@ export const MAHFIL = {
     en: 'South End of Patwari Bazar, Faridganj, Chandpur',
   },
   patron: {
-    bn: 'উস্তাযুল হুফফাজ শায়খ আব্দুল হক',
+    bn: 'উস্তাযুল হুফ্ফাজ শায়খ আব্দুল হক',
     en: 'Ustadzul Huffaz Shaykh Abdul Haque',
   },
   patronRole: {
@@ -56,7 +58,7 @@ export const MAHFIL = {
     bn: '১৬ নভেম্বর ২০২৭ইং, মঙ্গলবার',
     en: 'Tuesday, November 16, 2027',
   },
-  helplinePhone: '01797-091817',
+  helplinePhone: SITE.phones[1],
   highlights: [
     {
       id: 'daras',
@@ -145,11 +147,11 @@ export const MAHFIL = {
         en: 'Grand Tafsir & Dua',
       },
       speaker: {
-        bn: 'আল্লামা আশেকে এলাহী ও মুস্তাকুন্নবী কাসেমী',
+        bn: 'আল্লামা আশেকে এলাহী ও মুফতী মুস্তাকুন্নবী কাসেমী',
         en: 'Allama Asheke Elahi & Mufti Mustaqun Nabi',
       },
       desc: {
-        bn: 'সারগর্ভ তাফসির ও বিশেষ আখেরী বয়ান',
+        bn: 'সারগর্ভ তাফসির ও আখেরী বয়ান',
         en: 'Deep Quranic insights & closing supplication',
       },
       icon: 'Award',

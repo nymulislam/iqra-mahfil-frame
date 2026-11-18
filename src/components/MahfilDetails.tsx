@@ -17,6 +17,8 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { MAHFIL } from '@/content/mahfil';
+import { mahfilCalendarUrl } from '@/lib/calendar';
+import { displayPhone, phoneHref } from '@/lib/phone';
 import { SITE } from '@/content/site';
 
 const ICON_MAP: Record<string, React.ElementType> = {
@@ -30,11 +32,7 @@ const ICON_MAP: Record<string, React.ElementType> = {
 export function MahfilDetails({ onOpenBanner }: { onOpenBanner?: () => void }) {
   const { lang, t } = useLanguage();
 
-  const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
-    MAHFIL.title[lang]
-  )}&dates=20261205T080000Z/20261205T180000Z&details=${encodeURIComponent(
-    MAHFIL.subtitle[lang]
-  )}&location=${encodeURIComponent(SITE.locationDetails[lang])}`;
+  const googleCalUrl = mahfilCalendarUrl(lang);
 
   return (
     <section
@@ -83,20 +81,20 @@ export function MahfilDetails({ onOpenBanner }: { onOpenBanner?: () => void }) {
         {/* --- Bento Grid Layout --- */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 mb-12 sm:mb-16">
           {/* Bento Card 1 (Span 7 cols): Date, Time, Venue & Quick Map */}
-          <div className="lg:col-span-7 catalis-card p-6 sm:p-8 flex flex-col justify-between">
+          <div className="lg:col-span-7 bg-[var(--brand-blue-ink)] rounded-3xl p-6 sm:p-8 flex flex-col justify-between">
             <div>
               <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
                 <span className="catalis-pill text-xs font-bold text-sky-800">
                   <Calendar className="w-3.5 h-3.5 text-sky-600" />
                   {t.mahfil.dateLabel[lang]}
                 </span>
-                <span className="text-xs font-semibold flex items-center gap-1.5" style={{ color: 'var(--text-muted)' }}>
-                  <Clock className="w-3.5 h-3.5 text-sky-600" />
+                <span className="text-xs font-semibold flex items-center gap-1.5 text-white">
+                  <Clock className="w-3.5 h-3.5 text-[var(--brand-gold)]" />
                   {MAHFIL.timeDisplay[lang]}
                 </span>
               </div>
 
-              <h3 className="font-serif text-2xl sm:text-4xl font-extrabold mb-4" style={{ color: 'var(--text-main)' }}>
+              <h3 className="event-date border border-white/25 font-serif text-xl sm:text-3xl font-extrabold mb-4">
                 {MAHFIL.dateDisplay[lang]}
               </h3>
 
@@ -108,7 +106,7 @@ export function MahfilDetails({ onOpenBanner }: { onOpenBanner?: () => void }) {
                 }}
               >
                 <div className="flex items-start gap-3.5">
-                  <MapPin className="w-5 h-5 text-rose-600 shrink-0 mt-1" />
+                  <MapPin className="w-5 h-5 text-[var(--brand-blue-ink)] shrink-0 mt-1" />
                   <div>
                     <h4 className="font-bold text-base sm:text-lg mb-1" style={{ color: 'var(--text-main)' }}>
                       {MAHFIL.venue[lang]}
@@ -126,7 +124,7 @@ export function MahfilDetails({ onOpenBanner }: { onOpenBanner?: () => void }) {
                 href={SITE.mapUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs sm:text-sm font-semibold bg-slate-900 hover:bg-black text-white shadow-sm active:scale-95 transition-all"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs sm:text-sm font-semibold primary-action shadow-sm active:scale-95 transition-all"
               >
                 <MapPin className="w-4 h-4 text-sky-400" />
                 <span>{t.mahfil.getDirections[lang]}</span>
@@ -198,7 +196,7 @@ export function MahfilDetails({ onOpenBanner }: { onOpenBanner?: () => void }) {
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-teal-600" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-sky-600" />
                     <span>
                       {lang === 'bn' ? 'মুফতী আবু তাহের সিদ্দিকী' : 'Mufti Abu Taher Siddiqui'}{' '}
                       <span className="font-normal text-slate-500 text-xs">
@@ -228,11 +226,11 @@ export function MahfilDetails({ onOpenBanner }: { onOpenBanner?: () => void }) {
                 {MAHFIL.slogan[lang]}
               </p>
               <a
-                href={`tel:${MAHFIL.helplinePhone}`}
+                href={phoneHref(MAHFIL.helplinePhone)}
                 className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-sky-500/10 hover:bg-sky-600 text-sky-800 hover:text-white border border-sky-300 transition shrink-0 cursor-pointer"
               >
                 <PhoneCall className="w-3.5 h-3.5" />
-                <span>{MAHFIL.helplinePhone}</span>
+                <span>{displayPhone(MAHFIL.helplinePhone, lang)}</span>
               </a>
             </div>
           </div>
@@ -307,38 +305,34 @@ export function MahfilDetails({ onOpenBanner }: { onOpenBanner?: () => void }) {
           })}
         </div>
 
-        {/* Official Poster Next Year 2027 Announcement Banner (Zero Yellow, Logo Royal Blue & Ice Cyan) */}
-        <div className="relative rounded-3xl overflow-hidden shadow-2xl border-2 border-sky-400/50 bg-gradient-to-r from-slate-950 via-[#07192f] to-[#0a2342] text-white p-6 sm:p-8 lg:p-10">
-          {/* Ambient Royal Blue & Cyan Accents */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-sky-500/15 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
-
+        {/* Next year's notice is secondary to the current event. */}
+        <div className="rounded-3xl border border-[var(--border-card)] bg-[var(--surface-sky)] text-[var(--brand-blue-ink)] p-5 sm:p-6">
           <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="space-y-2 text-center md:text-left">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-sky-500/20 text-sky-300 border border-sky-400/40 shadow-xs">
-                <Bell className="w-3.5 h-3.5 text-sky-300" />
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-white text-[var(--brand-blue-ink)] border border-[var(--border-subtle)]">
+                <Bell className="w-3.5 h-3.5" />
                 <span>
                   {lang === 'bn' ? 'অফিসিয়াল ঘোষণা • পরবর্তী মাহফিল ২০২৭' : 'Official Notice • Next Year Mahfil 2027'}
                 </span>
               </div>
-              <h4 className="font-serif text-xl sm:text-2xl lg:text-3xl font-extrabold text-white tracking-tight">
+              <h4 className="font-serif text-base sm:text-lg font-bold">
                 {lang === 'bn' ? 'ইনশাআল্লাহ আগামী বছর বার্ষিক মাহফিল' : "InshaAllah Next Year's Grand Mahfil"}
               </h4>
-              <p className="font-serif text-2xl sm:text-3xl font-black text-sky-300 tracking-wide">
+              <p className="font-serif text-lg sm:text-xl font-bold">
                 {MAHFIL.nextYearMahfil[lang]}
               </p>
-              <p className="text-xs sm:text-sm text-slate-300 font-medium pt-1">
+              <p className="text-xs sm:text-sm text-slate-600 font-medium pt-1">
                 {MAHFIL.slogan[lang]}
               </p>
             </div>
 
             <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
               <a
-                href={`tel:${MAHFIL.helplinePhone}`}
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full text-xs sm:text-sm font-bold bg-gradient-to-r from-sky-600 to-teal-600 hover:from-sky-500 hover:to-teal-500 text-white shadow-lg active:scale-95 transition-all border border-sky-400/30 cursor-pointer"
+                href={phoneHref(MAHFIL.helplinePhone)}
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full text-xs sm:text-sm font-bold bg-white text-[var(--brand-primary)] hover:bg-[var(--surface-sky)] active:scale-95 transition-all border border-sky-400/30 cursor-pointer"
               >
-                <PhoneCall className="w-4 h-4 text-sky-200" />
-                <span>{lang === 'bn' ? `হেল্পলাইন: ${MAHFIL.helplinePhone}` : `Helpline: ${MAHFIL.helplinePhone}`}</span>
+                <PhoneCall className="w-4 h-4" />
+                <span>{lang === 'bn' ? `হেল্পলাইন: ${displayPhone(MAHFIL.helplinePhone, lang)}` : `Helpline: ${displayPhone(MAHFIL.helplinePhone, lang)}`}</span>
               </a>
             </div>
           </div>

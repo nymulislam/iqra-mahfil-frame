@@ -59,13 +59,13 @@ function ph(x){
   x.fillStyle=g;x.fillRect(R.x,R.y,R.w,R.h);
   x.fillStyle="#ffffff99";x.beginPath();x.arc(R.x+R.w*.88,R.y+R.h*.1,92,0,6.3);x.fill();
   x.fillStyle="#3fc4d426";x.beginPath();x.arc(R.x+R.w*.08,R.y+R.h*.92,110,0,6.3);x.fill();
-  const cx=R.x+R.w/2;x.fillStyle="#1b8f9d38";x.beginPath();x.arc(cx,R.y+R.h*.29,42,0,6.3);x.fill();
+  const cx=R.x+R.w/2;x.fillStyle="#026fba38";x.beginPath();x.arc(cx,R.y+R.h*.29,42,0,6.3);x.fill();
   x.beginPath();x.ellipse(cx,R.y+R.h*.66,90,68,0,Math.PI,0);x.fill();
   const w=236,h=56,bx=cx-w/2,by=R.y+R.h*.74,gg=x.createLinearGradient(bx,by,bx+w,by);
-  gg.addColorStop(0,"#1b8f9d");gg.addColorStop(1,"#3fc4d4");
+  gg.addColorStop(0,"#026fba");gg.addColorStop(1,"#3fc4d4");
   x.fillStyle=gg;x.beginPath();x.roundRect?x.roundRect(bx,by,w,h,28):x.rect(bx,by,w,h);x.fill();
   x.fillStyle="#fff";x.beginPath();x.arc(bx+32,by+h/2,15,0,6.3);x.fill();
-  x.strokeStyle="#1b8f9d";x.lineWidth=4;x.lineCap="round";x.beginPath();x.moveTo(bx+25,by+h/2);x.lineTo(bx+39,by+h/2);x.moveTo(bx+32,by+h/2-7);x.lineTo(bx+32,by+h/2+7);x.stroke();
+  x.strokeStyle="#026fba";x.lineWidth=4;x.lineCap="round";x.beginPath();x.moveTo(bx+25,by+h/2);x.lineTo(bx+39,by+h/2);x.moveTo(bx+32,by+h/2-7);x.lineTo(bx+32,by+h/2+7);x.stroke();
   x.fillStyle="#fff";x.textAlign="left";x.textBaseline="middle";x.font="600 27px 'Hind Siliguri',sans-serif";x.fillText("ছবি যোগ করুন",bx+58,by+h/2+2);
   x.restore();
 }

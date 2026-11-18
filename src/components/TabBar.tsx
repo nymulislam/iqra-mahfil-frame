@@ -36,7 +36,7 @@ export function TabBar() {
     { id: 'mahfil', label: t.nav.mahfil[lang], icon: BookOpen, href: '#mahfil' },
     { id: 'speakers', label: t.nav.speakers[lang], icon: Users, href: '#speakers' },
     { id: 'frame', label: t.nav.frame[lang], icon: Camera, href: '#frame', isCenter: true },
-    { id: 'live', label: lang === 'bn' ? 'লাইভ' : 'Live', icon: Radio, href: '#live' },
+    { id: 'live', label: t.nav.live[lang], icon: Radio, href: '#live' },
     { id: 'sponsor', label: lang === 'bn' ? 'স্পনসর' : 'Sponsor', icon: Award, href: '#sponsor' },
   ];
 
@@ -46,11 +46,7 @@ export function TabBar() {
       aria-label="Mobile Bottom Navigation"
     >
       <div
-        className="max-w-md mx-auto backdrop-blur-2xl border rounded-3xl p-1.5 shadow-2xl pointer-events-auto flex items-center justify-around"
-        style={{
-          backgroundColor: 'var(--nav-bg)',
-          borderColor: 'var(--border-subtle)',
-        }}
+        className="max-w-md mx-auto nav-glass rounded-3xl p-1.5 pointer-events-auto flex items-center justify-around"
       >
         {tabs.map((tab) => {
           const Icon = tab.icon;
@@ -67,7 +63,7 @@ export function TabBar() {
                 }}
                 className="flex flex-col items-center justify-center py-1.5 px-3.5 rounded-2xl transition-all duration-300 relative shadow-md active:scale-95 text-white cursor-pointer"
                 style={{
-                  backgroundColor: 'var(--accent-primary)',
+                  background: 'var(--primary-gradient)',
                   boxShadow: '0 4px 14px var(--accent-blue-glow)',
                 }}
                 aria-label={tab.label}

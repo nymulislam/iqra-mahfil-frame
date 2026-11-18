@@ -25,15 +25,23 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
         setLangState(saved);
       }
     } catch {
-      // ignore
+      // Storage is optional.
     }
+    const syncLanguage = (event: StorageEvent) => {
+      if (event.key === STORAGE_KEY && (event.newValue === 'bn' || event.newValue === 'en')) setLangState(event.newValue);
+    };
+    window.addEventListener('storage', syncLanguage);
+    return () => window.removeEventListener('storage', syncLanguage);
   }, []);
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
 
   const setLang = (newLang: Language) => {
     setLangState(newLang);
     try {
       localStorage.setItem(STORAGE_KEY, newLang);
-      document.documentElement.lang = newLang;
     } catch {
       // ignore
     }

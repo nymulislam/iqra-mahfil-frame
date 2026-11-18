@@ -2,7 +2,7 @@
  * Geographical helpers and distance calculations
  */
 
-// Target venue coordinates: Madrasah Sand Field, Patwari Bazar, Faridganj, Chandpur
+// Existing approximate venue pin. Confirm the exact field location with the organizers.
 export const MAHFIL_COORDS = {
   latitude: 23.1306,
   longitude: 90.7512,

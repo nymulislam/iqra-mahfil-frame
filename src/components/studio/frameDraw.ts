@@ -1,3 +1,5 @@
+import { Language } from '@/content/types';
+
 export const CANVAS_WIDTH = 1080;
 export const CANVAS_HEIGHT = 1078;
 
@@ -24,6 +26,7 @@ export interface FrameStudioState {
   offsetY: number;
   name: string;
   designation: string;
+  language?: Language;
 }
 
 function fitText(
@@ -42,7 +45,7 @@ function fitText(
   return size + 2;
 }
 
-function drawPlaceholder(ctx: CanvasRenderingContext2D, R: typeof PHOTO_BOUNDS, isTeal: boolean) {
+function drawPlaceholder(ctx: CanvasRenderingContext2D, R: typeof PHOTO_BOUNDS, isTeal: boolean, lang: Language) {
   ctx.save();
   ctx.beginPath();
   ctx.rect(R.x, R.y, R.w, R.h);
@@ -128,7 +131,7 @@ function drawPlaceholder(ctx: CanvasRenderingContext2D, R: typeof PHOTO_BOUNDS, 
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
   ctx.font = "600 27px 'Hind Siliguri', sans-serif";
-  ctx.fillText('ছবি যোগ করুন', bx + 58, by + bh / 2 + 2);
+  ctx.fillText(lang === 'bn' ? 'ছবি যোগ করুন' : 'Add photo', bx + 58, by + bh / 2 + 2);
 
   ctx.restore();
 }
@@ -172,7 +175,7 @@ export function renderFrame(
     );
     ctx.restore();
   } else {
-    drawPlaceholder(ctx, R, isTeal);
+    drawPlaceholder(ctx, R, isTeal, state.language ?? 'bn');
   }
 
   // 2. Draw Frame Overlay
@@ -191,8 +194,8 @@ export function renderFrame(
   ctx.textAlign = 'center';
   ctx.textBaseline = 'alphabetic';
 
-  const name = state.name.trim() || (isTeal ? 'আপনার নাম' : 'আপনার নাম');
-  const designation = state.designation.trim() || 'আপনার পরিচয়';
+  const name = state.name.trim() || (state.language === 'en' ? 'Your name' : 'আপনার নাম');
+  const designation = state.designation.trim() || (state.language === 'en' ? 'Your designation' : 'আপনার পরিচয়');
 
   // Check if designation needs multiple lines
   ctx.font = "500 40px 'Hind Siliguri', sans-serif";

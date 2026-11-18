@@ -10,6 +10,7 @@ import {
   PhoneCall,
 } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
+import { displayPhone, phoneHref } from '@/lib/phone';
 import { SITE } from '@/content/site';
 
 export function Footer() {
@@ -31,7 +32,7 @@ export function Footer() {
   ];
 
   return (
-    <footer className="relative bg-slate-950 text-slate-300 pt-12 pb-24 md:pb-12 overflow-hidden border-t border-sky-500/20 shadow-[0_-10px_30px_rgba(0,0,0,0.4)] transition-colors duration-500">
+    <footer className="relative bg-slate-950 text-slate-300 pt-12 pb-24 md:pb-12 overflow-hidden border-t border-sky-500/20 shadow-[0_-10px_30px_rgba(2,91,169,0.13)] transition-colors duration-500">
       {/* Ambient Top Specular Light Line (Sky Cyan / Royal Blue - Official Brand) */}
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-sky-400/50 to-transparent" />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-28 bg-sky-500/10 blur-[80px] rounded-full pointer-events-none -z-10" />
@@ -67,7 +68,7 @@ export function Footer() {
             </p>
 
             <div className="flex items-center gap-2 text-xs text-slate-400 pt-1">
-              <MapPin className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+              <MapPin className="w-3.5 h-3.5 text-[var(--brand-sky)] shrink-0" />
               <span className="truncate">{SITE.locationDetails[lang]}</span>
             </div>
           </div>
@@ -94,29 +95,29 @@ export function Footer() {
           {/* Col 3: Helplines & Official Contacts (4 Cols) */}
           <div className="md:col-span-4 space-y-2.5">
             <h5 className="text-xs font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-1.5">
-              <span className="w-1.5 h-3 rounded-full bg-emerald-500" />
+              <span className="w-1.5 h-3 rounded-full bg-teal-500" />
               <span>{lang === 'bn' ? 'জরুরি হেল্পলাইন' : 'Helpline & Inquiries'}</span>
             </h5>
 
             {/* Helpline Pills */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <a
-                href={`tel:${SITE.phones[0]}`}
+                href={phoneHref(SITE.phones[0])}
                 className="flex items-center justify-between p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition text-xs group"
               >
                 <div className="flex items-center gap-2">
-                  <Phone className="w-3.5 h-3.5 text-emerald-400" />
-                  <span className="font-mono font-bold text-white text-xs">{SITE.phones[0]}</span>
+                  <Phone className="w-3.5 h-3.5 text-teal-400" />
+                  <span className="font-mono font-bold text-white text-xs">{displayPhone(SITE.phones[0], lang)}</span>
                 </div>
               </a>
 
               <a
-                href={`tel:${SITE.phones[1]}`}
+                href={phoneHref(SITE.phones[1])}
                 className="flex items-center justify-between p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition text-xs group"
               >
                 <div className="flex items-center gap-2">
                   <PhoneCall className="w-3.5 h-3.5 text-sky-400" />
-                  <span className="font-mono font-bold text-white text-xs">{SITE.phones[1]}</span>
+                  <span className="font-mono font-bold text-white text-xs">{displayPhone(SITE.phones[1], lang)}</span>
                 </div>
               </a>
             </div>
@@ -139,7 +140,7 @@ export function Footer() {
           <div>
             <span>{t.footer.copyright[lang]}</span>
             <span className="mx-2 opacity-30">•</span>
-            <span className="text-xs text-slate-500">আন-নুজুম ফাউন্ডেশন</span>
+            <span className="text-xs text-slate-300">{lang === 'bn' ? 'আন-নুজুম ফাউন্ডেশন' : 'An-Nujum Foundation'}</span>
           </div>
 
           {/* Developer Credit Minimal Pill */}
@@ -151,7 +152,7 @@ export function Footer() {
               href="https://wa.me/8801822667737"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-emerald-400 hover:underline"
+              className="text-teal-400 hover:underline"
             >
               WhatsApp
             </a>

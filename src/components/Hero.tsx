@@ -17,6 +17,8 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useLiveTracking } from '@/context/LiveTrackingContext';
 import { useFrameModal } from '@/context/FrameModalContext';
 import { MAHFIL } from '@/content/mahfil';
+import { mahfilCalendarUrl } from '@/lib/calendar';
+import { formatNumber } from '@/lib/numbers';
 import { SITE } from '@/content/site';
 import { SPEAKERS } from '@/content/speakers';
 
@@ -35,12 +37,8 @@ export function Hero({
     hours: number;
     minutes: number;
     seconds: number;
-  }>({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
+  } | null>(null);
+  const [eventState, setEventState] = useState<'pending' | 'upcoming' | 'live' | 'ended'>('pending');
 
   useEffect(() => {
     const target = new Date(MAHFIL.dateISO).getTime();
@@ -48,6 +46,7 @@ export function Hero({
     const updateCountdown = () => {
       const now = new Date().getTime();
       const diff = Math.max(0, target - now);
+      setEventState(now < target ? 'upcoming' : now < new Date(MAHFIL.endDateISO).getTime() ? 'live' : 'ended');
 
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
       const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -62,110 +61,47 @@ export function Hero({
     return () => clearInterval(timer);
   }, []);
 
-  const toBanglaNum = (n: number) => {
-    const bnDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
-    return String(n)
-      .padStart(2, '0')
-      .split('')
-      .map((d) => bnDigits[parseInt(d, 10)] || d)
-      .join('');
-  };
+  const formatNum = (value: number | null) => formatNumber(value, lang, 2, false);
 
-  const formatNum = (n: number) => {
-    return lang === 'bn' ? toBanglaNum(n) : String(n).padStart(2, '0');
-  };
-
-  const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
-    MAHFIL.title[lang]
-  )}&dates=20261205T080000Z/20261205T180000Z&details=${encodeURIComponent(
-    MAHFIL.subtitle[lang]
-  )}&location=${encodeURIComponent(SITE.locationDetails[lang])}`;
+  const googleCalUrl = mahfilCalendarUrl(lang);
 
   return (
     <section
-      className="relative pt-24 pb-12 md:pt-32 md:pb-16 overflow-hidden bg-islamic-pattern transition-colors duration-500"
-      style={{ backgroundColor: 'var(--bg-page)' }}
+      className="mahfil-hero relative pt-20 sm:pt-24 pb-12 md:pt-32 md:pb-16 overflow-hidden bg-islamic-pattern transition-colors duration-500"
     >
-      {/* Layered Sacred Atmospheric Lighting (Official Logo Blue & Cyan) */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[480px] -z-10 bg-[radial-gradient(ellipse_60%_50%_at_50%_-10%,var(--accent-blue-glow),transparent_70%)] pointer-events-none" />
-      <div
-        className="absolute top-1/4 right-10 w-96 h-96 -z-10 rounded-full blur-[140px] pointer-events-none opacity-25"
-        style={{ backgroundColor: 'var(--accent-secondary)' }}
-      />
-      <div
-        className="absolute top-1/4 left-10 w-96 h-96 -z-10 rounded-full blur-[140px] pointer-events-none opacity-20"
-        style={{ backgroundColor: 'var(--accent-primary)' }}
-      />
+      <svg className="hero-arch" viewBox="0 0 800 600" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M28 600V310C28 162 245 146 400 12C555 146 772 162 772 310V600" fill="none" stroke="currentColor" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+        <path d="M46 600V313C46 176 256 155 400 35C544 155 754 176 754 313V600" fill="none" stroke="currentColor" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+      </svg>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* --- Top Center: Streamlined 2-Line Hero Header (Main Title from Poster + Highlighted Info) --- */}
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center mb-8 sm:mb-12">
-          {/* Line 1: Main Grand Title directly from the Official Poster */}
           <motion.h1
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.08 }}
-            className="font-serif text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.25] sm:leading-[1.2] mb-3.5 overflow-visible"
-            style={{ color: 'var(--text-main)' }}
+            className="mb-6 grid gap-2 text-center font-serif font-bold text-[var(--text-main)] sm:mb-8"
           >
-            {lang === 'bn' ? (
-              <>
-                <span className="block text-sky-700 text-xs sm:text-base md:text-lg font-bold font-sans tracking-wider uppercase mb-2">
-                  ইক্বরা ইন্টারন্যাশনাল মাদরাসার উদ্যোগে
-                </span>
-                বার্ষিক{' '}
-                <span className="italic-serif accent-shimmer font-bold pr-3">
-                  তাফসীরুল কুরআন মাহফিল
-                </span>{' '}
-                ২০২৬
-              </>
-            ) : (
-              <>
-                <span className="block text-sky-700 text-xs sm:text-base md:text-lg font-bold font-sans tracking-wider uppercase mb-2">
-                  Iqra International Madrasah Presents
-                </span>
-                Annual{' '}
-                <span className="italic-serif accent-shimmer font-bold pr-3">
-                  Tafsirul Quran Mahfil
-                </span>{' '}
-                2026
-              </>
-            )}
+            <span className="text-balance font-sans text-xs font-semibold uppercase tracking-wide text-sky-700 sm:text-base">
+              {lang === 'bn' ? 'ইক্বরা ইন্টারন্যাশনাল মাদরাসার উদ্যোগে' : 'Iqra International Madrasah Presents'}
+            </span>
+            <span className="text-xl leading-tight sm:text-3xl">
+              {lang === 'bn' ? 'বার্ষিক' : 'Annual'}
+            </span>
+            <span className="text-balance text-[clamp(1.65rem,4.8vw,3.75rem)] leading-[1.3] tracking-tight">
+              <span className="italic-serif accent-shimmer hero-event-name">
+                {lang === 'bn' ? 'তাফসীরুল কুরআন মাহফিল' : 'Tafsirul Quran Mahfil'}
+              </span>{'\u00a0'}
+              <span>{lang === 'bn' ? '২০২৬' : '2026'}</span>
+            </span>
           </motion.h1>
-
-          {/* Line 2: High-Priority Highlighted Event Details (Date • Time • Venue) */}
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.14 }}
-            className="text-xs sm:text-sm md:text-base max-w-3xl mx-auto leading-relaxed mb-6 font-semibold"
-            style={{ color: 'var(--text-muted)' }}
-          >
-            {lang === 'bn' ? (
-              <span className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
-                <span className="text-slate-900 font-bold">৫ ডিসেম্বর ২০২৬, শনিবার</span>
-                <span className="text-sky-400 font-normal">•</span>
-                <span className="text-sky-800 font-bold">বাদ যোহর হইতে মধ্যরাত</span>
-                <span className="text-sky-400 font-normal">•</span>
-                <span className="text-slate-800 font-medium">মাদরাসা সংলগ্ন বালুর মাঠ, ফরিদগঞ্জ, চাঁদপুর</span>
-              </span>
-            ) : (
-              <span className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
-                <span className="text-slate-900 font-bold">Saturday, 5 December 2026</span>
-                <span className="text-sky-400 font-normal">•</span>
-                <span className="text-sky-800 font-bold">After Zohr to Midnight</span>
-                <span className="text-sky-400 font-normal">•</span>
-                <span className="text-slate-800 font-medium">Madrasah Central Grounds, Faridganj, Chandpur</span>
-              </span>
-            )}
-          </motion.p>
 
           {/* Action Buttons */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-7"
+            className="mx-auto mb-5 grid w-full max-w-xs gap-2.5 sm:mb-7 sm:flex sm:max-w-none sm:justify-center sm:gap-4"
           >
             {/* Primary Action Button with Specular Glow */}
             <a
@@ -176,12 +112,9 @@ export function Hero({
                   openFrameModal();
                 }
               }}
-              className="inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full text-sm font-bold text-white shadow-lg shadow-sky-600/30 hover:shadow-xl hover:shadow-sky-500/40 hover:-translate-y-0.5 active:scale-95 transition-all duration-200 cursor-pointer relative group overflow-hidden"
-              style={{
-                background: 'linear-gradient(135deg, var(--accent-primary) 0%, #0384dc 100%)',
-              }}
+              className="primary-action inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full text-sm font-bold text-white shadow-lg shadow-sky-600/30 hover:shadow-xl hover:shadow-sky-500/40 hover:-translate-y-0.5 active:scale-95 transition-all duration-200 cursor-pointer relative group overflow-hidden"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
               <Camera className="w-4 h-4 text-sky-100" />
               <span>{t.hero.ctaFrame[lang]}</span>
               <ArrowRight className="w-4 h-4 text-white/80 group-hover:translate-x-0.5 transition-transform" />
@@ -207,26 +140,26 @@ export function Hero({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.25 }}
-            className="inline-flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 px-4 py-2 rounded-full border text-xs"
+            className="inline-grid max-w-full justify-items-center gap-1.5 rounded-2xl border px-4 py-2 text-xs lg:inline-flex lg:items-center lg:gap-3 lg:rounded-full"
             style={{
               backgroundColor: 'var(--bg-surface-subtle)',
               borderColor: 'var(--border-subtle)',
               color: 'var(--text-muted)',
             }}
           >
-            <span className="flex items-center gap-1.5 font-medium">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+            <span className="hidden items-center gap-1.5 font-medium md:flex">
+              <span className="w-2 h-2 rounded-full bg-[var(--brand-blue-ink)]" />
               <span className="font-bold" style={{ color: 'var(--text-main)' }}>
-                {formatNum(onlineVisitors)}
+                {formatNumber(onlineVisitors, lang)}
               </span>{' '}
-              {lang === 'bn' ? 'জন ভিজিটর লাইভ' : 'Active Visitors Online'}
+              {lang === 'bn' ? 'সমষ্টিগত দর্শক তথ্য যুক্ত হয়নি' : 'Visitor totals unavailable'}
             </span>
-            <span className="opacity-40">|</span>
+            <span aria-hidden="true" className="hidden opacity-40 lg:inline">|</span>
             <span className="flex items-center gap-1">
-              <MapPin className="w-3.5 h-3.5 text-rose-500" />
+              <MapPin className="w-3.5 h-3.5 text-[var(--brand-blue-ink)]" />
               <span>{SITE.location[lang]}</span>
             </span>
-            <span className="hidden sm:inline opacity-40">|</span>
+            <span aria-hidden="true" className="hidden opacity-40 lg:inline">|</span>
             <span className="hidden sm:inline font-semibold text-sky-700">
               {MAHFIL.timeDisplay[lang]}
             </span>
@@ -241,26 +174,26 @@ export function Hero({
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.15 }}
-              className="catalis-card p-4 sm:p-5 flex flex-col justify-between w-[84vw] max-w-[295px] shrink-0 snap-center sm:w-auto sm:max-w-none sm:shrink"
+              className="countdown-card catalis-card p-4 sm:p-5 flex flex-col justify-between w-[84vw] max-w-[295px] shrink-0 snap-center sm:w-auto sm:max-w-none sm:shrink"
             >
               <div>
                 <div className="flex items-center justify-between mb-2.5">
                   <span className="catalis-pill text-xs font-bold text-sky-800">
-                    <Clock className="w-3.5 h-3.5 text-sky-600" />
-                    {lang === 'bn' ? 'মাহফিল শুরু বাকি' : 'Event Countdown'}
+                    <Clock className="w-3.5 h-3.5 text-[var(--brand-gold-ink)]" />
+                    {({pending: {bn: 'সময় হিসাব হচ্ছে…', en: 'Loading countdown…'}, upcoming: {bn: 'মাহফিল শুরু বাকি', en: 'Event Countdown'}, live: {bn: 'মাহফিল চলছে', en: 'Event in progress'}, ended: {bn: 'মাহফিল সম্পন্ন', en: 'Event ended'}})[eventState][lang]}
                   </span>
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                  <span className="w-2 h-2 rounded-full bg-[var(--brand-gold)]" />
                 </div>
-                <p className="text-xs font-medium mb-2.5" style={{ color: 'var(--text-muted)' }}>
+                <p className="text-xs font-medium mb-2.5 text-white">
                   {lang === 'bn' ? '৫ ডিসেম্বর ২০২৬, শনিবার বাদ যোহর' : 'Saturday, Dec 5, 2026 • After Zohr'}
                 </p>
                 {/* Condensed Numbers Grid */}
                 <div className="grid grid-cols-4 gap-1.5 text-center mb-3">
                   {[
-                    { label: t.hero.days[lang], val: timeLeft.days },
-                    { label: t.hero.hours[lang], val: timeLeft.hours },
-                    { label: t.hero.minutes[lang], val: timeLeft.minutes },
-                    { label: t.hero.seconds[lang], val: timeLeft.seconds },
+                    { label: t.hero.days[lang], val: timeLeft?.days ?? null },
+                    { label: t.hero.hours[lang], val: timeLeft?.hours ?? null },
+                    { label: t.hero.minutes[lang], val: timeLeft?.minutes ?? null },
+                    { label: t.hero.seconds[lang], val: timeLeft?.seconds ?? null },
                   ].map((item, idx) => (
                     <div
                       key={idx}
@@ -277,7 +210,7 @@ export function Hero({
                       >
                         {formatNum(item.val)}
                       </span>
-                      <span className="block text-[9px] sm:text-[10px] font-bold uppercase mt-1 opacity-70" style={{ color: 'var(--text-muted)' }}>
+                      <span className="block text-[9px] sm:text-[10px] font-bold uppercase mt-1" style={{ color: 'var(--text-muted)' }}>
                         {item.label}
                       </span>
                     </div>
@@ -314,7 +247,7 @@ export function Hero({
                     <Users className="w-3.5 h-3.5 text-sky-600" />
                     {lang === 'bn' ? 'আমন্ত্রিত আলোচক' : 'Key Scholars'}
                   </span>
-                  <span className="text-xs font-bold px-2 py-0.5 rounded-full border bg-sky-500/10 text-sky-800 border-sky-300/40">
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-full border bg-[var(--surface-sky)] text-[var(--brand-blue-ink)] border-sky-300/40">
                     {lang === 'bn' ? '১০ জন মেহমান' : '10 Scholars'}
                   </span>
                 </div>
@@ -345,11 +278,11 @@ export function Hero({
                   <div
                     className="w-9 h-9 rounded-full border-2 border-white flex items-center justify-center text-xs font-bold shrink-0 shadow-xs"
                     style={{
-                      backgroundColor: 'var(--accent-primary)',
+                      background: 'var(--primary-gradient)',
                       color: '#ffffff',
                     }}
                   >
-                    +৫
+                    +{formatNumber(Math.max(0, SPEAKERS.length - 5), lang)}
                   </div>
                 </div>
                 <p className="text-xs sm:text-sm font-semibold line-clamp-1 mb-0.5" style={{ color: 'var(--text-main)' }}>
@@ -408,7 +341,7 @@ export function Hero({
                 }}
                 className="w-full inline-flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold text-white transition-colors cursor-pointer"
                 style={{
-                  backgroundColor: 'var(--accent-primary)',
+                  background: 'var(--primary-gradient)',
                 }}
               >
                 <Camera className="w-3.5 h-3.5 text-sky-100" />
@@ -425,11 +358,11 @@ export function Hero({
             >
               <div>
                 <div className="flex items-center justify-between mb-2.5">
-                  <span className="catalis-pill text-xs font-bold text-rose-700">
-                    <MapPin className="w-3.5 h-3.5 text-rose-600" />
+                  <span className="catalis-pill text-xs font-bold text-[var(--brand-blue-ink)]">
+                    <MapPin className="w-3.5 h-3.5 text-[var(--brand-blue-ink)]" />
                     {lang === 'bn' ? 'মাহফিলের স্থান' : 'Venue'}
                   </span>
-                  <Compass className="w-3.5 h-3.5 text-rose-500 opacity-60" />
+                  <Compass className="w-3.5 h-3.5 text-[var(--brand-blue-ink)] opacity-60" />
                 </div>
                 <h4 className="text-xs sm:text-sm font-bold mb-1 line-clamp-1" style={{ color: 'var(--text-main)' }}>
                   {MAHFIL.venue[lang]}
@@ -449,7 +382,7 @@ export function Hero({
                   borderColor: 'var(--border-subtle)',
                 }}
               >
-                <ExternalLink className="w-3.5 h-3.5 text-emerald-600" />
+                <ExternalLink className="w-3.5 h-3.5 text-sky-600" />
                 <span>{lang === 'bn' ? 'গুগল ম্যাপে দিকনির্ণয়' : 'Google Maps'}</span>
               </a>
             </motion.div>
@@ -457,7 +390,7 @@ export function Hero({
 
           {/* Mobile Swipe Hint Pill */}
           <div className="sm:hidden flex items-center justify-center gap-1.5 text-[11px] font-bold text-sky-800/80 pt-1">
-            <span>👈 সোয়াইপ করে সবগুলো কার্ড দেখুন 👉</span>
+            <span>{lang === 'bn' ? 'সোয়াইপ করে সবগুলো কার্ড দেখুন' : 'Swipe to view all cards'}</span>
           </div>
         </div>
       </div>

@@ -18,8 +18,10 @@ import {
   Calendar,
   CheckCircle2,
 } from 'lucide-react';
+import { formatNumber } from '@/lib/numbers';
 import { useLanguage } from '@/context/LanguageContext';
 import { MADRASAH_INFO } from '@/content/madrasah';
+import { displayPhone, phoneHref } from '@/lib/phone';
 import { SITE } from '@/content/site';
 
 const ICON_MAP: Record<string, React.ElementType> = {
@@ -36,10 +38,8 @@ const ICON_MAP: Record<string, React.ElementType> = {
 };
 
 export function Madrasah({
-  onOpenCalendar,
   onOpenBrochure,
 }: {
-  onOpenCalendar: () => void;
   onOpenBrochure: () => void;
 }) {
   const { lang, t } = useLanguage();
@@ -114,11 +114,11 @@ export function Madrasah({
 
             <div className="flex flex-wrap sm:flex-nowrap gap-2.5 shrink-0 w-full sm:w-auto">
               <a
-                href={`tel:${SITE.phones[0]}`}
+                href={phoneHref(SITE.phones[0])}
                 className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full font-bold text-xs sm:text-sm bg-slate-900 hover:bg-black text-white shadow-xs active:scale-95 transition-all flex-1 sm:flex-none text-center"
               >
-                <PhoneCall className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="font-mono">{SITE.phones[0]}</span>
+                <PhoneCall className="w-3.5 h-3.5 text-teal-400" />
+                <span className="font-mono">{displayPhone(SITE.phones[0], lang)}</span>
               </a>
 
               <button
@@ -134,18 +134,7 @@ export function Madrasah({
                 <span>{t.madrasah.brochureBtn[lang]}</span>
               </button>
 
-              <button
-                onClick={onOpenCalendar}
-                className="inline-flex items-center justify-center gap-1.5 px-4 py-3 rounded-full font-semibold text-xs sm:text-sm border shadow-2xs hover:bg-slate-100/60 active:scale-95 transition-all flex-1 sm:flex-none cursor-pointer"
-                style={{
-                  backgroundColor: 'var(--bg-surface-subtle)',
-                  color: 'var(--text-main)',
-                  borderColor: 'var(--border-subtle)',
-                }}
-              >
-                <Calendar className="w-3.5 h-3.5 text-teal-600" />
-                <span>{t.hero.ctaCalendar[lang]}</span>
-              </button>
+
             </div>
           </div>
         </div>
@@ -174,7 +163,7 @@ export function Madrasah({
               <BookOpen className="w-4 h-4 text-sky-300" />
               <span>{lang === 'bn' ? 'শিক্ষাক্রম ও বিভাগসমূহ' : 'Academic Departments'}</span>
               <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded-full ml-1 font-mono">
-                {MADRASAH_INFO.departments.length}
+                {formatNumber(MADRASAH_INFO.departments.length, lang)}
               </span>
             </button>
 
@@ -193,7 +182,7 @@ export function Madrasah({
               <Building2 className="w-4 h-4 text-cyan-300" />
               <span>{lang === 'bn' ? 'ক্যাম্পাস সুযোগ-সুবিধা' : 'Campus Facilities'}</span>
               <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded-full ml-1 font-mono">
-                {MADRASAH_INFO.facilities.length}
+                {formatNumber(MADRASAH_INFO.facilities.length, lang)}
               </span>
             </button>
           </div>
@@ -243,7 +232,7 @@ export function Madrasah({
                     <ul className="space-y-1.5 pt-3 border-t" style={{ borderColor: 'var(--border-subtle)' }}>
                       {dept.features[lang].map((f, i) => (
                         <li key={i} className="text-xs flex items-center gap-2" style={{ color: 'var(--text-muted)' }}>
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                          <CheckCircle2 className="w-3.5 h-3.5 text-sky-600 shrink-0" />
                           <span className="truncate">{f}</span>
                         </li>
                       ))}

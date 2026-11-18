@@ -13,6 +13,7 @@ import {
   MapPin,
   Calendar,
 } from 'lucide-react';
+import { formatNumber } from '@/lib/numbers';
 import { useLanguage } from '@/context/LanguageContext';
 import { SPEAKERS, ORGANIZERS } from '@/content/speakers';
 import type { Speaker, Organizer } from '@/content/types';
@@ -70,7 +71,7 @@ function ScholarCard({
                   }}
                 >
                   <span className="font-serif font-bold text-base text-sky-600">
-                    {spk.name.bn.split(' ').slice(-1)[0][0] || 'আ'}
+                    {spk.name[lang].split(' ').slice(-1)[0][0]}
                   </span>
                 </div>
                 <span
@@ -88,7 +89,7 @@ function ScholarCard({
                 className={`inline-block text-xs font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-1.5 border ${
                   spk.highlight
                     ? 'bg-sky-500/15 text-sky-800 border-sky-400/30'
-                    : 'bg-teal-500/15 text-teal-800 border-teal-400/30'
+                    : 'bg-teal-500/15 text-sky-800 border-teal-400/30'
                 }`}
               >
                 {spk.badge[lang]}
@@ -337,7 +338,7 @@ export function Speakers() {
               <Award className="w-4 h-4 text-sky-300" />
               <span>{lang === 'bn' ? 'আমন্ত্রিত আলোচকবৃন্দ' : 'Keynote Scholars'}</span>
               <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded-full ml-1 font-mono">
-                {SPEAKERS.length}
+                {formatNumber(SPEAKERS.length, lang)}
               </span>
             </button>
 
@@ -356,7 +357,7 @@ export function Speakers() {
               <Shield className="w-4 h-4 text-cyan-300" />
               <span>{lang === 'bn' ? 'আয়োজক ও তত্ত্বাবধায়ক' : 'Organizers & Leadership'}</span>
               <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded-full ml-1 font-mono">
-                {ORGANIZERS.length}
+                {formatNumber(ORGANIZERS.length, lang)}
               </span>
             </button>
           </div>
@@ -390,7 +391,7 @@ export function Speakers() {
                   <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100/90 border border-slate-200/80">
                     <span className="text-[11px] font-bold text-slate-600 mr-1">
                       {lang === 'bn'
-                        ? `সারি ০${activeRow + 1} / ০${totalRows}`
+                        ? `সারি ${formatNumber(activeRow + 1, lang, 2, false)} / ${formatNumber(totalRows, lang, 2, false)}`
                         : `Row 0${activeRow + 1} / 0${totalRows}`}
                     </span>
                     {rows.map((_, i) => (
@@ -402,7 +403,7 @@ export function Speakers() {
                             ? 'w-5 bg-sky-600'
                             : 'w-2 bg-slate-300 hover:bg-slate-400'
                         }`}
-                        title={`Go to row ${i + 1}`}
+                        title={lang === 'bn' ? `সারি ${formatNumber(i + 1, lang)}` : `Go to row ${i + 1}`}
                       />
                     ))}
                   </div>
@@ -543,7 +544,7 @@ export function Speakers() {
                 <div className="flex items-center gap-1.5">
                   <span className="text-[11px] font-bold text-slate-600 bg-slate-100 px-2 py-1 rounded-full border border-slate-200/80">
                     {lang === 'bn'
-                      ? `বক্তা ০${activeMobileIndex + 1} / ১০`
+                      ? `বক্তা ${formatNumber(activeMobileIndex + 1, lang, 2, false)} / ${formatNumber(SPEAKERS.length, lang, 2, false)}`
                       : `${activeMobileIndex + 1} / 10`}
                   </span>
 
@@ -681,7 +682,7 @@ export function Speakers() {
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={org.photo || '/assets/logo.png'}
-                        alt={org.name[lang]}
+                        alt={org.photo ? org.name[lang] : (lang === 'bn' ? 'মাদরাসার লোগো' : 'Madrasah logo')}
                         className="w-full h-full object-contain"
                       />
                     </div>
@@ -770,7 +771,7 @@ export function Speakers() {
                       />
                     ) : (
                       <span className="font-serif font-bold text-2xl text-sky-300">
-                        {selectedProfile.name.bn.split(' ').slice(-1)[0][0] || 'আ'}
+                        {selectedProfile.name[lang].split(' ').slice(-1)[0][0]}
                       </span>
                     )}
                   </div>
@@ -826,7 +827,7 @@ export function Speakers() {
                     <span>{lang === 'bn' ? '৫ ডিসেম্বর ২০২৬, শনিবার' : 'Saturday, Dec 5, 2026'}</span>
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-rose-500" />
+                    <MapPin className="w-3.5 h-3.5 text-[var(--brand-blue-ink)]" />
                     <span>{lang === 'bn' ? 'মাদরাসা বালুর মাঠ' : 'Balur Math Grounds'}</span>
                   </span>
                 </div>

@@ -2,15 +2,15 @@
 #rimg,#pm{-webkit-touch-callout:default;-webkit-user-select:auto;user-select:auto}
 .sc img#rimg{width:auto;max-width:100%;max-height:46dvh;display:block;margin:0 auto}
 .hint{font-size:12.5px;color:#9cc0c8;text-align:center;margin:8px 0 0}
-.iab{display:none;margin-top:10px;padding:10px 12px;border-radius:14px;background:#fdecef;color:#8a2f3c;font-size:13px;line-height:1.45}
+.iab{display:none;margin-top:10px;padding:10px 12px;border-radius:14px;background:var(--tint-blue);color:var(--brand-blue-ink);font-size:13px;line-height:1.45}
 .iab.on{display:block}
 
 /* ইনফো শিট (নাম ও পদবী এডিটর) */
-#info-sheet .shc{background:#fff;border-radius:26px 26px 0 0;box-shadow:0 -10px 40px -10px #0d3b4466}
+#info-sheet .shc{background:#fff;border-radius:26px 26px 0 0;box-shadow:0 -10px 40px -10px #09345466}
 #info-sheet .sh{color:var(--tx);border-bottom:1px solid var(--ln);padding:10px 16px}
 #info-sheet .sh b{font-size:16.5px}
 #info-sheet .sh .ib{background:var(--fld);color:var(--tx);border-color:var(--ln)}
-.btn-text-done{background:#e2f5f7;color:#0b6672;border:1.2px solid #1b8f9d44;font:700 13px var(--ff);cursor:pointer;padding:5px 13px;border-radius:99px;display:inline-flex;align-items:center;gap:4px;transition:all .15s;box-shadow:0 2px 6px -2px #1b8f9d33}
+.btn-text-done{background:#e2f5f7;color:#025ba9;border:1.2px solid #026fba44;font:700 13px var(--ff);cursor:pointer;padding:5px 13px;border-radius:99px;display:inline-flex;align-items:center;gap:4px;transition:all .15s;box-shadow:0 2px 6px -2px #026fba33}
 .btn-text-done:active{background:var(--teal);color:#fff;border-color:var(--teal);transform:scale(.95)}
 .ic-xs{width:13px;height:13px;stroke-width:2.4;color:inherit}
 .sc.pad{padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px))}
@@ -21,14 +21,14 @@
 .chips button{flex:none;border:1px solid var(--ln);background:var(--fld);color:var(--teal);font:600 13.5px var(--ff);padding:7px 13px;border-radius:99px;cursor:pointer;transition:all .15s}
 .chips button:active,.chips button.sel{background:var(--teal);color:#fff;border-color:var(--teal)}
 
-.fc.ld{background:linear-gradient(90deg,#fff,#dff4f3,#fff);background-size:200% 100%;animation:shim 1.2s linear infinite}
+.fc.ld{background:linear-gradient(90deg,#fff,var(--tint-blue),#fff);background-size:200% 100%;animation:shim 1.2s linear infinite}
 @keyframes shim{to{background-position:-200% 0}}
 
 .f{position:relative;display:flex;align-items:center;background:var(--fld);border:1.5px solid transparent;border-radius:15px;transition:border-color .2s,box-shadow .2s}
 .f:focus-within{border-color:var(--teal2);box-shadow:0 0 0 4px #3fc4d42e;background:#fff}
 .f>.ic{margin-left:12px;width:19px;height:19px;color:var(--teal)}
 .f input{flex:1;min-width:0;height:46px;border:0;background:transparent;font:500 16px var(--ff);color:var(--tx);padding:0 34px 0 10px;outline:0}
-.f input::placeholder{color:#8aa8af}
+.f input::placeholder{color:var(--text-muted)}
 .f::after{content:"*";position:absolute;right:14px;color:var(--coral);font-weight:700;font-size:18px}
 .f.ok::after{content:"✓";color:var(--teal2);font-size:16px}
 .f.bad{border-color:var(--coral);animation:shk .4s}

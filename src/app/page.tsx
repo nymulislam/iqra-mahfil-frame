@@ -82,7 +82,6 @@ export default function HomePage() {
 
         {/* 7. Madrasah Departments & Admissions 2027 */}
         <Madrasah
-          onOpenCalendar={openCalendar}
           onOpenBrochure={openBrochure}
         />
 

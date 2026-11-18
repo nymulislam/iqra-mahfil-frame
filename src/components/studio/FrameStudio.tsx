@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Camera,
@@ -20,7 +20,8 @@ import confetti from 'canvas-confetti';
 import { useLanguage } from '@/context/LanguageContext';
 import { useLiveTracking } from '@/context/LiveTrackingContext';
 import { useFrameModal } from '@/context/FrameModalContext';
-import { SITE } from '@/content/site';
+import { useFrameTemplates } from './useFrameTemplates';
+import { readPhoto, exportFrame, downloadBlob } from './frameExport';
 import {
   CANVAS_WIDTH,
   CANVAS_HEIGHT,
@@ -54,13 +55,20 @@ const QUICK_ROLES_EN = [
 
 export function FrameStudio() {
   const { lang, t } = useLanguage();
+  const roleLabel = (value: string) => {
+    const index = Math.max(QUICK_ROLES_BN.indexOf(value), QUICK_ROLES_EN.indexOf(value));
+    return index < 0 ? value : (lang === 'bn' ? QUICK_ROLES_BN : QUICK_ROLES_EN)[index];
+  };
   const { recordFrameCreated } = useLiveTracking();
-  const { isFrameModalOpen, openFrameModal, closeFrameModal } = useFrameModal();
+  const { openFrameModal } = useFrameModal();
 
   const desktopCanvasRef = useRef<HTMLCanvasElement | null>(null);
-  const modalCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const templateImagesRef = useRef<(HTMLImageElement | null)[]>([null, null]);
+  const { templates: templateImagesRef, status: templateStatus, retry: retryTemplates } = useFrameTemplates();
+  const photoRequest = useRef(0);
+  const exporting = useRef(false);
+  const [isReadingPhoto, setIsReadingPhoto] = useState(false);
+  const [fallbackUrl, setFallbackUrl] = useState<string | null>(null);
 
   const [frameIndex, setFrameIndex] = useState<number>(0);
   const [userImage, setUserImage] = useState<HTMLImageElement | null>(null);
@@ -69,6 +77,11 @@ export function FrameStudio() {
   const [offsetY, setOffsetY] = useState<number>(0);
   const [name, setName] = useState<string>('');
   const [designation, setDesignation] = useState<string>('');
+
+  const snapshot = useMemo(() => ({ frameIndex, userImage, zoom, offsetX, offsetY, name, designation: roleLabel(designation), language: lang }),
+    [frameIndex, userImage, zoom, offsetX, offsetY, name, designation, lang]);
+  const latestSnapshot = useRef(snapshot);
+  latestSnapshot.current = snapshot;
 
   const [isSheetOpen, setIsSheetOpen] = useState<boolean>(false);
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
@@ -90,22 +103,6 @@ export function FrameStudio() {
     setTimeout(() => setToastMessage(null), 3000);
   };
 
-  useEffect(() => {
-    const f1 = new Image();
-    f1.src = '/assets/frames/frame-1.png';
-    f1.onload = () => {
-      templateImagesRef.current[0] = f1;
-      draw();
-    };
-
-    const f2 = new Image();
-    f2.src = '/assets/frames/frame-2.png';
-    f2.onload = () => {
-      templateImagesRef.current[1] = f2;
-      draw();
-    };
-  }, []);
-
   const draw = useCallback(() => {
     const currentState: FrameStudioState = {
       frameIndex,
@@ -114,29 +111,25 @@ export function FrameStudio() {
       offsetX,
       offsetY,
       name,
-      designation,
+      designation: roleLabel(designation),
+      language: lang,
     };
     if (desktopCanvasRef.current) {
       renderFrame(desktopCanvasRef.current, currentState, templateImagesRef.current);
     }
-    if (modalCanvasRef.current) {
-      renderFrame(modalCanvasRef.current, currentState, templateImagesRef.current);
-    }
-  }, [frameIndex, userImage, zoom, offsetX, offsetY, name, designation]);
+  }, [frameIndex, userImage, zoom, offsetX, offsetY, name, designation, lang]);
 
   useEffect(() => {
     draw();
-  }, [draw]);
+  }, [draw, templateStatus]);
 
-  // When modal opens, re-trigger draw once modal canvas is mounted
   useEffect(() => {
-    if (isFrameModalOpen) {
-      const timer = setTimeout(() => {
-        draw();
-      }, 60);
-      return () => clearTimeout(timer);
-    }
-  }, [isFrameModalOpen, draw]);
+    setFallbackUrl(null);
+  }, [snapshot]);
+  useEffect(() => () => {
+    if (fallbackUrl) URL.revokeObjectURL(fallbackUrl);
+  }, [fallbackUrl]);
+  useEffect(() => () => { photoRequest.current += 1; }, []);
 
   // Desktop Gestures
   useFrameGestures({
@@ -155,42 +148,27 @@ export function FrameStudio() {
     },
   });
 
-  // Modal / Mobile Gestures
-  useFrameGestures({
-    canvasRef: modalCanvasRef,
-    hasPhoto: !!userImage,
-    zoom,
-    offsetX,
-    offsetY,
-    onUpdate: (updates) => {
-      if (updates.zoom !== undefined) setZoom(updates.zoom);
-      if (updates.offsetX !== undefined) setOffsetX(updates.offsetX);
-      if (updates.offsetY !== undefined) setOffsetY(updates.offsetY);
-    },
-    onPhotoClick: () => {
-      fileInputRef.current?.click();
-    },
-  });
-
-  const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const src = event.target?.result as string;
-      const img = new Image();
-      img.onload = () => {
-        setUserImage(img);
-        setZoom(1);
-        setOffsetX(0);
-        setOffsetY(0);
-        showToast(lang === 'bn' ? 'ছবি যুক্ত হয়েছে!' : 'Photo added successfully!');
-      };
-      img.src = src;
-    };
-    reader.readAsDataURL(file);
     e.target.value = '';
+    if (!file) return;
+    const request = ++photoRequest.current;
+    setIsReadingPhoto(true);
+    try {
+      const image = await readPhoto(file);
+      if (request !== photoRequest.current) return;
+      setUserImage(image);
+      setZoom(1);
+      setOffsetX(0);
+      setOffsetY(0);
+      showToast(lang === 'bn' ? 'ছবি যুক্ত হয়েছে!' : 'Photo added!');
+    } catch {
+      if (request === photoRequest.current) showToast(lang === 'bn'
+        ? 'ছবিটি খোলা যায়নি। JPEG, PNG বা WebP ছবি বেছে নিন।'
+        : 'Cannot open this photo. Choose a JPEG, PNG or WebP image.');
+    } finally {
+      if (request === photoRequest.current) setIsReadingPhoto(false);
+    }
   };
 
   const handleReset = () => {
@@ -218,93 +196,68 @@ export function FrameStudio() {
   };
 
   const triggerConfetti = () => {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     confetti({
       particleCount: 80,
       spread: 70,
       origin: { y: 0.6 },
-      colors: ['#0d9488', '#0284c7', '#026cb6', '#c8102e', '#0ea5e9'],
+      colors: ['#025ba9', '#014779', '#e0f2fe', '#026fba'],
     });
   };
 
-  const getActiveCanvas = () => {
-    if (isFrameModalOpen && modalCanvasRef.current) return modalCanvasRef.current;
-    return desktopCanvasRef.current || modalCanvasRef.current;
+  const prepareExport = async () => {
+    const current = snapshot;
+    const blob = await exportFrame(current, templateImagesRef.current);
+    if (latestSnapshot.current !== current) return null;
+    recordFrameCreated();
+    return blob;
   };
 
   const handleDownload = async () => {
-    const canvas = getActiveCanvas();
-    if (!canvas) return;
+    if (exporting.current || isReadingPhoto) return;
+    exporting.current = true;
     setIsDownloading(true);
-
     try {
-      const blob = await new Promise<Blob | null>((resolve) =>
-        canvas.toBlob((b) => resolve(b), 'image/png', 0.95)
-      );
-
-      if (!blob) throw new Error('Blob generation failed');
-
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const blob = await prepareExport();
+      if (!blob) return;
       const safeName = (name.trim() || 'iqra-mahfil-2026').replace(/\s+/g, '-');
-      a.download = `${safeName}-frame.png`;
-      a.href = url;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
+      downloadBlob(blob, safeName + '-frame.png');
+      setFallbackUrl(URL.createObjectURL(blob));
       triggerConfetti();
-      recordFrameCreated();
-      showToast(lang === 'bn' ? 'ফ্রেম সফলভাবে ডাউনলোড হয়েছে!' : 'Frame downloaded successfully!');
-    } catch (err) {
-      console.error(err);
-      showToast(lang === 'bn' ? 'ডাউনলোড ব্যর্থ হয়েছে!' : 'Download failed');
+      showToast(lang === 'bn' ? 'ডাউনলোড শুরু হয়েছে। প্রিভিউ থেকেও সেভ করতে পারেন।' : 'Download started. You can also save the preview.');
+    } catch {
+      showToast(lang === 'bn' ? 'ফ্রেম তৈরি করা যায়নি। আবার চেষ্টা করুন।' : 'Frame export failed. Please try again.');
     } finally {
+      exporting.current = false;
       setIsDownloading(false);
     }
   };
 
   const handleShare = async () => {
-    const canvas = getActiveCanvas();
-    if (!canvas) return;
-
+    if (exporting.current || isReadingPhoto) return;
+    exporting.current = true;
+    setIsDownloading(true);
     try {
-      const blob = await new Promise<Blob | null>((resolve) =>
-        canvas.toBlob((b) => resolve(b), 'image/png', 0.95)
-      );
-
-      if (!blob) throw new Error('Blob failed');
-
-      const shareText =
-        lang === 'bn'
-          ? 'আমি আসছি, আপনি আসছেন তো? ৫ ডিসেম্বর ২০২৬ — বার্ষিক তাফসীরুল কুরআন মাহফিল, ইক্বরা ইন্টারন্যাশনাল মাদরাসা, পাটওয়ারী বাজার, ফরিদগঞ্জ, চাঁদপুর।'
-          : 'I am attending the Annual Tafsirul Quran Mahfil 2026 at Iqra International Madrasah on 5 December 2026. Join us!';
-
+      const blob = await prepareExport();
+      if (!blob) return;
+      setFallbackUrl(URL.createObjectURL(blob));
       const file = new File([blob], 'iqra-mahfil-frame.png', { type: 'image/png' });
-
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          files: [file],
-          title: lang === 'bn' ? 'ইক্বরা মাহফিল ২০২৬ ফটো ফ্রেম' : 'Iqra Mahfil 2026 Frame',
-          text: shareText,
-          url: 'https://iqra.annujum.org',
-        });
-        triggerConfetti();
-        recordFrameCreated();
-      } else if (navigator.share) {
-        await navigator.share({
-          title: lang === 'bn' ? 'ইক্বরা মাহফিল ২০২৬ ফটো ফ্রেম' : 'Iqra Mahfil 2026 Frame',
-          text: shareText,
-          url: 'https://iqra.annujum.org',
-        });
-        triggerConfetti();
-        recordFrameCreated();
-      } else {
-        await navigator.clipboard.writeText('https://iqra.annujum.org');
-        showToast(lang === 'bn' ? 'লিঙ্ক কপি হয়েছে!' : 'Website link copied!');
+      if (navigator.share && navigator.canShare?.({ files: [file] })) {
+        try {
+          await navigator.share({ files: [file], text: lang === 'bn'
+            ? 'আমি আসছি, আপনি আসছেন তো? ৫ ডিসেম্বর ২০২৬ — ইক্বরা মাহফিল। https://iqra.annujum.org'
+            : 'Join Iqra Mahfil on 5 December 2026. https://iqra.annujum.org' });
+          return;
+        } catch (error) {
+          if ((error as Error).name === 'AbortError') return;
+        }
       }
-    } catch (err) {
-      console.log('Share dismissed', err);
+      showToast(lang === 'bn' ? 'নিচের ছবিটি সেভ করে শেয়ার করুন।' : 'Save the image below to share it.');
+    } catch {
+      showToast(lang === 'bn' ? 'ফ্রেম তৈরি করা যায়নি। আবার চেষ্টা করুন।' : 'Frame export failed. Please try again.');
+    } finally {
+      exporting.current = false;
+      setIsDownloading(false);
     }
   };
 
@@ -326,6 +279,13 @@ export function FrameStudio() {
         className="hidden"
       />
 
+      <div role="status" className="text-center text-sm px-4">
+        {isReadingPhoto ? (lang === 'bn' ? 'ছবি খোলা হচ্ছে…' : 'Opening photo…')
+          : templateStatus[frameIndex] === 'loading' ? (lang === 'bn' ? 'ফ্রেম লোড হচ্ছে…' : 'Loading frame…') : ''}
+        {templateStatus[frameIndex] === 'error' && <button type="button" onClick={retryTemplates}>
+          {lang === 'bn' ? 'ফ্রেম লোড হয়নি। আবার চেষ্টা করুন' : 'Frame failed to load. Retry'}
+        </button>}
+      </div>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
@@ -373,7 +333,7 @@ export function FrameStudio() {
             style={{ borderColor: 'var(--border-subtle)' }}
           >
             {/* Top Accent Shimmer Bar */}
-            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-teal-500 via-sky-500 to-blue-600" />
+            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-[var(--brand-primary)] via-[var(--brand-ocean)] to-[var(--brand-blue-ink)]" />
 
             {/* Template Toggle Pills - Clean Light Brand Styling (Zero Dark Mode Bleed) */}
             <div className="flex justify-center mb-4">
@@ -383,7 +343,7 @@ export function FrameStudio() {
                   onClick={() => setFrameIndex(0)}
                   className={`px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                     frameIndex === 0
-                      ? 'bg-gradient-to-r from-sky-600 to-blue-600 text-white shadow-xs'
+                      ? 'bg-[var(--brand-primary)] text-white shadow-xs'
                       : 'text-slate-700 hover:text-sky-700'
                   }`}
                 >
@@ -395,7 +355,7 @@ export function FrameStudio() {
                   onClick={() => setFrameIndex(1)}
                   className={`px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                     frameIndex === 1
-                      ? 'bg-gradient-to-r from-sky-600 to-blue-600 text-white shadow-xs'
+                      ? 'bg-[var(--brand-primary)] text-white shadow-xs'
                       : 'text-slate-700 hover:text-sky-700'
                   }`}
                 >
@@ -429,7 +389,7 @@ export function FrameStudio() {
             {/* Feature Value Pills */}
             <div className="flex items-center justify-center gap-2 pt-4 pb-3.5 text-xs font-bold text-slate-600">
               <span className="flex items-center gap-1 text-sky-800">
-                <ShieldCheck className="w-3.5 h-3.5 text-teal-600" />
+                <ShieldCheck className="w-3.5 h-3.5 text-sky-600" />
                 {lang === 'bn' ? 'আল্ট্রা-এইচডি' : 'Ultra HD'}
               </span>
               <span className="text-slate-300">•</span>
@@ -438,7 +398,7 @@ export function FrameStudio() {
                 {lang === 'bn' ? 'পিঞ্চ ও জুম' : 'Pinch & Zoom'}
               </span>
               <span className="text-slate-300">•</span>
-              <span className="text-emerald-700 font-extrabold">
+              <span className="text-sky-700 font-extrabold">
                 {lang === 'bn' ? '১০০% ফ্রি' : '100% Free'}
               </span>
             </div>
@@ -449,7 +409,7 @@ export function FrameStudio() {
               onClick={openFrameModal}
               className="w-full py-3.5 px-5 rounded-2xl font-bold text-xs sm:text-sm text-white shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-all duration-200 cursor-pointer"
               style={{
-                background: 'linear-gradient(135deg, var(--accent-primary) 0%, #0284c7 50%, var(--accent-secondary) 100%)',
+                background: 'var(--primary-gradient)',
                 boxShadow: '0 8px 24px var(--accent-blue-glow)',
               }}
             >
@@ -514,7 +474,7 @@ export function FrameStudio() {
                     <button
                       onClick={handleClearPhoto}
                       title="Remove Photo"
-                      className="p-1.5 hover:bg-rose-50 text-rose-600 rounded-lg transition cursor-pointer border border-transparent hover:border-rose-200"
+                      className="p-1.5 hover:bg-sky-50 text-sky-600 rounded-lg transition cursor-pointer border border-transparent hover:border-sky-200"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -528,7 +488,7 @@ export function FrameStudio() {
                 <div>
                   <label className="text-xs font-bold text-sky-900 uppercase tracking-wider block mb-2 flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full bg-sky-600" />
-                    <span>১. ফ্রেমের ডিজাইন নির্বাচন করুন</span>
+                    <span>{lang === 'bn' ? '১. ফ্রেমের ডিজাইন নির্বাচন করুন' : '1. Choose frame design'}</span>
                   </label>
                   <div className="grid grid-cols-2 gap-2.5">
                     <button
@@ -542,9 +502,9 @@ export function FrameStudio() {
                     >
                       <span className="text-xs sm:text-sm font-bold text-slate-900 flex items-center gap-1.5">
                         <span className="w-2.5 h-2.5 rounded-full bg-teal-500" />
-                        <span>ফ্রেম ১</span>
+                        <span>{lang === 'bn' ? 'ফ্রেম ১' : 'Frame 1'}</span>
                       </span>
-                      <span className="text-xs text-slate-500 font-medium mt-1">রয়েল ব্লু ও টিল</span>
+                      <span className="text-xs text-slate-500 font-medium mt-1">{lang === 'bn' ? 'রয়েল ব্লু ও টিল' : 'Royal Blue & Teal'}</span>
                     </button>
 
                     <button
@@ -558,9 +518,9 @@ export function FrameStudio() {
                     >
                       <span className="text-xs sm:text-sm font-bold text-slate-900 flex items-center gap-1.5">
                         <span className="w-2.5 h-2.5 rounded-full bg-sky-500" />
-                        <span>ফ্রেম ২</span>
+                        <span>{lang === 'bn' ? 'ফ্রেম ২' : 'Frame 2'}</span>
                       </span>
-                      <span className="text-xs text-slate-500 font-medium mt-1">পোস্টার থিম</span>
+                      <span className="text-xs text-slate-500 font-medium mt-1">{lang === 'bn' ? 'পোস্টার থিম' : 'Poster theme'}</span>
                     </button>
                   </div>
                 </div>
@@ -569,7 +529,7 @@ export function FrameStudio() {
                 <div>
                   <label className="text-xs font-bold text-sky-900 uppercase tracking-wider block mb-2 flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full bg-sky-600" />
-                    <span>২. আপনার ছবি দিন</span>
+                    <span>{lang === 'bn' ? '২. আপনার ছবি দিন' : '2. Add your photo'}</span>
                   </label>
                   <button
                     type="button"
@@ -585,7 +545,7 @@ export function FrameStudio() {
                 <div className="space-y-2.5">
                   <label className="text-xs font-bold text-sky-900 uppercase tracking-wider block flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full bg-sky-600" />
-                    <span>৩. নাম ও পদবী (লাইভ প্রিভিউ)</span>
+                    <span>{lang === 'bn' ? '৩. নাম ও পদবী (লাইভ প্রিভিউ)' : '3. Name and designation (preview)'}</span>
                   </label>
                   <div>
                     <input
@@ -599,14 +559,14 @@ export function FrameStudio() {
                           // ignore
                         }
                       }}
-                      placeholder="আপনার পূর্ণ নাম (যেমন: মোঃ আব্দুল্লাহ)"
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-semibold text-slate-900 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 bg-slate-50/50"
+                      placeholder={t.studio.namePlaceholder[lang]}
+                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-semibold text-slate-900 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 bg-slate-50/50"
                     />
                   </div>
                   <div>
                     <input
                       type="text"
-                      value={designation}
+                      value={roleLabel(designation)}
                       onChange={(e) => {
                         setDesignation(e.target.value);
                         try {
@@ -615,8 +575,8 @@ export function FrameStudio() {
                           // ignore
                         }
                       }}
-                      placeholder="আপনার পদবী / পরিচয় (যেমন: শিক্ষার্থী / শিক্ষক)"
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-semibold text-slate-900 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 bg-slate-50/50"
+                      placeholder={t.studio.rolePlaceholder[lang]}
+                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-semibold text-slate-900 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 bg-slate-50/50"
                     />
                   </div>
 
@@ -624,7 +584,7 @@ export function FrameStudio() {
                   <div className="flex flex-wrap gap-1.5 pt-0.5">
                     {QUICK_ROLES_BN.slice(0, 6).map((role) => (
                       <button
-                        key={role}
+                        key={roleLabel(role)}
                         type="button"
                         onClick={() => {
                           setDesignation(role);
@@ -635,12 +595,12 @@ export function FrameStudio() {
                           }
                         }}
                         className={`text-[11px] px-2.5 py-1 rounded-lg border transition-all cursor-pointer ${
-                          designation === role
-                            ? 'bg-sky-600 text-white border-sky-600 font-bold shadow-2xs'
+                          roleLabel(designation) === roleLabel(role)
+                            ? 'bg-[var(--brand-primary)] text-white border-[var(--brand-primary)] font-bold shadow-2xs'
                             : 'bg-white text-slate-600 border-slate-200 hover:border-sky-300'
                         }`}
                       >
-                        {role}
+                        {roleLabel(role)}
                       </button>
                     ))}
                   </div>
@@ -651,10 +611,10 @@ export function FrameStudio() {
                   <button
                     type="button"
                     onClick={handleDownload}
-                    disabled={isDownloading}
+                    disabled={isDownloading || isReadingPhoto || templateStatus[frameIndex] !== 'ready'}
                     className="w-full py-3.5 px-6 rounded-2xl font-bold text-xs sm:text-sm text-white shadow-lg flex items-center justify-center gap-2 active:scale-98 hover:brightness-105 transition-all duration-200 disabled:opacity-60 cursor-pointer"
                     style={{
-                      background: 'linear-gradient(135deg, var(--accent-primary) 0%, #0284c7 50%, var(--accent-secondary) 100%)',
+                      background: 'var(--primary-gradient)',
                       boxShadow: '0 8px 24px var(--accent-blue-glow)',
                     }}
                   >
@@ -666,6 +626,7 @@ export function FrameStudio() {
                   <button
                     type="button"
                     onClick={handleShare}
+                    disabled={isDownloading || isReadingPhoto || templateStatus[frameIndex] !== 'ready'}
                     className="w-full py-2.5 px-4 rounded-xl font-bold text-xs text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 transition-all flex items-center justify-center gap-1.5 active:scale-98 cursor-pointer"
                   >
                     <Share2 className="w-3.5 h-3.5 text-sky-600" />
@@ -681,6 +642,12 @@ export function FrameStudio() {
             GLOBAL MOBILE APP STUDIO POPUP MODAL
             100% Identical Replica of https://iqra.annujum.org/
            ========================================================================= */}
+        {fallbackUrl && <div className="hidden md:block max-w-md mx-auto p-4 text-center">
+          <p>{lang === 'bn' ? 'ছবিতে রাইট ক্লিক বা চেপে ধরে সেভ করুন।' : 'Right-click or hold the image to save it.'}</p>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={fallbackUrl} alt={lang === 'bn' ? 'তৈরি করা ফ্রেম' : 'Generated frame'} className="w-full" />
+          <a href={fallbackUrl} download="iqra-mahfil-frame.png">{lang === 'bn' ? 'ছবি সেভ করুন' : 'Save image'}</a>
+        </div>}
         <MobileAppStudio />
 
         {/* Modal / Bottom Sheet for Name & Designation (Works both in Desktop & Mobile Modal) */}
@@ -719,7 +686,7 @@ export function FrameStudio() {
                     onChange={(e) => setName(e.target.value)}
                     placeholder={t.studio.namePlaceholder[lang]}
                     maxLength={32}
-                    className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-600 focus:bg-white text-sm font-semibold"
+                    className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-[var(--brand-primary)] focus:bg-white text-sm font-semibold"
                   />
                 </div>
 
@@ -730,11 +697,11 @@ export function FrameStudio() {
                   </label>
                   <input
                     type="text"
-                    value={designation}
+                    value={roleLabel(designation)}
                     onChange={(e) => setDesignation(e.target.value)}
                     placeholder={t.studio.rolePlaceholder[lang]}
                     maxLength={36}
-                    className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-600 focus:bg-white text-sm font-semibold"
+                    className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-[var(--brand-primary)] focus:bg-white text-sm font-semibold"
                   />
 
                   {/* Quick Role Suggestions */}
@@ -765,7 +732,7 @@ export function FrameStudio() {
                 <button
                   type="button"
                   onClick={handleSaveDetails}
-                  className="w-full py-3.5 px-4 rounded-xl font-bold text-sm bg-gradient-to-r from-teal-600 via-sky-600 to-blue-600 hover:brightness-110 text-white shadow-md shadow-sky-600/20 transition active:scale-95 flex items-center justify-center gap-2 mt-2 cursor-pointer"
+                  className="w-full py-3.5 px-4 rounded-xl font-bold text-sm primary-action text-white shadow-md shadow-sky-600/20 transition active:scale-95 flex items-center justify-center gap-2 mt-2 cursor-pointer"
                 >
                   <Check className="w-4 h-4" />
                   <span>{t.studio.saveSheet[lang]}</span>
@@ -782,7 +749,7 @@ export function FrameStudio() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
-              className="fixed bottom-20 left-1/2 -translate-x-1/2 z-70 bg-slate-900 text-white px-5 py-2.5 rounded-full shadow-2xl backdrop-blur-md text-xs sm:text-sm font-bold flex items-center gap-2 pointer-events-none"
+              role="status" className="fixed bottom-20 left-1/2 -translate-x-1/2 z-70 bg-slate-900 text-white px-5 py-2.5 rounded-full shadow-2xl backdrop-blur-md text-xs sm:text-sm font-bold flex items-center gap-2 pointer-events-none"
             >
               <Sparkles className="w-4 h-4 text-sky-400" />
               <span>{toastMessage}</span>
