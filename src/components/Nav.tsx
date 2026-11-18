@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'motion/react';
 import {
   PhoneCall,
   Camera,
-  Radio,
   BookOpen,
   Users,
   GraduationCap,
@@ -91,13 +90,6 @@ export function Nav() {
     { id: 'banner', label: t.nav.banner[lang], href: '#banner', icon: ImageIcon },
     { id: 'speakers', label: t.nav.speakers[lang], href: '#speakers', icon: Users },
     { id: 'frame', label: t.nav.frame[lang], href: '#frame', icon: Camera },
-    {
-      id: 'live',
-      label: t.nav.live[lang],
-      href: '#live',
-      icon: Radio,
-      isLive: false,
-    },
     { id: 'madrasah', label: t.nav.madrasah[lang], href: '#madrasah', icon: GraduationCap },
     { id: 'support', label: t.nav.support[lang], href: '#support', icon: Heart },
     { id: 'sponsor', label: lang === 'bn' ? 'স্পনসর' : 'Sponsor', href: '#sponsor', icon: Award },
@@ -162,7 +154,7 @@ export function Nav() {
         </a>
 
         {/* Center: 3D Fluid Animated Navigation Dock (Responsive, no text wrap) */}
-        <nav className="hidden lg:flex items-center gap-0 p-1 rounded-full bg-slate-900/5 backdrop-blur-md border border-slate-200/60 shrink-0">
+        <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1 p-1 rounded-full bg-slate-900/5 backdrop-blur-md border border-slate-200/60 shrink-0">
           {navLinks.map((item) => {
             const Icon = item.icon;
             const isActive = Boolean(activeSection) && activeSection === item.id;
@@ -172,7 +164,7 @@ export function Nav() {
                 key={item.id}
                 href={item.href}
                 onClick={() => setActiveSection(item.id)}
-                className={`relative px-1 xl:px-1.5 2xl:px-2 py-1.5 rounded-full text-xs font-bold transition-colors duration-200 flex items-center gap-1.5 whitespace-nowrap select-none ${
+                className={`relative px-1.5 xl:px-2.5 2xl:px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors duration-200 flex items-center gap-1.5 whitespace-nowrap select-none ${
                   isActive
                     ? 'text-sky-950 font-extrabold'
                     : 'text-slate-600 hover:text-slate-900 font-semibold'
@@ -186,19 +178,12 @@ export function Nav() {
                     style={{ zIndex: -1 }}
                   />
                 )}
-                {item.isLive ? (
-                  <span className="relative flex h-2 w-2 shrink-0">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full brand-live-dot opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 brand-live-dot"></span>
-                  </span>
-                ) : (
-                  <Icon
-                    className={`hidden min-[1370px]:block w-3.5 h-3.5 shrink-0 transition-colors ${
-                      isActive ? 'text-sky-600' : 'text-slate-400 group-hover:text-slate-600'
-                    }`}
-                    strokeWidth={isActive ? 2.2 : 1.8}
-                  />
-                )}
+                <Icon
+                  className={`hidden min-[1370px]:block w-3.5 h-3.5 shrink-0 transition-colors ${
+                    isActive ? 'text-sky-600' : 'text-slate-400 group-hover:text-slate-600'
+                  }`}
+                  strokeWidth={isActive ? 2.2 : 1.8}
+                />
                 <span>{item.label}</span>
               </a>
             );

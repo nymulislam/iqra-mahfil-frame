@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Camera, Users, Image as ImageIcon, Radio, Award } from 'lucide-react';
+import { BookOpen, Camera, Users, GraduationCap, Award } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useFrameModal } from '@/context/FrameModalContext';
 
@@ -36,7 +36,7 @@ export function TabBar() {
     { id: 'mahfil', label: t.nav.mahfil[lang], icon: BookOpen, href: '#mahfil' },
     { id: 'speakers', label: t.nav.speakers[lang], icon: Users, href: '#speakers' },
     { id: 'frame', label: t.nav.frame[lang], icon: Camera, href: '#frame', isCenter: true },
-    { id: 'live', label: t.nav.live[lang], icon: Radio, href: '#live' },
+    { id: 'madrasah', label: t.nav.madrasah[lang], icon: GraduationCap, href: '#madrasah' },
     { id: 'sponsor', label: lang === 'bn' ? 'স্পনসর' : 'Sponsor', icon: Award, href: '#sponsor' },
   ];
 
