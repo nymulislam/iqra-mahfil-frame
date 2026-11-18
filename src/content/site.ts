@@ -8,8 +8,8 @@ export const SITE = {
     en: 'Iqra International Madrasah',
   },
   shortName: {
-    bn: 'ইক্বরা মাদরাসা',
-    en: 'Iqra Madrasah',
+    bn: 'ইক্বরা ইন্টা. মাদরাসা',
+    en: 'Iqra Int. Madrasah',
   },
   tagline: {
     bn: 'শারয়ী ও জেনারেল শিক্ষার সমন্বয়ে যুগোপযোগী শিক্ষা প্রদান',

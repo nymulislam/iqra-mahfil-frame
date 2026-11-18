@@ -4,10 +4,10 @@ export const CANVAS_WIDTH = 1080;
 export const CANVAS_HEIGHT = 1078;
 
 export const PHOTO_BOUNDS = {
-  x: 207,
-  y: 634,
-  w: 332,
-  h: 350,
+  x: 210,
+  y: 637,
+  w: 326,
+  h: 343,
 };
 
 export const TEXT_BOX = {
@@ -150,11 +150,26 @@ export function renderFrame(
 
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-  // 1. Draw User Photo or Placeholder
+  // 1. Draw the frame template (it already contains the photo-slot placeholder)
+  const frameReady = !!(frameImg && frameImg.complete && frameImg.naturalWidth);
+  if (frameReady) {
+    ctx.drawImage(frameImg, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  }
+
+  // 2. Draw the user photo ON TOP of the frame, clipped to the photo card
+  //    (rounded top-left and bottom-right corners, like the frame artwork).
   if (state.userImage && state.userImage.complete && state.userImage.naturalWidth) {
+    const r = 64;
     ctx.save();
     ctx.beginPath();
-    ctx.rect(R.x - 2, R.y - 2, R.w + 4, R.h + 4);
+    ctx.moveTo(R.x + r, R.y);
+    ctx.lineTo(R.x + R.w, R.y);
+    ctx.lineTo(R.x + R.w, R.y + R.h - r);
+    ctx.arcTo(R.x + R.w, R.y + R.h, R.x + R.w - r, R.y + R.h, r);
+    ctx.lineTo(R.x, R.y + R.h);
+    ctx.lineTo(R.x, R.y + r);
+    ctx.arcTo(R.x, R.y, R.x + r, R.y, r);
+    ctx.closePath();
     ctx.clip();
 
     const scale = Math.max(R.w / state.userImage.width, R.h / state.userImage.height) * state.zoom;
@@ -174,21 +189,15 @@ export function renderFrame(
       h
     );
     ctx.restore();
-  } else {
+  } else if (!frameReady) {
     drawPlaceholder(ctx, R, isTeal, state.language ?? 'bn');
   }
-
-  // 2. Draw Frame Overlay
-  if (frameImg && frameImg.complete && frameImg.naturalWidth) {
-    ctx.drawImage(frameImg, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-  }
-
   // 3. Draw Name and Designation Box
   const B = TEXT_BOX;
   const cx = B.cx;
 
   // Background patch matching frame's card color
-  ctx.fillStyle = isTeal ? '#e6f5fc' : '#f0f7ff';
+  ctx.fillStyle = isTeal ? '#e6f5fc' : '#fcf2e6';
   ctx.fillRect(B.x, B.y, B.w, B.h);
 
   ctx.textAlign = 'center';

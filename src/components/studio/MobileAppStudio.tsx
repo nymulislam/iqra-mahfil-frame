@@ -689,29 +689,9 @@ export function MobileAppStudio() {
           </div>
           <div className="sub-row">
             <span className="sub-date">{text("৫ ডিসেম্বর · বাদ যোহর")}</span>
-            <span className="cd-box" id="sub">
-              <svg className="ic cd-ic">
-                <use href="#i-clock" />
-              </svg>
-              <span id="cd-txt">
-                <b>{countdownText.split(' ')[0]}</b> {countdownText.split(' ').slice(1).join(' ')}
-              </span>
-            </span>
           </div>
         </div>
         <div className="nv">
-          <button
-            type="button"
-            className="ib"
-            id="np"
-            aria-label={text("পোস্টার")}
-            title={text("মাহফিলের পোস্টার")}
-            onClick={() => setActiveSheet('poster')}
-          >
-            <svg className="ic">
-              <use href="#i-img" />
-            </svg>
-          </button>
           <button
             type="button"
             className="ib ib-call"
@@ -776,14 +756,18 @@ export function MobileAppStudio() {
             id="tab0"
             onClick={() => handleSelectFrame(0)}
           >
-            <span className="tab-dot dot-1" />{text("🔷 ফ্রেম ১ (রয়েল ব্লু)")}</button>
+            <span className="tab-dot dot-1" />
+            <span>{text("ফ্রেম ১ (রয়েল ব্লু)")}</span>
+          </button>
           <button
             type="button"
             className={`ftab tab-2 ${frameIndex === 1 ? 'on' : ''}`}
             id="tab1"
             onClick={() => handleSelectFrame(1)}
           >
-            <span className="tab-dot dot-2" />{text("💠 ফ্রেম ২ (পোস্টার থিম)")}</button>
+            <span className="tab-dot dot-2" />
+            <span>{text("ফ্রেম ২ (পোস্টার থিম)")}</span>
+          </button>
         </div>
 
         {/* Zoom Slider Row */}

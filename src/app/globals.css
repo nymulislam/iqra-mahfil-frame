@@ -286,13 +286,41 @@
 
 .hero-arch {
   position: absolute;
-  inset: 1rem 0 0;
-  margin-inline: auto;
-  width: min(92%, 62rem);
-  height: min(90%, 46rem);
+  top: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(calc(100% + 1.5rem), 30rem);
+  height: clamp(330px, 48vh, 390px);
   color: var(--brand-blue-ink);
-  opacity: 0.065;
+  opacity: 0.075;
   pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, black 72%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 72%, transparent 100%);
+}
+
+@media (min-width: 640px) {
+  .hero-arch {
+    top: 1rem;
+    width: min(94%, 48rem);
+    height: clamp(400px, 54vh, 480px);
+    -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+  }
+}
+
+@media (min-width: 768px) {
+  .hero-arch {
+    inset: 1rem 0 0;
+    margin-inline: auto;
+    left: 0;
+    right: 0;
+    transform: none;
+    width: min(92%, 62rem);
+    height: min(90%, 46rem);
+    opacity: 0.065;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
 }
 
 /* Custom scrollbar */
