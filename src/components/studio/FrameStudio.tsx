@@ -86,6 +86,17 @@ export function FrameStudio() {
   const [isSheetOpen, setIsSheetOpen] = useState<boolean>(false);
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [validationError, setValidationError] = useState<'photo' | 'name' | 'designation' | null>(null);
+
+  const uploadBtnRef = useRef<HTMLButtonElement>(null);
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const designationInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (validationError === 'photo' && userImage) setValidationError(null);
+    if (validationError === 'name' && name.trim()) setValidationError(null);
+    if (validationError === 'designation' && designation.trim()) setValidationError(null);
+  }, [validationError, userImage, name, designation]);
 
   useEffect(() => {
     try {
@@ -213,8 +224,44 @@ export function FrameStudio() {
     return blob;
   };
 
+  const validateReady = (): boolean => {
+    if (!userImage) {
+      setValidationError('photo');
+      uploadBtnRef.current?.focus();
+      showToast(
+        lang === 'bn'
+          ? 'প্রথমে ফ্রেমে বসানোর জন্য আপনার একটি ছবি যোগ করুন।'
+          : 'Please upload your photo first.'
+      );
+      return false;
+    }
+    if (!name.trim()) {
+      setValidationError('name');
+      nameInputRef.current?.focus();
+      showToast(
+        lang === 'bn'
+          ? 'অনুগ্রহ করে আপনার নাম লিখুন।'
+          : 'Please enter your full name.'
+      );
+      return false;
+    }
+    if (!designation.trim()) {
+      setValidationError('designation');
+      designationInputRef.current?.focus();
+      showToast(
+        lang === 'bn'
+          ? 'অনুগ্রহ করে আপনার পদবী বা পরিচয় লিখুন অথবা নিচ থেকে বাছুন।'
+          : 'Please enter or choose your designation.'
+      );
+      return false;
+    }
+    setValidationError(null);
+    return true;
+  };
+
   const handleDownload = async () => {
     if (exporting.current || isReadingPhoto) return;
+    if (!validateReady()) return;
     exporting.current = true;
     setIsDownloading(true);
     try {
@@ -235,6 +282,7 @@ export function FrameStudio() {
 
   const handleShare = async () => {
     if (exporting.current || isReadingPhoto) return;
+    if (!validateReady()) return;
     exporting.current = true;
     setIsDownloading(true);
     try {
@@ -532,13 +580,25 @@ export function FrameStudio() {
                     <span>{lang === 'bn' ? '২. আপনার ছবি দিন' : '2. Add your photo'}</span>
                   </label>
                   <button
+                    ref={uploadBtnRef}
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="w-full py-3 px-4 rounded-2xl font-bold text-xs sm:text-sm bg-sky-50 hover:bg-sky-100 text-sky-900 border border-sky-200 transition-all flex items-center justify-center gap-2 active:scale-98 cursor-pointer shadow-2xs"
+                    className={`w-full py-3 px-4 rounded-2xl font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 active:scale-98 cursor-pointer shadow-2xs border ${
+                      validationError === 'photo'
+                        ? 'bg-rose-50 hover:bg-rose-100 text-rose-900 border-rose-400 ring-2 ring-rose-500/20'
+                        : 'bg-sky-50 hover:bg-sky-100 text-sky-900 border-sky-200'
+                    }`}
                   >
-                    <Camera className="w-4 h-4 text-sky-600" />
+                    <Camera className={`w-4 h-4 ${validationError === 'photo' ? 'text-rose-600' : 'text-sky-600'}`} />
                     <span>{userImage ? t.studio.changePhoto[lang] : t.studio.uploadPhoto[lang]}</span>
                   </button>
+                  {validationError === 'photo' && (
+                    <p className="mt-1.5 text-[11px] font-semibold text-rose-600">
+                      {lang === 'bn'
+                        ? 'ফ্রেম ডাউনলোড বা শেয়ার করার আগে আপনার একটি ছবি বাছুন।'
+                        : 'Select a photo before downloading or sharing your frame.'}
+                    </p>
+                  )}
                 </div>
 
                 {/* Step 3: Real-Time Name & Designation Inputs */}
@@ -549,6 +609,7 @@ export function FrameStudio() {
                   </label>
                   <div>
                     <input
+                      ref={nameInputRef}
                       type="text"
                       value={name}
                       onChange={(e) => {
@@ -560,11 +621,23 @@ export function FrameStudio() {
                         }
                       }}
                       placeholder={t.studio.namePlaceholder[lang]}
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-semibold text-slate-900 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 bg-slate-50/50"
+                      className={`w-full px-4 py-2.5 rounded-xl border text-xs sm:text-sm font-semibold text-slate-900 bg-slate-50/50 focus:ring-2 ${
+                        validationError === 'name'
+                          ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-500/20 bg-rose-50/40'
+                          : 'border-slate-200 focus:border-sky-500 focus:ring-sky-500/20'
+                      }`}
                     />
+                    {validationError === 'name' && (
+                      <p className="mt-1 text-[11px] font-semibold text-rose-600">
+                        {lang === 'bn'
+                          ? 'অনুগ্রহ করে আপনার নাম লিখুন।'
+                          : 'Please enter your full name.'}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <input
+                      ref={designationInputRef}
                       type="text"
                       value={roleLabel(designation)}
                       onChange={(e) => {
@@ -576,8 +649,19 @@ export function FrameStudio() {
                         }
                       }}
                       placeholder={t.studio.rolePlaceholder[lang]}
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-semibold text-slate-900 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 bg-slate-50/50"
+                      className={`w-full px-4 py-2.5 rounded-xl border text-xs sm:text-sm font-semibold text-slate-900 bg-slate-50/50 focus:ring-2 ${
+                        validationError === 'designation'
+                          ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-500/20 bg-rose-50/40'
+                          : 'border-slate-200 focus:border-sky-500 focus:ring-sky-500/20'
+                      }`}
                     />
+                    {validationError === 'designation' && (
+                      <p className="mt-1 text-[11px] font-semibold text-rose-600">
+                        {lang === 'bn'
+                          ? 'পদবী বা পরিচয় লিখুন অথবা নিচের অপশন থেকে বাছুন।'
+                          : 'Enter a designation or choose one below.'}
+                      </p>
+                    )}
                   </div>
 
                   {/* Quick Role Suggestion Chips */}

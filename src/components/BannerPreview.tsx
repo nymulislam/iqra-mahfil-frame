@@ -3,14 +3,12 @@
 import React, { useState } from 'react';
 import {
   Download,
-  Maximize2,
   Share2,
   Calendar,
   MapPin,
   Check,
   FileCheck,
   Eye,
-  ArrowUpRight,
 } from 'lucide-react';
 import { OFFICIAL_POSTER, sharePoster } from '@/lib/poster';
 import { useLanguage } from '@/context/LanguageContext';
@@ -56,7 +54,13 @@ export function BannerPreview({ onOpenLightbox }: BannerPreviewProps) {
       <p role="status" className="text-center text-sm px-4">{feedback}</p>
       {/* Background Decorative Ambient Radial Glow (Sky Blue & Cyan) */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-r from-sky-500/10 via-cyan-500/10 to-teal-500/10 blur-3xl rounded-full" />
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] rounded-full opacity-70"
+          style={{
+            background:
+              'radial-gradient(ellipse at center, rgba(14, 165, 233, 0.14) 0%, rgba(6, 182, 212, 0.08) 45%, transparent 72%)',
+          }}
+        />
       </div>
 
       <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -91,7 +95,7 @@ export function BannerPreview({ onOpenLightbox }: BannerPreviewProps) {
 
         {/* Ultra-Premium Compact Bento Showcase (Dual Pane) */}
         <div
-          className="catalis-card p-4 sm:p-6 lg:p-7 shadow-xl border overflow-hidden backdrop-blur-sm"
+          className="catalis-card hover:translate-y-0! p-4 sm:p-6 lg:p-7 shadow-xl border overflow-hidden"
           style={{
             backgroundColor: 'var(--bg-surface)',
             borderColor: 'var(--border-card)',
@@ -149,21 +153,8 @@ export function BannerPreview({ onOpenLightbox }: BannerPreviewProps) {
               </div>
 
               {/* Direct Access Action Buttons */}
-              <div className="space-y-2.5 pt-1">
-                {/* Primary Button: Open Fullscreen Lightbox */}
-                <button
-                  onClick={onOpenLightbox}
-                  className="w-full inline-flex items-center justify-center gap-2.5 px-5 py-3 rounded-2xl font-bold text-xs sm:text-sm text-white shadow-md shadow-sky-950/15 hover:shadow-lg active:scale-98 transition-all cursor-pointer group"
-                  style={{
-                    background: 'var(--primary-gradient)',
-                  }}
-                >
-                  <Maximize2 className="w-4 h-4 text-sky-200 group-hover:scale-110 transition-transform" />
-                  <span>{lang === 'bn' ? 'সম্পূর্ণ পোস্টার দেখুন (ফুলস্ক্রিন)' : 'View Fullscreen Poster'}</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 text-slate-300 ml-auto" />
-                </button>
-
-                {/* Secondary Row: Download HD & Share */}
+              <div className="pt-1">
+                {/* Download HD & Share */}
                 <div className="grid grid-cols-2 gap-2.5">
                   <a
                     href={OFFICIAL_POSTER.src}
@@ -225,7 +216,7 @@ export function BannerPreview({ onOpenLightbox }: BannerPreviewProps) {
 
                   {/* Floating Compact Click-to-Expand Badge */}
                   <div className="absolute bottom-3 inset-x-0 flex justify-center px-4 pointer-events-none">
-                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/95 text-slate-900 text-xs font-bold shadow-xl backdrop-blur-md border border-white/60 transform group-hover:scale-105 transition-all">
+                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/95 text-slate-900 text-xs font-bold shadow-xl border border-white/60 transform group-hover:scale-105 transition-transform">
                       <Eye className="w-3.5 h-3.5 text-sky-600" />
                       <span>{lang === 'bn' ? 'সম্পূর্ণ দেখতে ক্লিক করুন (জুম)' : 'Click to View Full Poster'}</span>
                     </span>
@@ -233,7 +224,7 @@ export function BannerPreview({ onOpenLightbox }: BannerPreviewProps) {
 
                   {/* Quick Corner Tag */}
                   <div className="absolute top-3 right-3 pointer-events-none">
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-900/80 text-white backdrop-blur-md border border-white/20 shadow-xs">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-900/85 text-white border border-white/20 shadow-xs">
                       <span>{lang === 'bn' ? 'অফিসিয়াল' : 'Official'}</span>
                     </span>
                   </div>

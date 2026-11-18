@@ -981,7 +981,12 @@
   font: 500 16px var(--ff);
   color: var(--tx);
   padding: 0 34px 0 10px;
+}
 
+.mobile-frame-app .f input:focus,
+.mobile-frame-app .f input:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 .mobile-frame-app .f input::placeholder {
