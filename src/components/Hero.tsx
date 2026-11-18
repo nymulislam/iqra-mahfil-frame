@@ -29,7 +29,7 @@ export function Hero({
   onOpenBanner?: () => void;
 }) {
   const { lang, t } = useLanguage();
-  const { onlineVisitors } = useLiveTracking();
+  const { onlineVisitors, livePaused } = useLiveTracking();
   const { openFrameModal } = useFrameModal();
 
   const [timeLeft, setTimeLeft] = useState<{
@@ -152,7 +152,7 @@ export function Hero({
               <span className="font-bold" style={{ color: 'var(--text-main)' }}>
                 {formatNumber(onlineVisitors, lang)}
               </span>{' '}
-              {lang === 'bn' ? 'সমষ্টিগত দর্শক তথ্য যুক্ত হয়নি' : 'Visitor totals unavailable'}
+              {livePaused ? (lang === 'bn' ? 'লাইভ আপডেট সাময়িকভাবে বন্ধ' : 'Live updates paused') : (lang === 'bn' ? 'এখন অনলাইনে' : 'Online now')}
             </span>
             <span aria-hidden="true" className="hidden opacity-40 lg:inline">|</span>
             <span className="flex items-center gap-1">

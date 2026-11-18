@@ -23,7 +23,7 @@ export const SPEAKERS: Speaker[] = [
       bn: 'সভাপতিত্ব',
       en: 'Presidency',
     },
-    photo: '/assets/speakers/shaykh-abdul-haque.jpg',
+    photo: '/assets/speakers/shaykh-abdul-haque.jpg?v=2',
     topic: {
       bn: 'মাশকুল কুরআনের দারস ও তাহফিজের গুরুত্ব',
       en: 'Importance of Quranic Recitation & Memorization',
@@ -52,7 +52,7 @@ export const SPEAKERS: Speaker[] = [
       bn: 'প্রধান মুফাসসির',
       en: 'Keynote Speaker',
     },
-    photo: '/assets/speakers/allama-asheke-elahi.jpg',
+    photo: '/assets/speakers/allama-asheke-elahi.jpg?v=2',
     topic: {
       bn: 'কুরআনের আলোয় ব্যক্তি ও পারিবারিক জীবন সংস্কার',
       en: 'Reforming Personal & Family Life through Quran',
@@ -81,7 +81,7 @@ export const SPEAKERS: Speaker[] = [
       bn: 'আখেরী বয়ান',
       en: 'Concluding Address',
     },
-    photo: '/assets/speakers/mufti-mustaqun-nabi.jpg',
+    photo: '/assets/speakers/mufti-mustaqun-nabi.jpg?v=2',
     topic: {
       bn: 'আখেরাতের প্রস্তুতি ও আত্মশুদ্ধি',
       en: 'Purification of the Soul & Hereafter Preparation',
@@ -110,7 +110,7 @@ export const SPEAKERS: Speaker[] = [
       bn: 'বিশেষ আলোচক',
       en: 'Special Speaker',
     },
-    photo: '/assets/speakers/shaykh-mustaqim-hamidi.jpg',
+    photo: '/assets/speakers/shaykh-mustaqim-hamidi.jpg?v=2',
     topic: {
       bn: 'দ্বীনি শিক্ষার বিস্তার ও সমাজ বিনির্মাণ',
       en: 'Spreading Islamic Knowledge & Societal Harmony',
@@ -139,7 +139,7 @@ export const SPEAKERS: Speaker[] = [
       bn: 'বাদ মাগরিব বয়ান',
       en: 'Maghrib Keynote',
     },
-    photo: '/assets/speakers/mufti-anisur-rahman.jpg',
+    photo: '/assets/speakers/mufti-anisur-rahman.jpg?v=2',
     topic: {
       bn: 'সমকালীন প্রেক্ষাপটে সুন্নাহর অনুসরণ',
       en: 'Adhering to the Prophetic Sunnah in Modern Times',
@@ -167,7 +167,7 @@ export const SPEAKERS: Speaker[] = [
       bn: 'আন্তর্জাতিক মেহমান',
       en: 'International Guest',
     },
-    photo: '/assets/speakers/shaykh-muhammadullah.jpg',
+    photo: '/assets/speakers/shaykh-muhammadullah.jpg?v=2',
     topic: {
       bn: 'বিশ্বদরবারে কুরআনের মর্যাদা ও আমাদের দায়িত্ব',
       en: 'The Global Honor of Quran and Our Responsibilities',
@@ -195,7 +195,7 @@ export const SPEAKERS: Speaker[] = [
       bn: 'আমন্ত্রিত আলোচক',
       en: 'Guest Speaker',
     },
-    photo: '/assets/speakers/hafiz-maulana-ibrahim.jpg',
+    photo: '/assets/speakers/hafiz-maulana-ibrahim.jpg?v=2',
   },
   {
     id: 'maulana-elias-faridi',
@@ -219,7 +219,7 @@ export const SPEAKERS: Speaker[] = [
       bn: 'আমন্ত্রিত আলোচক',
       en: 'Guest Speaker',
     },
-    photo: '/assets/speakers/maulana-elias-faridi.jpg',
+    photo: '/assets/speakers/maulana-elias-faridi.jpg?v=2',
   },
   {
     id: 'hafiz-najmus-sakib',
@@ -243,7 +243,7 @@ export const SPEAKERS: Speaker[] = [
       bn: 'বিশ্বজয়ী ক্বারী',
       en: 'World Champion',
     },
-    photo: '/assets/speakers/hafiz-najmus-sakib.jpg',
+    photo: '/assets/speakers/hafiz-najmus-sakib.jpg?v=2',
     topic: {
       bn: 'মনোমুগ্ধকর আন্তর্জাতিক ক্বিরাত মাহফিল',
       en: 'Soulful Quran Recitation & Melodies',
@@ -272,7 +272,7 @@ export const SPEAKERS: Speaker[] = [
       bn: 'আন্তর্জাতিক ক্বারী',
       en: 'International Qari',
     },
-    photo: '/assets/speakers/qari-abu-talha.jpg',
+    photo: '/assets/speakers/qari-abu-talha.jpg?v=2',
   },
 ];
 
@@ -299,7 +299,7 @@ export const ORGANIZERS: Organizer[] = [
       bn: 'সভাপতি',
       en: 'President',
     },
-    photo: '/assets/speakers/qari-siddikur-rahman.jpg',
+    photo: '/assets/speakers/qari-siddikur-rahman.jpg?v=2',
   },
   {
     id: 'mufti-abu-taher',
@@ -323,7 +323,7 @@ export const ORGANIZERS: Organizer[] = [
       bn: 'প্রতিষ্ঠাতা মুহতামীম',
       en: 'Founder Principal',
     },
-    photo: '/assets/speakers/mufti-abu-taher.jpg',
+    photo: '/assets/speakers/mufti-abu-taher.jpg?v=2',
   },
   {
     id: 'hafiz-alauddin',
@@ -347,6 +347,6 @@ export const ORGANIZERS: Organizer[] = [
       bn: 'ভাইস প্রিন্সিপাল',
       en: 'Vice Principal',
     },
-    photo: '/assets/speakers/hafiz-alauddin.jpg',
+    photo: '/assets/speakers/hafiz-alauddin.jpg?v=2',
   },
 ];

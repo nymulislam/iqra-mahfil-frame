@@ -20,6 +20,7 @@ export function LiveTracking() {
   const { lang } = useLanguage();
 
   const {
+    livePaused,
     onlineVisitors,
     totalFrames,
     pledgedAttendees,
@@ -81,8 +82,9 @@ export function LiveTracking() {
             style={{ color: 'var(--text-muted)' }}
           >
             {lang === 'bn'
-              ? 'আপনার ফ্রেম প্রস্তুতি ও অংশগ্রহণের পছন্দ এই ব্রাউজারে সংরক্ষিত হয়।'
-              : 'Frame preparations and your attendance preference are stored in this browser.'}
+              ? 'পুরো সাইটের লাইভ হিসাব প্রতি ৩০ সেকেন্ডে আপডেট হয়।'
+              : 'Site-wide totals update every 30 seconds.'}
+            {livePaused && <span role="status" className="block">{lang === 'bn' ? 'লাইভ আপডেট সাময়িকভাবে বন্ধ।' : 'Live updates paused.'}</span>}
           </p>
         </div>
 
@@ -109,7 +111,7 @@ export function LiveTracking() {
                 <AnimatedNumber value={onlineVisitors} />
               </div>
               <span className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>
-                {lang === 'bn' ? 'সমষ্টিগত তথ্য যুক্ত হয়নি' : 'Aggregate data unavailable'}
+                {lang === 'bn' ? 'গত ৯০ সেকেন্ডে সক্রিয় ব্রাউজার' : 'Active browsers in the last 90 seconds'}
               </span>
             </div>
           </div>
@@ -136,7 +138,7 @@ export function LiveTracking() {
                 <AnimatedNumber value={totalFrames} />
               </div>
               <span className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>
-                {lang === 'bn' ? 'এই ব্রাউজারে' : 'In this browser'}
+                {lang === 'bn' ? 'সাইটজুড়ে মোট' : 'Across the site'}
               </span>
             </div>
           </div>
@@ -151,7 +153,7 @@ export function LiveTracking() {
           >
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
-                {lang === 'bn' ? 'আপনার উপস্থিতির পছন্দ' : 'Your attendance preference'}
+                {lang === 'bn' ? 'উপস্থিতির মোট অঙ্গীকার' : 'Attendance pledges'}
               </span>
               <Users className="w-4 h-4 text-sky-600" />
             </div>
@@ -160,7 +162,7 @@ export function LiveTracking() {
                 <AnimatedNumber value={pledgedAttendees} />
               </div>
               <span className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>
-                {lang === 'bn' ? 'এই ব্রাউজারে সংরক্ষিত' : 'Saved in this browser'}
+                {lang === 'bn' ? 'ব্রাউজারপ্রতি একটি অঙ্গীকার' : 'One pledge per browser'}
               </span>
             </div>
           </div>

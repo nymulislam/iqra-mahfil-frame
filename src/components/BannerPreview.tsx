@@ -147,7 +147,7 @@ export function BannerPreview({ onOpenLightbox }: BannerPreviewProps) {
                   </div>
                   <div className="flex items-center gap-2.5 text-xs" style={{ color: 'var(--text-muted)' }}>
                     <MapPin className="w-4 h-4 text-[var(--brand-blue-ink)] shrink-0" />
-                    <span>{lang === 'bn' ? 'মাদরাসা সংলগ্ন বালুর মাঠ, পাটওয়ারী বাজার, ফরিদগঞ্জ' : 'Madrasah Sand Field, Patwari Bazar, Faridganj'}</span>
+                    <span>{lang === 'bn' ? 'মাদরাসা সংলগ্ন বালুর মাঠ, পাটওয়ারী বাজার, ফরিদগঞ্জ, চাঁদপুর' : 'Madrasah Sand Field, Patwari Bazar, Faridganj, Chandpur'}</span>
                   </div>
                 </div>
               </div>

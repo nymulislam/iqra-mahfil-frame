@@ -1,5 +1,5 @@
 /* sw.js — Modern Cache-Buster & Offline Handler for Next.js */
-const VERSION = "v2.0.0-nextjs";
+const VERSION = "v2.0.1-nextjs";
 const CACHE_NAME = `iqra-mahfil-${VERSION}`;
 
 const isLocalhost = Boolean(
@@ -50,6 +50,7 @@ if (isLocalhost) {
     if (req.method !== "GET") return;
 
     const url = new URL(req.url);
+    if (url.pathname.startsWith("/api/live/")) return;
 
     // For HTML navigation: Network first, fallback to cache
     if (req.mode === "navigate") {
@@ -79,7 +80,7 @@ if (isLocalhost) {
     e.respondWith(
       caches.open(CACHE_NAME).then((cache) =>
         cache.match(req).then((hit) => {
-          const netFetch = fetch(req)
+          const netFetch = fetch(req, url.origin === self.location.origin ? { cache: "no-cache" } : undefined)
             .then((res) => {
               if (res.ok) cache.put(req, res.clone());
               return res;

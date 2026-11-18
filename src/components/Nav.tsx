@@ -295,7 +295,7 @@ export function Nav() {
                   <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500">
                     <span className="flex items-center gap-1">
                       <MapPin className="w-3 h-3 text-[var(--brand-blue-ink)]" />
-                      {lang === 'bn' ? 'পাটওয়ারী বাজার, ফরিদগঞ্জ' : 'Faridganj, Chandpur'}
+                      {lang === 'bn' ? 'পাটওয়ারী বাজার, ফরিদগঞ্জ, চাঁদপুর' : 'Faridganj, Chandpur'}
                     </span>
                     <span className="font-semibold text-slate-600">
                       {lang === 'bn' ? 'সকাল ৯টা - রাত ১০টা' : '9 AM - 10 PM'}

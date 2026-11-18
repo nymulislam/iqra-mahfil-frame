@@ -13,6 +13,7 @@ export interface ActivityEvent {
 }
 
 interface LiveTrackingContextType {
+  livePaused: boolean;
   onlineVisitors: number | null;
   totalFrames: number | null;
   pledgedAttendees: number | null;
@@ -31,13 +32,12 @@ const LiveTrackingContext = createContext<LiveTrackingContextType | undefined>(u
 
 export const LiveTrackingProvider = ({ children }: { children: ReactNode }) => {
   const { lang } = useLanguage();
-  const onlineVisitors = null;
-  const [totalFrames, setTotalFrames] = useState<number | null>(null);
+  const [totals, setTotals] = useState<{onlineVisitors: number; totalFrames: number; pledgedAttendees: number} | null>(null);
+  const [livePaused, setLivePaused] = useState(false);
+  const [hasPledged, setHasPledged] = useState(false);
   const pledgeRef = useRef(false);
-  const framesRef = useRef(0);
-  const [hasPledged, setHasPledged] = useState<boolean>(false);
-  const pledgedAttendees = totalFrames === null ? null : hasPledged ? 1 : 0;
-
+  const pendingFrames = useRef(new Set<string>());
+  const refresh = useRef(() => {});
   const [userDistance, setUserDistance] = useState<number | null>(null);
   const [isLocating, setIsLocating] = useState<boolean>(false);
   const [locationErrorCode, setLocationErrorCode] = useState<'unsupported' | 'denied' | 'timeout' | 'unavailable' | null>(null);
@@ -51,60 +51,96 @@ export const LiveTrackingProvider = ({ children }: { children: ReactNode }) => {
 
   const [latestToast, setLatestToast] = useState<ActivityEvent | null>(null);
 
-  // Initialize and check saved status
   useEffect(() => {
+    const prefix = 'iqra_pending_frame:';
+    let disposed = false;
+    let running = false;
+    let again = false;
+    let ready = false;
+    const post = (route: string, body: unknown) => fetch('/api/live/' + route, {
+      method: 'POST', credentials: 'same-origin', cache: 'no-store',
+      headers: {'Content-Type':'application/json'}, body: JSON.stringify(body),
+      signal: AbortSignal.timeout(12000),
+    });
     try {
-      const pledged = localStorage.getItem('iqra_has_pledged') === 'true';
-      pledgeRef.current = pledged;
-      setHasPledged(pledged);
+      pledgeRef.current = localStorage.getItem('iqra_has_pledged') === 'true';
+      setHasPledged(pledgeRef.current);
+      const saved = localStorage.getItem('iqra_user_distance');
+      if (saved && Number.isFinite(Number(saved)) && Number(saved) >= 0) setUserDistance(Number(saved));
+    } catch { /* Storage is optional. */ }
 
-      const savedFrames = Number(localStorage.getItem('iqra_local_frames_count') || '0');
-      framesRef.current = Number.isSafeInteger(savedFrames) && savedFrames >= 0 ? savedFrames : 0;
-
-      const savedDistance = localStorage.getItem('iqra_user_distance');
-      const distance = Number(savedDistance);
-      if (savedDistance && Number.isFinite(distance) && distance >= 0) setUserDistance(distance);
-    } catch {
-      // Browser storage is optional.
-    } finally {
-      setTotalFrames(framesRef.current);
-    }
-    const syncStorage = (event: StorageEvent) => {
-      if (event.key === 'iqra_has_pledged') {
-        pledgeRef.current = event.newValue === 'true';
-        setHasPledged(pledgeRef.current);
-      }
-      if (event.key === 'iqra_local_frames_count') {
-        const count = Number(event.newValue || '0');
-        if (Number.isSafeInteger(count) && count >= 0) { framesRef.current = count; setTotalFrames(count); }
+    const sync = async () => {
+      if (disposed || document.hidden) return;
+      if (running) { again = true; return; }
+      running = true;
+      try {
+        const work = async () => {
+          if (disposed || document.hidden) return;
+          if (!ready) {
+            const session = await post('session', {});
+            if (!session.ok) throw new Error('Session unavailable');
+            ready = true;
+          }
+          try {
+            for (const key of Object.keys(localStorage)) {
+              if (key.startsWith(prefix)) pendingFrames.current.add(key.slice(prefix.length));
+            }
+            if (localStorage.getItem('iqra_has_pledged') === 'true') pledgeRef.current = true;
+          } catch { /* In-memory events can still sync. */ }
+          const frames = Array.from(pendingFrames.current).slice(0,50);
+          const response = await post('sync', {frames, pledge: pledgeRef.current});
+          if (response.status === 401) ready = false;
+          if (!response.ok) throw new Error('Counters unavailable');
+          const data = await response.json();
+          if (![data.onlineVisitors,data.totalFrames,data.pledgedAttendees].every(n => Number.isSafeInteger(n) && n >= 0)) throw new Error('Invalid totals');
+          for (const id of frames) {
+            pendingFrames.current.delete(id);
+            try { localStorage.removeItem(prefix + id); } catch { /* Retry is idempotent. */ }
+          }
+          if (disposed) return;
+          setTotals(data);
+          setLivePaused(false);
+          if (data.hasPledged) { pledgeRef.current = true; setHasPledged(true); }
+          if (pendingFrames.current.size) again = true;
+        };
+        if (navigator.locks) await navigator.locks.request('iqra-live-session', work);
+        else await work();
+      } catch { if (!disposed) setLivePaused(true); }
+      finally {
+        running = false;
+        if (again && !disposed) { again = false; void sync(); }
       }
     };
-    window.addEventListener('storage', syncStorage);
-    return () => window.removeEventListener('storage', syncStorage);
+    const offline = () => setLivePaused(true);
+    refresh.current = sync;
+    void sync();
+    const timer = window.setInterval(sync, 30000);
+    document.addEventListener('visibilitychange', sync);
+    window.addEventListener('online', sync);
+    window.addEventListener('offline', offline);
+    return () => {
+      disposed = true;
+      refresh.current = () => {};
+      clearInterval(timer);
+      document.removeEventListener('visibilitychange', sync);
+      window.removeEventListener('online', sync);
+      window.removeEventListener('offline', offline);
+    };
   }, []);
 
   const recordPledge = useCallback(() => {
-    if (pledgeRef.current) return;
     pledgeRef.current = true;
     setHasPledged(true);
-    try { localStorage.setItem('iqra_has_pledged', 'true'); } catch { /* Storage may be unavailable. */ }
-    setLatestToast({ id: String(Date.now()), name: '', location: '', action: 'pledge', time: Date.now() });
+    try { localStorage.setItem('iqra_has_pledged','true'); } catch { /* Storage is optional. */ }
+    refresh.current();
+    setLatestToast({id:String(Date.now()),name:'',location:'',action:'pledge',time:Date.now()});
   }, []);
 
   const recordFrameCreated = useCallback(() => {
-    const increment = () => {
-      let current = framesRef.current;
-      try {
-        const saved = Number(localStorage.getItem('iqra_local_frames_count'));
-        if (Number.isSafeInteger(saved) && saved >= 0) current = Math.max(current, saved);
-      } catch { /* Browser storage is optional. */ }
-      const next = Math.min(Number.MAX_SAFE_INTEGER, current + 1);
-      framesRef.current = next;
-      setTotalFrames(next);
-      try { localStorage.setItem('iqra_local_frames_count', String(next)); } catch { /* Browser storage is optional. */ }
-    };
-    if (navigator.locks) void navigator.locks.request('iqra_local_frames_count', increment).catch(increment);
-    else increment();
+    const id = crypto.randomUUID();
+    pendingFrames.current.add(id);
+    try { localStorage.setItem('iqra_pending_frame:' + id,'1'); } catch { /* Keep it in memory. */ }
+    refresh.current();
   }, []);
 
   const trackUserDistance = useCallback(() => {
@@ -150,9 +186,10 @@ export const LiveTrackingProvider = ({ children }: { children: ReactNode }) => {
   return (
     <LiveTrackingContext.Provider
       value={{
-        onlineVisitors,
-        totalFrames,
-        pledgedAttendees,
+        livePaused,
+        onlineVisitors: totals?.onlineVisitors ?? null,
+        totalFrames: totals?.totalFrames ?? null,
+        pledgedAttendees: totals?.pledgedAttendees ?? null,
         hasPledged,
         userDistance,
         isLocating,

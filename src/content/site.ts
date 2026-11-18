@@ -30,8 +30,8 @@ export const SITE = {
   url: 'https://iqra.annujum.org',
   logo: '/assets/logo.png',
   donation: {
-    bkash: CONTACT_PHONES[0],
-    nagad: CONTACT_PHONES[1],
+    bkash: CONTACT_PHONES[1],
+    rocket: `${CONTACT_PHONES[1]}-4`,
     accountType: {
       bn: 'পার্সোনাল (Send Money)',
       en: 'Personal (Send Money)',
@@ -39,6 +39,10 @@ export const SITE = {
     note: {
       bn: 'রেফারেন্সে "Mahfil" বা "Madrasah" লিখুন',
       en: 'Enter "Mahfil" or "Madrasah" as reference',
+    },
+    rocketNote: {
+      bn: '12 ডিজিটের নম্বর (শেষে ৪ সহ) · রেফারেন্সে "Mahfil" লিখুন',
+      en: '12-digit Rocket number (with trailing 4) · Ref: "Mahfil"',
     },
   },
 };

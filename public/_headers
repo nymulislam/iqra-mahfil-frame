@@ -18,9 +18,11 @@
 /css/*
   Cache-Control: no-cache
 
-# ফ্রেম/পোস্টার/আইকন: ৭ দিন (নাম বদলে বা SW VERSION বাড়িয়ে নতুন ফাইল চালু করুন)
-/assets/*
+# ফন্ট: ৭ দিন; ছবি/ফ্রেম/পোস্টার/আইকন: ETag দিয়ে প্রতিবার যাচাই (যাতে আপডেট করলে সাথে সাথে পাওয়া যায়)
+/assets/fonts/*
   Cache-Control: public, max-age=604800
+/assets/*
+  Cache-Control: public, max-age=0, must-revalidate
 
 # ঐচ্ছিক কঠোর CSP — চালু করার আগে পুরো সাইট টেস্ট করুন (docs/DEPLOYMENT.md দেখুন)
 # /*

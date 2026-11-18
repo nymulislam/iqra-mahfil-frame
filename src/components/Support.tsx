@@ -74,31 +74,32 @@ export function Support() {
             </button>
           </div>
 
-          {/* Nagad */}
+          {/* Rocket */}
           <div className="catalis-card p-6 sm:p-7 flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-base font-bold text-sky-700">
-                  {lang === 'bn' ? 'নগদ' : 'Nagad'}
+                  {t.support.rocketLabel[lang]}
                 </span>
                 <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-sky-500/10 text-sky-700 border border-sky-300/40">
                   {SITE.donation.accountType[lang]}
                 </span>
               </div>
               <p className="text-3xl font-black font-mono tracking-normal select-all mb-2" style={{ color: 'var(--text-main)' }}>
-                {displayPhone(SITE.donation.nagad, lang)}
+                {displayPhone(SITE.donation.bkash, lang)}
+                <span className="text-sky-700">{lang === 'bn' ? '-৪' : '-4'}</span>
               </p>
               <p className="text-xs mb-6 font-medium" style={{ color: 'var(--text-muted)' }}>
-                {SITE.donation.note[lang]}
+                {SITE.donation.rocketNote[lang]}
               </p>
             </div>
 
             <button
               disabled={status?.state === 'pending'}
-              onClick={() => copyPhone(SITE.donation.nagad, 'nagad')}
+              onClick={() => copyPhone(SITE.donation.rocket, 'rocket')}
               className="w-full py-3 px-6 rounded-full font-bold text-xs sm:text-sm bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-200 transition flex items-center justify-center gap-2 active:scale-95 shadow-2xs cursor-pointer"
             >
-              {status?.key === 'nagad' && status.state === 'copied' ? (
+              {status?.key === 'rocket' && status.state === 'copied' ? (
                 <>
                   <Check className="w-4 h-4 text-sky-600" />
                   <span className="text-sky-700">{t.support.copied[lang]}</span>

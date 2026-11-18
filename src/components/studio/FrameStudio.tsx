@@ -80,6 +80,7 @@ export function FrameStudio() {
 
   const snapshot = useMemo(() => ({ frameIndex, userImage, zoom, offsetX, offsetY, name, designation: roleLabel(designation), language: lang }),
     [frameIndex, userImage, zoom, offsetX, offsetY, name, designation, lang]);
+  const countedSnapshot = useRef<typeof snapshot | null>(null);
   const latestSnapshot = useRef(snapshot);
   latestSnapshot.current = snapshot;
 
@@ -220,7 +221,10 @@ export function FrameStudio() {
     const current = snapshot;
     const blob = await exportFrame(current, templateImagesRef.current);
     if (latestSnapshot.current !== current) return null;
-    recordFrameCreated();
+    if (countedSnapshot.current !== current) {
+      countedSnapshot.current = current;
+      recordFrameCreated();
+    }
     return blob;
   };
 

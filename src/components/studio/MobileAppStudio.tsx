@@ -1135,14 +1135,27 @@ export function MobileAppStudio() {
             <h3 id="dt">{text("যোগাযোগ")}</h3>
             <p id="dp">{text("প্রয়োজনে সরাসরি কল বা আর্থিক সহযোগিতা পাঠাতে পারেন")}</p>
             <div className="contact-box">
-              {(['bkash', 'nagad'] as const).map(service => (
+              {(['bkash', 'rocket'] as const).map(service => (
                 <div className="contact-num-row mb-4" key={service}>
-                  <div className="contact-phone select-all">{displayPhone(SITE.donation[service], lang)}</div>
+                  <div className="contact-phone select-all">
+                    {service === 'rocket' ? (
+                      <>
+                        {displayPhone(SITE.donation.bkash, lang)}
+                        <span className="text-sky-700">{lang === 'bn' ? '-৪' : '-4'}</span>
+                      </>
+                    ) : (
+                      displayPhone(SITE.donation[service], lang)
+                    )}
+                  </div>
                   <div className="contact-pay">
                     <span className={`pay ${service === 'bkash' ? 'bk' : 'ng'}`}>
-                      {service === 'bkash' ? (lang === 'bn' ? 'বিকাশ' : 'bKash') : (lang === 'bn' ? 'নগদ' : 'Nagad')}
+                      {service === 'bkash' ? (lang === 'bn' ? 'বিকাশ' : 'bKash') : (lang === 'bn' ? 'রকেট' : 'Rocket')}
                     </span>
-                    <span className="pay-sub">{SITE.donation.accountType[lang]}</span>
+                    <span className="pay-sub">
+                      {service === 'rocket'
+                        ? (lang === 'bn' ? 'পার্সোনাল (বারো ডিজিট, শেষে ৪)' : 'Personal (12-digit, ends with 4)')
+                        : SITE.donation.accountType[lang]}
+                    </span>
                     <button type="button" className="fbk" disabled={copyStatus?.state === 'pending'}
                       onClick={() => copyPhone(SITE.donation[service], service)}>
                       {lang === 'bn' ? 'কপি' : 'Copy'}
