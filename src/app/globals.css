@@ -1,0 +1,246 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Hind Siliguri';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/fonts/hind-siliguri-bengali-400.woff2') format('woff2');
+  unicode-range: U+0964-0965, U+0981-09FB, U+200C-200D, U+20B9, U+25CC;
+}
+
+@font-face {
+  font-family: 'Hind Siliguri';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/assets/fonts/hind-siliguri-bengali-500.woff2') format('woff2');
+  unicode-range: U+0964-0965, U+0981-09FB, U+200C-200D, U+20B9, U+25CC;
+}
+
+@font-face {
+  font-family: 'Hind Siliguri';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/assets/fonts/hind-siliguri-bengali-600.woff2') format('woff2');
+  unicode-range: U+0964-0965, U+0981-09FB, U+200C-200D, U+20B9, U+25CC;
+}
+
+@font-face {
+  font-family: 'Hind Siliguri';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/assets/fonts/hind-siliguri-bengali-700.woff2') format('woff2');
+  unicode-range: U+0964-0965, U+0981-09FB, U+200C-200D, U+20B9, U+25CC;
+}
+
+/* ==========================================================================
+   OFFICIAL IQRA MADRASAH LOGO & POSTER BRAND PALETTE
+   Colors: Royal Blue (#026CB6), Sky Cyan (#0EA5E9), Poster Crimson (#C8102E),
+   Midnight Navy (#0C2340), Luminous Slate-White (#F8FAFC).
+   Zero Yellow. Colors derived 100% from Official Logo & Poster.
+   ========================================================================== */
+
+:root {
+  --bg-page: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-subtle: #f0f7ff;
+  --text-main: #0c2340;
+  --text-muted: #475569;
+  --accent-primary: #026cb6;
+  --accent-secondary: #0ea5e9;
+  --accent-crimson: #c8102e;
+  --accent-teal: #0d9488;
+  --accent-blue-glow: rgba(2, 108, 182, 0.18);
+  --border-subtle: rgba(2, 108, 182, 0.12);
+  --border-card: rgba(2, 108, 182, 0.18);
+  --ticker-bg: #07192f;
+  --ticker-text: #ffffff;
+  --nav-bg: rgba(255, 255, 255, 0.9);
+  --pattern-stroke: rgba(2, 108, 182, 0.05);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Hind Siliguri', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 16.5px;
+    background-color: var(--bg-page);
+    color: var(--text-main);
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+
+  @media (min-width: 640px) {
+    html {
+      font-size: 17px;
+    }
+  }
+
+  @media (min-width: 768px) {
+    html {
+      font-size: 17.2px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    html {
+      font-size: 17.6px; /* Exactly 110% zoom scale on laptops and desktops */
+    }
+  }
+
+  @media (min-width: 1536px) {
+    html {
+      font-size: 18.2px; /* Ultra-clear typography for large/widescreen displays */
+    }
+  }
+
+  body {
+    overflow-x: hidden;
+    min-height: 100vh;
+    background-color: var(--bg-page);
+    color: var(--text-main);
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+}
+
+.font-serif {
+  font-family: 'Noto Serif Bengali', 'Playfair Display', Georgia, serif;
+}
+
+.font-editorial {
+  font-family: 'Playfair Display', 'Noto Serif Bengali', Georgia, serif;
+}
+
+/* Italic serif with right padding to prevent end-of-line glyph clipping */
+.italic-serif {
+  font-family: 'Noto Serif Bengali', 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  display: inline-block;
+  padding-right: 0.45em;
+  padding-left: 0.08em;
+  overflow: visible;
+}
+
+/* Official Logo/Poster Royal Blue & Cyan Fluid Silk Shimmer */
+@keyframes royalShimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.gold-shimmer,
+.accent-shimmer {
+  background: linear-gradient(90deg, #026cb6 0%, #0284c7 25%, #0ea5e9 50%, #0284c7 75%, #026cb6 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: royalShimmer 5s ease-in-out infinite;
+  display: inline-block;
+  padding-right: 0.45em;
+  padding-left: 0.08em;
+  overflow: visible;
+}
+
+/* Official Poster Crimson Accent Shimmer */
+.crimson-shimmer {
+  background: linear-gradient(90deg, #b91c1c 0%, #dc2626 25%, #c8102e 50%, #dc2626 75%, #b91c1c 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: royalShimmer 5s ease-in-out infinite;
+  display: inline-block;
+  padding-right: 0.35em;
+  padding-left: 0.05em;
+  overflow: visible;
+}
+
+/* Marquee scrolling ticker animation */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 35s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Theme Adaptive Surfaces */
+.catalis-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 20px -2px rgba(12, 35, 64, 0.05);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.catalis-card:hover {
+  border-color: rgba(2, 108, 182, 0.45);
+  box-shadow: 0 20px 25px -5px rgba(2, 108, 182, 0.08), 0 8px 10px -6px rgba(2, 108, 182, 0.04);
+  transform: translateY(-2px);
+}
+
+.catalis-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 9999px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-main);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.catalis-pill-neutral {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 9999px;
+  background-color: var(--bg-surface-subtle);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* Authentic Islamic 8-Point Star Geometric Rosette Watermark Pattern (All Blue/Cyan, Zero Yellow) */
+.bg-islamic-pattern {
+  background-color: var(--bg-page);
+  background-image:
+    radial-gradient(ellipse 70% 40% at 50% 0%, rgba(2, 108, 182, 0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 90% 40%, rgba(14, 165, 233, 0.05) 0%, transparent 60%),
+    url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg stroke='%23026cb6' stroke-width='0.65' stroke-opacity='0.08'%3E%3Cpath d='M40 0l40 40-40 40L0 40z'/%3E%3Cpath d='M0 0l80 80M80 0L0 80' stroke-dasharray='2,3' stroke-opacity='0.04'/%3E%3Ccircle cx='40' cy='40' r='14' stroke='%230ea5e9' stroke-opacity='0.08'/%3E%3Cpath d='M40 16l24 24-24 24-24-24z' stroke='%23026cb6' stroke-opacity='0.06'/%3E%3Ccircle cx='40' cy='40' r='5' fill='%230284c7' fill-opacity='0.04'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-size: 100% 100%, 100% 100%, 80px 80px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-page);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-card);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-primary);
+}

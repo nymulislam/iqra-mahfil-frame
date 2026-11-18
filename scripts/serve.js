@@ -4,7 +4,8 @@ const path = require('path');
 const os = require('os');
 
 let PORT = parseInt(process.env.PORT || '8788', 10);
-const PUBLIC_DIR = path.join(__dirname, '..', 'public');
+const OUT_DIR = path.join(__dirname, '..', 'out');
+const PUBLIC_DIR = fs.existsSync(OUT_DIR) ? OUT_DIR : path.join(__dirname, '..', 'public');
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',

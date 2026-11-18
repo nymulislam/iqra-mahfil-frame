@@ -1,16 +1,20 @@
 {
-  // Cloudflare Workers (Static Assets) কনফিগ — `npx wrangler deploy`
-  // Pages ব্যবহার করলে এই ফাইল লাগে না: docs/DEPLOYMENT.md দেখুন।
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "iqra-mahfil-frame",
   "compatibility_date": "2025-11-01",
   "assets": {
-    "directory": "./public"
+    "directory": "./out"
   },
   "observability": {
     "logs": {
       "enabled": true,
+      "head_sampling_rate": 1,
       "invocation_logs": true,
+      "persist": true
+    },
+    "traces": {
+      "enabled": false,
+      "head_sampling_rate": 1,
       "persist": true
     }
   }
