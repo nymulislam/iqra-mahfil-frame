@@ -28,8 +28,8 @@ export const I18N = {
     sectionTag: { bn: 'পবিত্র আয়োজন', en: 'Sacred Gathering' },
     sectionTitle: { bn: 'বার্ষিক তাফসীরুল কুরআন মাহফিল ২০২৬', en: 'Annual Tafsirul Quran Mahfil 2026' },
     sectionDesc: {
-      bn: 'হাজারো ধর্মপ্রাণ মুসলমানদের অংশগ্রহণে এক আত্মশুদ্ধিমূলক রূহানী সমাবেশ',
-      en: 'A spiritually enriching gathering bringing together thousands of faithful believers.',
+      bn: 'কুরআনের আলো ও দ্বীনি হেদায়াতের লক্ষ্যে আয়োজিত দিনব্যাপী তাফসীরুল কুরআন মাহফিলের পূর্ণাঙ্গ বিবরণ',
+      en: 'Full details of the day-long Tafsirul Quran Mahfil dedicated to Quranic light and Islamic guidance',
     },
     venueLabel: { bn: 'স্থান ও অবস্থান', en: 'Venue & Directions' },
     dateLabel: { bn: 'তারিখ ও সময়', en: 'Date & Time' },

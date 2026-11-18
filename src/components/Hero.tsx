@@ -67,7 +67,7 @@ export function Hero({
 
   return (
     <section
-      className="mahfil-hero relative pt-20 sm:pt-24 pb-12 md:pt-32 md:pb-16 overflow-hidden bg-islamic-pattern transition-colors duration-500"
+      className="mahfil-hero relative pt-20 sm:pt-24 pb-8 md:pt-32 md:pb-16 overflow-hidden bg-islamic-pattern transition-colors duration-500"
     >
       <svg className="hero-arch" viewBox="0 0 800 600" preserveAspectRatio="none" aria-hidden="true">
         <path d="M28 600V310C28 162 245 146 400 12C555 146 772 162 772 310V600" fill="none" stroke="currentColor" strokeWidth="2" vectorEffect="non-scaling-stroke" />
@@ -82,13 +82,13 @@ export function Hero({
             transition={{ duration: 0.5, delay: 0.08 }}
             className="mb-6 grid gap-2 text-center font-serif font-bold text-[var(--text-main)] sm:mb-8"
           >
-            <span className="text-balance font-sans text-xs font-semibold uppercase tracking-wide text-sky-700 sm:text-base">
+            <span className="text-balance font-sans text-[13px] font-semibold uppercase tracking-wide text-sky-700 sm:text-base">
               {lang === 'bn' ? 'ইক্বরা ইন্টারন্যাশনাল মাদরাসার উদ্যোগে' : 'Iqra International Madrasah Presents'}
             </span>
-            <span className="text-xl leading-tight sm:text-3xl">
+            <span className="text-2xl font-bold leading-tight sm:text-3xl">
               {lang === 'bn' ? 'বার্ষিক' : 'Annual'}
             </span>
-            <span className="text-balance text-[clamp(1.65rem,4.8vw,3.75rem)] leading-[1.3] tracking-tight">
+            <span className="text-balance text-[clamp(2.2rem,10.5vw,3.75rem)] sm:text-[clamp(2.25rem,5.4vw,4.25rem)] font-extrabold leading-[1.25] tracking-tight">
               <span className="italic-serif accent-shimmer hero-event-name">
                 {lang === 'bn' ? 'তাফসীরুল কুরআন মাহফিল' : 'Tafsirul Quran Mahfil'}
               </span>{'\u00a0'}

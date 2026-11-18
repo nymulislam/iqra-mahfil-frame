@@ -62,12 +62,12 @@ export function MahfilDetails({ onOpenBanner }: { onOpenBanner?: () => void }) {
           >
             {lang === 'bn' ? (
               <>
-                কুরআনের নূর ও দ্বীনি হেদায়াত,{' '}
-                <span className="text-sky-700 font-bold block sm:inline-block pr-4">মাহফিল বিস্তারিত</span>
+                মাহফিলের বিস্তারিত ও{' '}
+                <span className="text-sky-700 font-bold block sm:inline-block pr-4">পর্বভিত্তিক সময়সূচি</span>
               </>
             ) : (
               <>
-                Light of Quran & Guidance,{' '}
+                Mahfil Overview &{' '}
                 <span className="text-sky-700 font-bold block sm:inline-block pr-4">Event Details</span>
               </>
             )}
@@ -237,7 +237,8 @@ export function MahfilDetails({ onOpenBanner }: { onOpenBanner?: () => void }) {
         </div>
 
         {/* 4 Feature Highlights Grid (Clean, High-Readability Editorial Cards) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-14">
+        <div className="mb-14">
+        <div className="flex overflow-x-auto snap-x snap-mandatory gap-3.5 pb-3 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 sm:pt-0 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-5 scrollbar-none">
           {MAHFIL.highlights.map((item, idx) => {
             const IconComp = ICON_MAP[item.icon] || Award;
             const partLabels = [
@@ -250,7 +251,7 @@ export function MahfilDetails({ onOpenBanner }: { onOpenBanner?: () => void }) {
               <motion.div
                 key={item.id}
                 whileHover={{ y: -4 }}
-                className="catalis-card p-5 sm:p-6 flex flex-col justify-between group transition-all duration-300 relative overflow-hidden bg-white shadow-md hover:shadow-xl hover:border-sky-300"
+                className="catalis-card p-5 sm:p-6 flex flex-col justify-between w-[84vw] max-w-[295px] shrink-0 snap-center sm:w-auto sm:max-w-none sm:shrink group transition-all duration-300 relative overflow-hidden bg-white shadow-md hover:shadow-xl hover:border-sky-300"
               >
                 {/* Subtle top specular accent border */}
                 <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-teal-500 via-sky-500 to-blue-600 opacity-80 group-hover:opacity-100 transition-opacity" />
@@ -303,6 +304,12 @@ export function MahfilDetails({ onOpenBanner }: { onOpenBanner?: () => void }) {
               </motion.div>
             );
           })}
+        </div>
+
+        {/* Mobile swipe hint */}
+        <div className="sm:hidden flex items-center justify-center gap-1.5 text-[11px] font-bold text-sky-800/80 pt-1">
+          <span>{lang === 'bn' ? '← সোয়াইপ করে সবগুলো পর্ব দেখুন →' : '← Swipe to view all sessions →'}</span>
+        </div>
         </div>
 
         {/* Next year's notice is secondary to the current event. */}
