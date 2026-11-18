@@ -1,6 +1,5 @@
 export interface SponsorInfo {
   name: { bn: string; en: string };
-  tagline: { bn: string; en: string };
   badge: { bn: string; en: string };
   desc: { bn: string; en: string };
   director: {
@@ -24,10 +23,6 @@ export const SPONSOR_DATA: SponsorInfo = {
   name: {
     bn: 'আর রহমান ট্রাভেলস',
     en: 'Ar-Rahman Travels',
-  },
-  tagline: {
-    bn: 'সততাই মূল পুঁজি',
-    en: 'Honesty is Our Foundation',
   },
   badge: {
     bn: 'অফিসিয়াল স্পনসর • হজ্ব ও উমরাহ',

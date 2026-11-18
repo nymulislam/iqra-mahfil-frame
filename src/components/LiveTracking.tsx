@@ -9,6 +9,8 @@ import {
   Compass,
   Navigation,
   ExternalLink,
+  Activity,
+  Calendar,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useLanguage } from '@/context/LanguageContext';
@@ -54,12 +56,18 @@ export function LiveTracking() {
     >
       {/* Ambient Radial Lighting */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-gradient-to-r from-teal-500/8 via-teal-500/8 to-sky-500/8 blur-3xl rounded-full" />
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] rounded-full opacity-75"
+          style={{
+            background:
+              'radial-gradient(ellipse at center, rgba(20, 184, 166, 0.09) 0%, rgba(14, 165, 233, 0.07) 45%, transparent 72%)',
+          }}
+        />
       </div>
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Compact Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
+        <div className="text-center max-w-2xl mx-auto mb-6 sm:mb-9">
           <h2
             className="font-serif text-2xl sm:text-4xl font-extrabold tracking-tight leading-[1.25] sm:leading-[1.2] mb-2 overflow-visible"
             style={{ color: 'var(--text-main)' }}
@@ -67,12 +75,12 @@ export function LiveTracking() {
             {lang === 'bn' ? (
               <>
                 আপনার অংশগ্রহণ ও{' '}
-                <span className="text-sky-700 font-bold block sm:inline-block pr-4">দূরত্ব পরিমাপ</span>
+                <span className="text-sky-700 font-bold block sm:inline-block sm:pr-4">দূরত্ব পরিমাপ</span>
               </>
             ) : (
               <>
                 Your Participation &{' '}
-                <span className="text-sky-700 font-bold block sm:inline-block pr-4">Venue Distance</span>
+                <span className="text-sky-700 font-bold block sm:inline-block sm:pr-4">Venue Distance</span>
               </>
             )}
           </h2>
@@ -84,84 +92,111 @@ export function LiveTracking() {
             {lang === 'bn'
               ? 'পুরো সাইটের লাইভ হিসাব প্রতি ৩০ সেকেন্ডে আপডেট হয়।'
               : 'Site-wide totals update every 30 seconds.'}
-            {livePaused && <span role="status" className="block">{lang === 'bn' ? 'লাইভ আপডেট সাময়িকভাবে বন্ধ।' : 'Live updates paused.'}</span>}
           </p>
+
+          {livePaused && (
+            <div className="mt-2.5 flex justify-center">
+              <span
+                role="status"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-800 border border-amber-400/30"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                <span>{lang === 'bn' ? 'লাইভ আপডেট সাময়িকভাবে বন্ধ' : 'Live updates paused'}</span>
+              </span>
+            </div>
+          )}
         </div>
 
-        {/* 4 Catalis-Style HUD Metric Ribbon (Compact Glass Row) */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
+        {/* 3-Column HUD Metric Ribbon */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-5 sm:mb-7">
           {/* Metric 1: Live Online */}
           <div
-            className="catalis-card p-4 sm:p-5 flex flex-col justify-between border shadow-xs"
+            className="catalis-card hover:translate-y-0! p-3.5 sm:p-5 flex sm:flex-col items-center sm:items-stretch justify-between gap-3 border shadow-xs"
             style={{
               backgroundColor: 'var(--bg-surface)',
               borderColor: 'var(--border-card)',
             }}
           >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+            <div className="flex items-center justify-between sm:mb-2 order-2 sm:order-1">
+              <span className="hidden sm:inline text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
                 {lang === 'bn' ? 'অনলাইন দর্শক' : 'Online visitors'}
               </span>
+              <span className="w-8 h-8 rounded-xl bg-sky-500/10 text-sky-600 flex items-center justify-center shrink-0">
+                <Activity className="w-4 h-4" />
+              </span>
             </div>
-            <div>
+            <div className="order-1 sm:order-2">
+              <span className="sm:hidden text-[11px] font-bold uppercase tracking-wider block mb-0.5" style={{ color: 'var(--text-muted)' }}>
+                {lang === 'bn' ? 'অনলাইন দর্শক' : 'Online visitors'}
+              </span>
               <div
-                className="font-serif text-2xl sm:text-3xl font-extrabold tracking-tight"
+                className="font-serif text-xl sm:text-3xl font-extrabold tracking-tight leading-none mb-1"
                 style={{ color: 'var(--text-main)' }}
               >
                 <AnimatedNumber value={onlineVisitors} />
               </div>
-              <span className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>
-                {lang === 'bn' ? 'গত ৯০ সেকেন্ডে সক্রিয় ব্রাউজার' : 'Active browsers in the last 90 seconds'}
+              <span className="text-[11px] sm:text-xs font-medium block" style={{ color: 'var(--text-muted)' }}>
+                {lang === 'bn' ? 'গত ৯০ সেকেন্ডে সক্রিয় ব্রাউজার' : 'Active browsers in the last 90s'}
               </span>
             </div>
           </div>
 
           {/* Metric 2: Frames Built */}
           <div
-            className="catalis-card p-4 sm:p-5 flex flex-col justify-between border shadow-xs"
+            className="catalis-card hover:translate-y-0! p-3.5 sm:p-5 flex sm:flex-col items-center sm:items-stretch justify-between gap-3 border shadow-xs"
             style={{
               backgroundColor: 'var(--bg-surface)',
               borderColor: 'var(--border-card)',
             }}
           >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+            <div className="flex items-center justify-between sm:mb-2 order-2 sm:order-1">
+              <span className="hidden sm:inline text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
                 {lang === 'bn' ? 'ফ্রেম প্রস্তুতি' : 'Frame preparations'}
               </span>
-              <Camera className="w-4 h-4 text-sky-600" />
+              <span className="w-8 h-8 rounded-xl bg-sky-500/10 text-sky-600 flex items-center justify-center shrink-0">
+                <Camera className="w-4 h-4" />
+              </span>
             </div>
-            <div>
+            <div className="order-1 sm:order-2">
+              <span className="sm:hidden text-[11px] font-bold uppercase tracking-wider block mb-0.5" style={{ color: 'var(--text-muted)' }}>
+                {lang === 'bn' ? 'ফ্রেম প্রস্তুতি' : 'Frame preparations'}
+              </span>
               <div
-                className="font-serif text-2xl sm:text-3xl font-extrabold tracking-tight"
+                className="font-serif text-xl sm:text-3xl font-extrabold tracking-tight leading-none mb-1"
                 style={{ color: 'var(--text-main)' }}
               >
                 <AnimatedNumber value={totalFrames} />
               </div>
-              <span className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>
-                {lang === 'bn' ? 'সাইটজুড়ে মোট' : 'Across the site'}
+              <span className="text-[11px] sm:text-xs font-medium block" style={{ color: 'var(--text-muted)' }}>
+                {lang === 'bn' ? 'সাইটজুড়ে মোট তৈরি' : 'Across the site'}
               </span>
             </div>
           </div>
 
           {/* Metric 3: Attendees Pledged */}
           <div
-            className="catalis-card p-4 sm:p-5 flex flex-col justify-between border shadow-xs"
+            className="catalis-card hover:translate-y-0! p-3.5 sm:p-5 flex sm:flex-col items-center sm:items-stretch justify-between gap-3 border shadow-xs"
             style={{
               backgroundColor: 'var(--bg-surface)',
               borderColor: 'var(--border-card)',
             }}
           >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+            <div className="flex items-center justify-between sm:mb-2 order-2 sm:order-1">
+              <span className="hidden sm:inline text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
                 {lang === 'bn' ? 'উপস্থিতির মোট অঙ্গীকার' : 'Attendance pledges'}
               </span>
-              <Users className="w-4 h-4 text-sky-600" />
+              <span className="w-8 h-8 rounded-xl bg-sky-500/10 text-sky-600 flex items-center justify-center shrink-0">
+                <Users className="w-4 h-4" />
+              </span>
             </div>
-            <div>
-              <div className="font-serif text-2xl sm:text-3xl font-extrabold text-sky-700 tracking-tight">
+            <div className="order-1 sm:order-2">
+              <span className="sm:hidden text-[11px] font-bold uppercase tracking-wider block mb-0.5" style={{ color: 'var(--text-muted)' }}>
+                {lang === 'bn' ? 'উপস্থিতির মোট অঙ্গীকার' : 'Attendance pledges'}
+              </span>
+              <div className="font-serif text-xl sm:text-3xl font-extrabold text-sky-700 tracking-tight leading-none mb-1">
                 <AnimatedNumber value={pledgedAttendees} />
               </div>
-              <span className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>
+              <span className="text-[11px] sm:text-xs font-medium block" style={{ color: 'var(--text-muted)' }}>
                 {lang === 'bn' ? 'ব্রাউজারপ্রতি একটি অঙ্গীকার' : 'One pledge per browser'}
               </span>
             </div>
@@ -171,9 +206,9 @@ export function LiveTracking() {
 
         {/* 2-Column Unified Bento: Attendance Hub + Venue GPS Radar */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-stretch">
-          {/* Card A (7 Cols): Attendance Pledge Hub & Top Regions */}
+          {/* Card A (7 Cols): Attendance Pledge Hub */}
           <div
-            className="lg:col-span-7 catalis-card p-5 sm:p-6 lg:p-7 flex flex-col justify-between border shadow-lg backdrop-blur-sm"
+            className="lg:col-span-7 catalis-card hover:translate-y-0! p-5 sm:p-6 lg:p-7 flex flex-col justify-between border shadow-lg"
             style={{
               backgroundColor: 'var(--bg-surface)',
               borderColor: 'var(--border-card)',
@@ -181,11 +216,14 @@ export function LiveTracking() {
           >
             <div>
               {/* Card Header */}
-              <div className="flex items-center justify-between gap-3 mb-4">
+              <div className="flex items-center justify-between gap-3 mb-3.5">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-sky-500/10 text-sky-800 border border-sky-500/20">
                   <CheckCircle className="w-3.5 h-3.5 text-sky-600" />
                   <span>{lang === 'bn' ? 'অংশগ্রহণ নিশ্চিতকরণ' : 'Attendance Pledge'}</span>
                 </div>
+                <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200/80">
+                  {lang === 'bn' ? 'সবার জন্য উন্মুক্ত' : 'Open to All'}
+                </span>
               </div>
 
               <h3
@@ -197,12 +235,29 @@ export function LiveTracking() {
                   : 'Are you attending the Grand Mahfil on 5 December?'}
               </h3>
 
-              <p className="text-xs sm:text-sm leading-relaxed mb-5" style={{ color: 'var(--text-muted)' }}>
+              <p className="text-xs sm:text-sm leading-relaxed mb-4" style={{ color: 'var(--text-muted)' }}>
                 {lang === 'bn'
-                  ? 'আপনার আসার ইচ্ছা এই ব্রাউজারে মনে রাখা হবে। আয়োজকদের কাছে নিবন্ধন পাঠাতে হেল্পলাইনে যোগাযোগ করুন।'
+                  ? 'আপনার আসার ইচ্ছা এই ব্রাউজারে মনে রাখা হবে। আয়োজকদের সাথে যোগাযোগ করতে হেল্পলাইন দেখুন।'
                   : 'Save your intention to attend on this browser. Contact the helpline to register with the organizers.'}
               </p>
 
+              {/* Event Quick Info Box */}
+              <div
+                className="p-3.5 sm:p-4 rounded-2xl border space-y-2.5 mb-5"
+                style={{
+                  backgroundColor: 'var(--bg-surface-subtle)',
+                  borderColor: 'var(--border-subtle)',
+                }}
+              >
+                <div className="flex items-center gap-2.5 text-xs sm:text-sm font-semibold" style={{ color: 'var(--text-main)' }}>
+                  <Calendar className="w-4 h-4 text-sky-600 shrink-0" />
+                  <span>{lang === 'bn' ? '৫ ডিসেম্বর ২০২৬, শনিবার · বাদ যোহর' : 'Saturday, 5 December 2026 · After Zohr'}</span>
+                </div>
+                <div className="flex items-start gap-2.5 text-xs" style={{ color: 'var(--text-muted)' }}>
+                  <MapPin className="w-4 h-4 text-[var(--brand-blue-ink)] shrink-0 mt-0.5" />
+                  <span>{SITE.locationDetails[lang]}</span>
+                </div>
+              </div>
             </div>
 
             {/* Pledge Action Button / Status */}
@@ -236,7 +291,7 @@ export function LiveTracking() {
 
           {/* Card B (5 Cols): Live GPS Distance & Navigation Radar */}
           <div
-            className="lg:col-span-5 catalis-card p-5 sm:p-6 lg:p-7 flex flex-col justify-between border shadow-lg backdrop-blur-sm"
+            className="lg:col-span-5 catalis-card hover:translate-y-0! p-5 sm:p-6 lg:p-7 flex flex-col justify-between border shadow-lg"
             style={{
               backgroundColor: 'var(--bg-surface)',
               borderColor: 'var(--border-card)',
@@ -244,13 +299,13 @@ export function LiveTracking() {
           >
             <div>
               {/* Header */}
-              <div className="flex items-center justify-between gap-3 mb-4">
+              <div className="flex items-center justify-between gap-3 mb-3.5">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-sky-500/10 text-sky-800 border border-sky-500/20">
                   <Compass className="w-3.5 h-3.5 text-sky-600" />
                   <span>{lang === 'bn' ? 'দূরত্ব ও দিকনির্ণয়' : 'Distance Radar'}</span>
                 </div>
-                <span className="text-[11px] font-semibold text-slate-500">
-                  {lang === 'bn' ? 'স্মার্ট জিপিএস' : 'GPS'}
+                <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200/80">
+                  {lang === 'bn' ? 'স্মার্ট জিপিএস' : 'Smart GPS'}
                 </span>
               </div>
 

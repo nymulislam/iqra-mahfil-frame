@@ -16,6 +16,7 @@ import { Sponsor } from '@/components/Sponsor';
 import { Footer } from '@/components/Footer';
 import { TabBar } from '@/components/TabBar';
 import { CalendarModal } from '@/components/CalendarModal';
+import { ScrollReveal } from '@/components/ScrollReveal';
 
 export default function HomePage() {
   const [modalState, setModalState] = useState<{
@@ -66,34 +67,52 @@ export default function HomePage() {
         <Ticker />
 
         {/* 2. Highlighted Mahfil Overview Bento (Date, Venue & Supervision) */}
-        <MahfilDetails onOpenBanner={openBanner} />
+        <ScrollReveal>
+          <MahfilDetails onOpenBanner={openBanner} />
+        </ScrollReveal>
 
         {/* 3. Official Mahfil Banner & Poster Dual-Pane Showcase */}
-        <BannerPreview onOpenLightbox={openBanner} />
+        <ScrollReveal>
+          <BannerPreview onOpenLightbox={openBanner} />
+        </ScrollReveal>
 
         {/* 4. Invited Keynote Scholars & Organizers (3-Line Depth Roller) */}
-        <Speakers />
+        <ScrollReveal y={0}>
+          <Speakers />
+        </ScrollReveal>
 
         {/* 5. Viral Keepsake Frame Studio */}
-        <FrameStudio />
+        <ScrollReveal y={0}>
+          <FrameStudio />
+        </ScrollReveal>
 
         {/* 6. Ultra-Premium Live Community Pulse & GPS Distance Radar */}
-        <LiveTracking />
+        <ScrollReveal>
+          <LiveTracking />
+        </ScrollReveal>
 
         {/* 7. Madrasah Departments & Admissions 2027 */}
-        <Madrasah
-          onOpenBrochure={openBrochure}
-        />
+        <ScrollReveal>
+          <Madrasah
+            onOpenBrochure={openBrochure}
+          />
+        </ScrollReveal>
 
         {/* 8. Sadaqah Jariyah & Support */}
-        <Support />
+        <ScrollReveal>
+          <Support />
+        </ScrollReveal>
 
         {/* 9. Official Travel Partner & Sponsor: Ar-Rahman Travels (Hajj & Umrah) */}
-        <Sponsor onOpenCard={openSponsorCard} />
+        <ScrollReveal>
+          <Sponsor onOpenCard={openSponsorCard} />
+        </ScrollReveal>
       </main>
 
       {/* Minimal & Ultra-Modern Footer */}
-      <Footer />
+      <ScrollReveal y={16}>
+        <Footer />
+      </ScrollReveal>
 
       {/* Mobile Floating Bottom TabBar */}
       <TabBar />

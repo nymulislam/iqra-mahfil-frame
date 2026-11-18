@@ -415,7 +415,7 @@ export function Speakers() {
             <button
               type="button"
               onClick={() => setActiveTab('speakers')}
-              className={`flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold leading-tight whitespace-nowrap transition-all duration-300 cursor-pointer ${
+              className={`flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-6 py-2 sm:py-2.5 rounded-full text-[11px] sm:text-sm font-bold leading-tight whitespace-nowrap transition-all duration-300 cursor-pointer min-w-0 ${
                 activeTab === 'speakers' ? 'shadow-md' : 'hover:opacity-100 opacity-80'
               }`}
               style={{
@@ -428,7 +428,14 @@ export function Speakers() {
                   activeTab === 'speakers' ? 'text-sky-200' : 'text-sky-600'
                 }`}
               />
-              <span>{lang === 'bn' ? 'আমন্ত্রিত আলোচকবৃন্দ' : 'Keynote Scholars'}</span>
+              {lang === 'bn' ? (
+                <span>আমন্ত্রিত আলোচকবৃন্দ</span>
+              ) : (
+                <>
+                  <span className="sm:hidden">Scholars</span>
+                  <span className="hidden sm:inline">Keynote Scholars</span>
+                </>
+              )}
               <span
                 className={`text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-mono font-bold ${
                   activeTab === 'speakers'
@@ -443,7 +450,7 @@ export function Speakers() {
             <button
               type="button"
               onClick={() => setActiveTab('organizers')}
-              className={`flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold leading-tight whitespace-nowrap transition-all duration-300 cursor-pointer ${
+              className={`flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-6 py-2 sm:py-2.5 rounded-full text-[11px] sm:text-sm font-bold leading-tight whitespace-nowrap transition-all duration-300 cursor-pointer min-w-0 ${
                 activeTab === 'organizers' ? 'shadow-md' : 'hover:opacity-100 opacity-80'
               }`}
               style={{
@@ -456,7 +463,14 @@ export function Speakers() {
                   activeTab === 'organizers' ? 'text-cyan-200' : 'text-sky-600'
                 }`}
               />
-              <span>{lang === 'bn' ? 'আয়োজক ও তত্ত্বাবধায়ক' : 'Organizers & Leadership'}</span>
+              {lang === 'bn' ? (
+                <span>আয়োজক ও তত্ত্বাবধায়ক</span>
+              ) : (
+                <>
+                  <span className="sm:hidden">Organizers</span>
+                  <span className="hidden sm:inline">Organizers & Leadership</span>
+                </>
+              )}
               <span
                 className={`text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-mono font-bold ${
                   activeTab === 'organizers'

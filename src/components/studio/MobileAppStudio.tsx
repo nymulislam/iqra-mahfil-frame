@@ -757,7 +757,7 @@ export function MobileAppStudio() {
             onClick={() => handleSelectFrame(0)}
           >
             <span className="tab-dot dot-1" />
-            <span>{text("ফ্রেম ১ (রয়েল ব্লু)")}</span>
+            <span>{text("ফ্রেম ১")}</span>
           </button>
           <button
             type="button"
@@ -766,7 +766,7 @@ export function MobileAppStudio() {
             onClick={() => handleSelectFrame(1)}
           >
             <span className="tab-dot dot-2" />
-            <span>{text("ফ্রেম ২ (পোস্টার থিম)")}</span>
+            <span>{text("ফ্রেম ২")}</span>
           </button>
         </div>
 

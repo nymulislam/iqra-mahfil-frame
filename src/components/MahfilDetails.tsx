@@ -151,12 +151,12 @@ export function MahfilDetails({ onOpenBanner }: { onOpenBanner?: () => void }) {
           {/* Bento Card 2 (Span 5 cols): Supervision & Leadership */}
           <div className="lg:col-span-5 catalis-card p-6 sm:p-8 flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between mb-4">
-                <span className="catalis-pill text-xs text-sky-800 font-bold">
-                  <Award className="w-3.5 h-3.5 text-sky-600" />
-                  {lang === 'bn' ? 'সার্বিক তত্ত্বাবধান ও আয়োজন' : 'Supervision & Organization'}
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+                <span className="catalis-pill text-xs text-sky-800 font-bold whitespace-nowrap">
+                  <Award className="w-3.5 h-3.5 text-sky-600 shrink-0" />
+                  {lang === 'bn' ? 'সার্বিক তত্ত্বাবধান ও আয়োজন' : 'Supervision'}
                 </span>
-                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-sky-500/10 text-sky-800 border border-sky-300/40">
+                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-sky-500/10 text-sky-800 border border-sky-300/40 whitespace-nowrap shrink-0">
                   {SITE.shortName[lang]}
                 </span>
               </div>

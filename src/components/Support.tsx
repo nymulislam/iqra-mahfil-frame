@@ -14,9 +14,8 @@ export function Support() {
   return (
     <section
       id="support"
-      className="py-20 md:py-28 relative overflow-hidden border-t transition-colors duration-500"
+      className="py-16 md:py-24 relative overflow-hidden border-t bg-islamic-pattern transition-colors duration-500"
       style={{
-        backgroundColor: 'var(--bg-page)',
         borderColor: 'var(--border-subtle)',
       }}
     >
