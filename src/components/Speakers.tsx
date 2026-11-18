@@ -38,17 +38,17 @@ function ScholarCard({
         e.stopPropagation();
         onSelect(spk);
       }}
-      className={`catalis-card p-4 sm:p-5 lg:p-6 flex flex-col justify-between group transition-all duration-300 cursor-pointer ${colClass} ${
+      className={`catalis-card p-3.5 sm:p-4 lg:p-5 flex flex-col justify-between group transition-shadow duration-300 cursor-pointer ${colClass} ${
         isCenter
-          ? 'shadow-xl shadow-sky-950/8 border-sky-300/80 ring-1 ring-sky-400/20 hover:scale-[1.03]'
-          : 'border-slate-200/60 shadow-sm hover:scale-[1.02]'
-      } ${spk.highlight && isCenter ? 'ring-2 ring-sky-500/30' : ''}`}
+          ? 'shadow-lg shadow-sky-950/6 border-sky-300/80 ring-1 ring-sky-400/20 hover:border-sky-400'
+          : 'border-slate-200/70 shadow-xs'
+      } ${spk.highlight && isCenter ? 'ring-2 ring-sky-500/25' : ''}`}
     >
       <div>
         {/* Portrait & Role Badge Row */}
-        <div className="flex items-start gap-3 sm:gap-3.5 mb-3.5">
+        <div className="flex items-start gap-3 mb-2.5">
           <div
-            className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden border shadow-xs shrink-0 group-hover:scale-105 transition-transform duration-300 flex items-center justify-center ring-2 ring-black/5"
+            className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden border shadow-2xs shrink-0 group-hover:scale-105 transition-transform duration-300 flex items-center justify-center ring-1 ring-black/5"
             style={{
               backgroundColor: 'var(--bg-surface-subtle)',
               borderColor: 'var(--border-card)',
@@ -59,24 +59,24 @@ function ScholarCard({
               <img
                 src={spk.photo}
                 alt={spk.name[lang]}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover object-top"
               />
             ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center p-2 text-center bg-gradient-to-br from-sky-500/10 via-cyan-500/10 to-teal-500/10">
+              <div className="w-full h-full flex flex-col items-center justify-center p-1.5 text-center bg-gradient-to-br from-sky-500/10 via-cyan-500/10 to-teal-500/10">
                 <div
-                  className="w-10 h-10 rounded-full border flex items-center justify-center shadow-2xs"
+                  className="w-8 h-8 rounded-full border flex items-center justify-center shadow-2xs"
                   style={{
                     backgroundColor: 'var(--bg-surface)',
                     borderColor: 'var(--border-subtle)',
                   }}
                 >
-                  <span className="font-serif font-bold text-base text-sky-600">
+                  <span className="font-serif font-bold text-sm text-sky-600">
                     {spk.name[lang].split(' ').slice(-1)[0][0]}
                   </span>
                 </div>
-                <span
-                  className="text-[9px] font-bold mt-0.5 uppercase tracking-wider line-clamp-1 text-sky-700"
-                >
+                <span className="text-[8px] font-bold mt-0.5 uppercase tracking-wider line-clamp-1 text-sky-700">
                   {spk.badge ? spk.badge[lang] : 'সম্মানিত'}
                 </span>
               </div>
@@ -86,7 +86,7 @@ function ScholarCard({
           <div className="min-w-0 flex-1">
             {spk.badge && (
               <span
-                className={`inline-block text-xs font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-1.5 border ${
+                className={`inline-block text-[11px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-1 border ${
                   spk.highlight
                     ? 'bg-sky-500/15 text-sky-800 border-sky-400/30'
                     : 'bg-teal-500/15 text-sky-800 border-teal-400/30'
@@ -97,14 +97,14 @@ function ScholarCard({
             )}
 
             <h3
-              className="font-serif text-base sm:text-lg lg:text-xl font-bold transition-colors leading-tight line-clamp-1 group-hover:text-sky-600"
+              className="font-serif text-base sm:text-lg font-bold transition-colors leading-snug line-clamp-1 group-hover:text-sky-600"
               style={{ color: 'var(--text-main)' }}
               title={spk.name[lang]}
             >
               {spk.name[lang]}
             </h3>
 
-            <p className="text-xs sm:text-sm font-semibold mt-0.5 line-clamp-1 text-sky-700">
+            <p className="text-xs font-semibold mt-0.5 line-clamp-1 text-sky-700">
               {spk.role[lang]}
             </p>
           </div>
@@ -112,18 +112,20 @@ function ScholarCard({
 
         {/* Title & Organization Details */}
         <div
-          className="space-y-1 mb-3 pt-2.5 border-t"
+          className="space-y-0.5 mb-2.5 pt-2 border-t"
           style={{ borderColor: 'var(--border-subtle)' }}
         >
           <p
-            className="text-xs sm:text-sm font-medium leading-relaxed line-clamp-2"
+            className="text-xs sm:text-[13px] font-medium leading-snug line-clamp-1"
             style={{ color: 'var(--text-main)' }}
+            title={spk.title[lang]}
           >
             {spk.title[lang]}
           </p>
           <p
-            className="text-xs leading-relaxed line-clamp-1"
+            className="text-[11.5px] leading-snug line-clamp-1"
             style={{ color: 'var(--text-muted)' }}
+            title={spk.affiliation[lang]}
           >
             {spk.affiliation[lang]}
           </p>
@@ -132,7 +134,7 @@ function ScholarCard({
 
       {/* Topic Pill or Click to View Details */}
       <div
-        className="pt-2.5 border-t flex items-center justify-between"
+        className="pt-2 border-t flex items-center justify-between"
         style={{ borderColor: 'var(--border-subtle)' }}
       >
         {spk.topic ? (
@@ -148,13 +150,172 @@ function ScholarCard({
             <span className="truncate">{spk.topic[lang]}</span>
           </span>
         ) : (
-          <span className="text-[11px] font-semibold text-sky-700 hover:text-sky-900">
-            {lang === 'bn' ? 'বিস্তারিত দেখতে ক্লিক করুন →' : 'Click to view details →'}
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-xl border w-full text-sky-700 bg-sky-50/50 border-sky-100">
+            <BookOpen className="w-3 h-3 text-sky-600 shrink-0" />
+            <span className="truncate">
+              {lang === 'bn' ? 'বিস্তারিত পরিচিতি দেখতে ট্যাপ করুন →' : 'Tap to view scholar details →'}
+            </span>
           </span>
         )}
       </div>
     </div>
   );
+}
+
+// Shared hook to lock wheel & vertical touch-swipe inside a stage until its first/last item is reached
+function useStageScrollLock(
+  stageRef: React.RefObject<HTMLDivElement | null>,
+  enabled: boolean,
+  activeIndex: number,
+  maxIndex: number,
+  setIndex: React.Dispatch<React.SetStateAction<number>>
+) {
+  const indexRef = useRef(activeIndex);
+  indexRef.current = activeIndex;
+
+  const stepLockUntilRef = useRef(0);
+  const boundaryHoldUntilRef = useRef(0);
+  const wheelAccumRef = useRef(0);
+  const lastWheelDirRef = useRef(0);
+
+  useEffect(() => {
+    const el = stageRef.current;
+    if (!el || !enabled) return;
+
+    const stepBy = (dir: 1 | -1, now: number) => {
+      const curr = indexRef.current;
+      const next = Math.max(0, Math.min(maxIndex, curr + dir));
+      if (next === curr) return false;
+      indexRef.current = next;
+      setIndex(next);
+      stepLockUntilRef.current = now + 300;
+      if (next === maxIndex || next === 0) {
+        boundaryHoldUntilRef.current = now + 460;
+      }
+      return true;
+    };
+
+    const handleWheel = (e: WheelEvent) => {
+      if (e.ctrlKey) return;
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+
+      const dir: 1 | -1 | 0 = e.deltaY > 0 ? 1 : e.deltaY < 0 ? -1 : 0;
+      if (dir === 0) return;
+
+      const now = Date.now();
+      const curr = indexRef.current;
+      const canAdvance = (dir === 1 && curr < maxIndex) || (dir === -1 && curr > 0);
+      const inBoundaryHold = now < boundaryHoldUntilRef.current && dir === lastWheelDirRef.current;
+
+      if (!canAdvance && !inBoundaryHold) {
+        wheelAccumRef.current = 0;
+        return; // At first/last card and hold expired -> allow smooth page scroll
+      }
+
+      // Lock page scroll completely while advancing or holding at boundary
+      if (e.cancelable) e.preventDefault();
+      e.stopPropagation();
+      (e as unknown as { lenisStopPropagation?: boolean }).lenisStopPropagation = true;
+
+      if (!canAdvance) return;
+      if (now < stepLockUntilRef.current) return;
+
+      if (lastWheelDirRef.current !== dir) {
+        wheelAccumRef.current = 0;
+        lastWheelDirRef.current = dir;
+      }
+
+      wheelAccumRef.current += e.deltaY;
+      if (Math.abs(wheelAccumRef.current) >= 22) {
+        wheelAccumRef.current = 0;
+        stepBy(dir, now);
+      }
+    };
+
+    let touchState: {
+      startX: number;
+      startY: number;
+      mode: 'undecided' | 'consume' | 'passthrough';
+      dir: 1 | -1 | 0;
+      stepped: boolean;
+    } | null = null;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length !== 1) {
+        touchState = null;
+        return;
+      }
+      touchState = {
+        startX: e.touches[0].clientX,
+        startY: e.touches[0].clientY,
+        mode: 'undecided',
+        dir: 0,
+        stepped: false,
+      };
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!touchState || e.touches.length !== 1) return;
+      const dx = e.touches[0].clientX - touchState.startX;
+      const dy = e.touches[0].clientY - touchState.startY;
+
+      if (touchState.mode === 'undecided') {
+        if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) >= 4) {
+          touchState.mode = 'passthrough';
+          return;
+        }
+        if (Math.abs(dy) >= 1 && Math.abs(dy) >= Math.abs(dx)) {
+          // dy < 0 means bottom-to-top swipe (next card); dy > 0 means top-to-bottom swipe (prev card)
+          const dir: 1 | -1 = dy < 0 ? 1 : -1;
+          const curr = indexRef.current;
+          const canAdvance = (dir === 1 && curr < maxIndex) || (dir === -1 && curr > 0);
+          if (canAdvance) {
+            // Immediately block native page scroll on the very first vertical pixel
+            if (e.cancelable) e.preventDefault();
+            e.stopPropagation();
+            (e as unknown as { lenisStopPropagation?: boolean }).lenisStopPropagation = true;
+            if (Math.abs(dy) >= 4) {
+              touchState.mode = 'consume';
+              touchState.dir = dir;
+            }
+          } else {
+            touchState.mode = 'passthrough';
+          }
+          return;
+        }
+      }
+
+      if (touchState.mode === 'consume') {
+        if (e.cancelable) e.preventDefault();
+        e.stopPropagation();
+        (e as unknown as { lenisStopPropagation?: boolean }).lenisStopPropagation = true;
+
+        if (!touchState.stepped && Math.abs(dy) >= 26) {
+          const dir: 1 | -1 = dy < 0 ? 1 : -1;
+          touchState.stepped = true;
+          stepBy(dir, Date.now());
+        }
+      }
+    };
+
+    const handleTouchEnd = () => {
+      touchState = null;
+    };
+
+    el.addEventListener('wheel', handleWheel, { passive: false });
+    el.addEventListener('touchstart', handleTouchStart, { passive: true });
+    el.addEventListener('touchmove', handleTouchMove, { passive: false });
+    el.addEventListener('touchend', handleTouchEnd, { passive: true });
+    el.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+
+    return () => {
+      el.removeEventListener('wheel', handleWheel);
+      el.removeEventListener('touchstart', handleTouchStart);
+      el.removeEventListener('touchmove', handleTouchMove);
+      el.removeEventListener('touchend', handleTouchEnd);
+      el.removeEventListener('touchcancel', handleTouchEnd);
+    };
+  }, [stageRef, enabled, maxIndex, setIndex]);
 }
 
 export function Speakers() {
@@ -169,8 +330,6 @@ export function Speakers() {
 
   const desktopStageRef = useRef<HTMLDivElement>(null);
   const mobileStageRef = useRef<HTMLDivElement>(null);
-  const touchStartY = useRef<number | null>(null);
-  const wheelLockRef = useRef<boolean>(false);
 
   // 10 speakers partitioned into 4 rows for desktop (3, 3, 3, 1)
   const rows = [
@@ -198,92 +357,22 @@ export function Speakers() {
     setActiveMobileIndex((prev) => Math.max(0, prev - 1));
   }, []);
 
-  // Desktop wheel listener
-  useEffect(() => {
-    const el = desktopStageRef.current;
-    if (!el || activeTab !== 'speakers') return;
+  useStageScrollLock(desktopStageRef, activeTab === 'speakers', activeRow, totalRows - 1, setActiveRow);
+  useStageScrollLock(
+    mobileStageRef,
+    activeTab === 'speakers',
+    activeMobileIndex,
+    totalMobileSpeakers - 1,
+    setActiveMobileIndex
+  );
 
-    const handleWheel = (e: WheelEvent) => {
-      if (wheelLockRef.current) return;
-
-      if (e.deltaY > 25) {
-        if (activeRow < totalRows - 1) {
-          e.preventDefault();
-          nextRow();
-          wheelLockRef.current = true;
-          setTimeout(() => {
-            wheelLockRef.current = false;
-          }, 380);
-        }
-      } else if (e.deltaY < -25) {
-        if (activeRow > 0) {
-          e.preventDefault();
-          prevRow();
-          wheelLockRef.current = true;
-          setTimeout(() => {
-            wheelLockRef.current = false;
-          }, 380);
-        }
-      }
-    };
-
-    el.addEventListener('wheel', handleWheel, { passive: false });
-    return () => el.removeEventListener('wheel', handleWheel);
-  }, [activeRow, totalRows, activeTab, nextRow, prevRow]);
-
-  // Mobile wheel & touch listener
-  useEffect(() => {
-    const el = mobileStageRef.current;
-    if (!el || activeTab !== 'speakers') return;
-
-    const handleWheel = (e: WheelEvent) => {
-      if (wheelLockRef.current) return;
-
-      if (e.deltaY > 25) {
-        if (activeMobileIndex < totalMobileSpeakers - 1) {
-          e.preventDefault();
-          nextMobileSpeaker();
-          wheelLockRef.current = true;
-          setTimeout(() => {
-            wheelLockRef.current = false;
-          }, 350);
-        }
-      } else if (e.deltaY < -25) {
-        if (activeMobileIndex > 0) {
-          e.preventDefault();
-          prevMobileSpeaker();
-          wheelLockRef.current = true;
-          setTimeout(() => {
-            wheelLockRef.current = false;
-          }, 350);
-        }
-      }
-    };
-
-    el.addEventListener('wheel', handleWheel, { passive: false });
-    return () => el.removeEventListener('wheel', handleWheel);
-  }, [activeMobileIndex, totalMobileSpeakers, activeTab, nextMobileSpeaker, prevMobileSpeaker]);
-
-  // Touch swipe support
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartY.current = e.touches[0].clientY;
-  };
-
-  const handleMobileTouchEnd = (e: React.TouchEvent) => {
-    if (touchStartY.current === null) return;
-    const deltaY = e.changedTouches[0].clientY - touchStartY.current;
-    if (deltaY < -35) {
-      nextMobileSpeaker();
-    } else if (deltaY > 35) {
-      prevMobileSpeaker();
-    }
-    touchStartY.current = null;
-  };
+  const isDesktopAtEnd = activeRow === totalRows - 1;
+  const isMobileAtEnd = activeMobileIndex === totalMobileSpeakers - 1;
 
   return (
     <section
       id="speakers"
-      className="py-16 md:py-24 relative overflow-hidden border-b transition-colors duration-500"
+      className="py-10 sm:py-14 md:py-16 relative overflow-hidden border-b transition-colors duration-500"
       style={{
         backgroundColor: 'var(--bg-page)',
         borderColor: 'var(--border-subtle)',
@@ -291,85 +380,103 @@ export function Speakers() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-10">
+        <div className="text-center max-w-3xl mx-auto mb-5 sm:mb-7">
           <h2
-            className="font-serif text-3xl sm:text-5xl font-extrabold tracking-tight leading-[1.25] sm:leading-[1.2] mb-3 overflow-visible"
+            className="font-serif text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.25] sm:leading-[1.2] mb-2 overflow-visible"
             style={{ color: 'var(--text-main)' }}
           >
             {lang === 'bn' ? (
               <>
                 আমন্ত্রিত প্রখ্যাত মুফাসসির ও{' '}
-                <span className="text-sky-700 font-bold block sm:inline-block pr-4">ওলামায়ে কেরাম</span>
+                <span className="text-sky-700 font-bold block sm:inline-block sm:pr-2">ওলামায়ে কেরাম</span>
               </>
             ) : (
               <>
                 Distinguished Scholars &{' '}
-                <span className="text-sky-700 font-bold block sm:inline-block pr-4">Eminent Guests</span>
+                <span className="text-sky-700 font-bold block sm:inline-block sm:pr-2">Eminent Guests</span>
               </>
             )}
           </h2>
 
-          <p className="text-sm sm:text-base max-w-2xl mx-auto leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-xs sm:text-base max-w-2xl mx-auto leading-relaxed" style={{ color: 'var(--text-muted)' }}>
             {t.speakers.sectionDesc[lang]}
           </p>
         </div>
 
         {/* Switcher Tabs: Speakers vs Organizers */}
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center mb-5 sm:mb-6">
           <div
-            className="inline-flex p-1.5 rounded-full border shadow-2xs"
+            className="grid grid-cols-2 w-full max-w-md sm:w-auto sm:max-w-none sm:inline-flex p-1 sm:p-1.5 rounded-full border shadow-2xs"
             style={{
               backgroundColor: 'var(--bg-surface-subtle)',
               borderColor: 'var(--border-subtle)',
             }}
           >
             <button
+              type="button"
               onClick={() => setActiveTab('speakers')}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 cursor-pointer ${
-                activeTab === 'speakers'
-                  ? 'bg-slate-900 text-white shadow-md'
-                  : 'hover:opacity-100 opacity-70'
+              className={`flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold leading-tight whitespace-nowrap transition-all duration-300 cursor-pointer ${
+                activeTab === 'speakers' ? 'shadow-md' : 'hover:opacity-100 opacity-80'
               }`}
               style={{
                 color: activeTab === 'speakers' ? '#ffffff' : 'var(--text-main)',
                 backgroundColor: activeTab === 'speakers' ? 'var(--accent-primary)' : 'transparent',
               }}
             >
-              <Award className="w-4 h-4 text-sky-300" />
+              <Award
+                className={`hidden min-[380px]:block w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${
+                  activeTab === 'speakers' ? 'text-sky-200' : 'text-sky-600'
+                }`}
+              />
               <span>{lang === 'bn' ? 'আমন্ত্রিত আলোচকবৃন্দ' : 'Keynote Scholars'}</span>
-              <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded-full ml-1 font-mono">
+              <span
+                className={`text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-mono font-bold ${
+                  activeTab === 'speakers'
+                    ? 'bg-white/20 text-white'
+                    : 'bg-sky-500/12 text-sky-800 border border-sky-300/40'
+                }`}
+              >
                 {formatNumber(SPEAKERS.length, lang)}
               </span>
             </button>
 
             <button
+              type="button"
               onClick={() => setActiveTab('organizers')}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 cursor-pointer ${
-                activeTab === 'organizers'
-                  ? 'bg-slate-900 text-white shadow-md'
-                  : 'hover:opacity-100 opacity-70'
+              className={`flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold leading-tight whitespace-nowrap transition-all duration-300 cursor-pointer ${
+                activeTab === 'organizers' ? 'shadow-md' : 'hover:opacity-100 opacity-80'
               }`}
               style={{
                 color: activeTab === 'organizers' ? '#ffffff' : 'var(--text-main)',
                 backgroundColor: activeTab === 'organizers' ? 'var(--accent-primary)' : 'transparent',
               }}
             >
-              <Shield className="w-4 h-4 text-cyan-300" />
+              <Shield
+                className={`hidden min-[380px]:block w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${
+                  activeTab === 'organizers' ? 'text-cyan-200' : 'text-sky-600'
+                }`}
+              />
               <span>{lang === 'bn' ? 'আয়োজক ও তত্ত্বাবধায়ক' : 'Organizers & Leadership'}</span>
-              <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded-full ml-1 font-mono">
+              <span
+                className={`text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-mono font-bold ${
+                  activeTab === 'organizers'
+                    ? 'bg-white/20 text-white'
+                    : 'bg-sky-500/12 text-sky-800 border border-sky-300/40'
+                }`}
+              >
                 {formatNumber(ORGANIZERS.length, lang)}
               </span>
             </button>
           </div>
         </div>
 
-        {/* --- SPEAKERS 3-LINE 3D ROLLER STAGE --- */}
+        {/* --- SPEAKERS ROLLER STAGE (Compact, Top-Aligned, Zero Empty Space) --- */}
         {activeTab === 'speakers' && (
-          <div className="space-y-4">
-            {/* ================= DESKTOP 3-LINE ROLLER STAGE (MD+) ================= */}
-            <div className="hidden md:block space-y-3">
+          <div className="space-y-2.5">
+            {/* ================= DESKTOP ROLLER STAGE (MD+) ================= */}
+            <div className="hidden md:block space-y-2.5">
               {/* Desktop Stepper Control Bar */}
-              <div className="flex items-center justify-between gap-3 px-4">
+              <div className="flex items-center justify-between gap-3 px-2">
                 <div className="flex items-center gap-2">
                   <span className="w-7 h-7 rounded-xl bg-sky-500/10 text-sky-700 flex items-center justify-center">
                     <Layers className="w-4 h-4" />
@@ -380,13 +487,13 @@ export function Speakers() {
                     </span>
                     <span className="text-[11px] text-slate-500">
                       {lang === 'bn'
-                        ? 'কার্ডে ক্লিক করে বিস্তারিত জানুন • মাউস স্ক্রল করে পরবর্তী সারি দেখুন'
-                        : 'Click any scholar for full bio • Scroll to navigate rows'}
+                        ? 'কার্ডে ক্লিক করে বিস্তারিত জানুন • মাউস স্ক্রল করে শেষ সারি পর্যন্ত দেখুন'
+                        : 'Click any scholar for full bio • Scroll inside to view all rows'}
                     </span>
                   </div>
                 </div>
 
-                {/* 3D Row Stepper Buttons & Row Indicator */}
+                {/* Row Stepper Buttons & Row Indicator */}
                 <div className="flex items-center gap-2">
                   <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100/90 border border-slate-200/80">
                     <span className="text-[11px] font-bold text-slate-600 mr-1">
@@ -397,11 +504,10 @@ export function Speakers() {
                     {rows.map((_, i) => (
                       <button
                         key={i}
+                        type="button"
                         onClick={() => setActiveRow(i)}
                         className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                          activeRow === i
-                            ? 'w-5 bg-sky-600'
-                            : 'w-2 bg-slate-300 hover:bg-slate-400'
+                          activeRow === i ? 'w-5 bg-sky-600' : 'w-2 bg-slate-300 hover:bg-slate-400'
                         }`}
                         title={lang === 'bn' ? `সারি ${formatNumber(i + 1, lang)}` : `Go to row ${i + 1}`}
                       />
@@ -410,6 +516,7 @@ export function Speakers() {
 
                   <div className="inline-flex items-center p-1 rounded-full bg-white border border-slate-200/90 shadow-xs">
                     <button
+                      type="button"
                       onClick={prevRow}
                       disabled={activeRow === 0}
                       className={`p-1.5 rounded-full transition-all ${
@@ -424,6 +531,7 @@ export function Speakers() {
                     </button>
 
                     <button
+                      type="button"
                       onClick={nextRow}
                       disabled={activeRow === totalRows - 1}
                       className={`p-1.5 rounded-full transition-all ${
@@ -440,32 +548,48 @@ export function Speakers() {
                 </div>
               </div>
 
-              {/* Desktop Viewport with 3-Line Depth */}
+              {/* Desktop Viewport (Top-aligned, compact height, zero wasted top space) */}
               <div
                 ref={desktopStageRef}
-                className="relative h-[660px] rounded-3xl border border-sky-100/90 bg-gradient-to-b from-slate-50/40 via-white to-slate-50/40 shadow-xs overflow-hidden select-none"
+                className="relative h-[305px] rounded-3xl border border-sky-100/90 bg-gradient-to-b from-white via-white to-slate-50/60 shadow-xs overflow-hidden select-none"
               >
-                {/* Top Frosted Fade Mask */}
-                <div className="pointer-events-none absolute top-0 inset-x-0 h-20 bg-gradient-to-b from-[var(--bg-page)] via-[var(--bg-page)]/80 to-transparent z-30 rounded-t-3xl" />
+                {/* Top Fade Mask (only when last row is active and previous row peeks at top) */}
+                {isDesktopAtEnd && (
+                  <div className="pointer-events-none absolute top-0 inset-x-0 h-12 bg-gradient-to-b from-[var(--bg-page)]/90 to-transparent z-30 rounded-t-3xl" />
+                )}
 
-                {/* Bottom Frosted Fade Mask */}
-                <div className="pointer-events-none absolute bottom-0 inset-x-0 h-20 bg-gradient-to-t from-[var(--bg-page)] via-[var(--bg-page)]/80 to-transparent z-30 rounded-b-3xl" />
+                {/* Bottom Fade Mask (when next row peeks at bottom) */}
+                {!isDesktopAtEnd && (
+                  <div className="pointer-events-none absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-[var(--bg-page)] via-[var(--bg-page)]/80 to-transparent z-30 rounded-b-3xl" />
+                )}
 
-                {/* Peeking Next Row Floating Indicator Pill */}
-                {activeRow < totalRows - 1 && (
-                  <div className="pointer-events-none absolute bottom-3 inset-x-0 z-40 flex justify-center">
+                {/* Peeking Next / Previous Row Floating Pill */}
+                {!isDesktopAtEnd ? (
+                  <div className="pointer-events-none absolute bottom-2.5 inset-x-0 z-40 flex justify-center">
                     <button
+                      type="button"
                       onClick={nextRow}
-                      className="pointer-events-auto inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold bg-white text-sky-900 border border-sky-200/90 shadow-md hover:shadow-lg hover:border-sky-300 active:scale-95 transition-all animate-bounce cursor-pointer"
+                      className="pointer-events-auto inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold bg-white text-sky-900 border border-sky-200/90 shadow-md hover:shadow-lg hover:border-sky-300 active:scale-95 transition-all cursor-pointer"
                     >
                       <span>{lang === 'bn' ? 'পরবর্তী সারি দেখুন (স্ক্রল করুন)' : 'Scroll or click for next row'}</span>
                       <ChevronDown className="w-3.5 h-3.5 text-sky-600" />
                     </button>
                   </div>
+                ) : (
+                  <div className="pointer-events-none absolute top-2.5 inset-x-0 z-40 flex justify-center">
+                    <button
+                      type="button"
+                      onClick={prevRow}
+                      className="pointer-events-auto inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[11px] font-bold bg-white/95 text-sky-900 border border-sky-200/90 shadow-sm hover:border-sky-300 active:scale-95 transition-all cursor-pointer"
+                    >
+                      <ChevronUp className="w-3.5 h-3.5 text-sky-600" />
+                      <span>{lang === 'bn' ? 'আগের সারি দেখুন' : 'Previous row'}</span>
+                    </button>
+                  </div>
                 )}
 
-                {/* 3D Stacked Rows Container */}
-                <div className="relative w-full h-full flex items-center justify-center p-5">
+                {/* Stacked Rows Container */}
+                <div className="relative w-full h-full px-4 pt-3.5">
                   {rows.map((rowItems, rowIndex) => {
                     const offset = rowIndex - activeRow;
                     if (Math.abs(offset) > 1) return null;
@@ -474,10 +598,26 @@ export function Speakers() {
                     const isTop = offset === -1;
                     const isBottom = offset === 1;
 
-                    const translateY = offset * 290;
-                    const scale = isCenter ? 1.0 : 0.88;
-                    const opacity = isCenter ? 1.0 : 0.35;
-                    const blur = isCenter ? 'blur(0px)' : 'blur(0.8px)';
+                    // When not at the end: active row sits right at top (y=0), next row peeks below (y=220).
+                    // When at the final row: previous row peeks at top (y=0), final row sits cleanly at y=58.
+                    const translateY = isDesktopAtEnd
+                      ? isCenter
+                        ? 58
+                        : isTop
+                          ? 0
+                          : 260
+                      : isCenter
+                        ? 0
+                        : isBottom
+                          ? 220
+                          : -220;
+
+                    const scale = isCenter ? 1.0 : 0.96;
+                    const opacity = isCenter
+                      ? 1.0
+                      : (isDesktopAtEnd && isTop) || (!isDesktopAtEnd && isBottom)
+                        ? 0.42
+                        : 0;
 
                     return (
                       <motion.div
@@ -485,26 +625,28 @@ export function Speakers() {
                         initial={false}
                         animate={{
                           y: translateY,
-                          scale: scale,
-                          opacity: opacity,
-                          filter: blur,
+                          scale,
+                          opacity,
                         }}
                         transition={{
                           type: 'spring',
-                          stiffness: 280,
-                          damping: 28,
+                          stiffness: 320,
+                          damping: 30,
                         }}
                         onClick={() => {
                           if (isTop) prevRow();
                           if (isBottom) nextRow();
                         }}
-                        className={`absolute inset-x-5 transition-shadow ${
+                        style={{ willChange: 'transform, opacity' }}
+                        className={`absolute inset-x-4 top-3.5 ${
                           isCenter
                             ? 'z-20 pointer-events-auto'
-                            : 'z-10 cursor-pointer hover:opacity-60'
+                            : opacity > 0
+                              ? 'z-10 cursor-pointer hover:opacity-65'
+                              : 'z-0 pointer-events-none'
                         }`}
                       >
-                        <div className="grid grid-cols-3 gap-5">
+                        <div className="grid grid-cols-3 gap-4">
                           {rowItems.map((spk) => {
                             const isSingleCard = rowItems.length === 1;
                             const colClass = isSingleCard ? 'col-start-2' : '';
@@ -528,28 +670,29 @@ export function Speakers() {
               </div>
             </div>
 
-            {/* ================= MOBILE 3-LINE ROLLER STAGE (< MD) ================= */}
-            <div className="block md:hidden space-y-3">
+            {/* ================= MOBILE ROLLER STAGE (< MD) ================= */}
+            <div className="block md:hidden space-y-2">
               {/* Mobile Stepper Control Bar */}
               <div className="flex items-center justify-between gap-2 px-1">
-                <div className="flex items-center gap-1.5">
-                  <span className="w-6 h-6 rounded-lg bg-sky-500/10 text-sky-700 flex items-center justify-center">
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <span className="w-6 h-6 rounded-lg bg-sky-500/10 text-sky-700 flex items-center justify-center shrink-0">
                     <Layers className="w-3.5 h-3.5" />
                   </span>
-                  <span className="text-xs font-bold text-slate-900">
+                  <span className="text-xs font-bold text-slate-900 truncate">
                     {lang === 'bn' ? 'আমন্ত্রিত ১০ জন বক্তা' : '10 Scholars'}
                   </span>
                 </div>
 
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[11px] font-bold text-slate-600 bg-slate-100 px-2 py-1 rounded-full border border-slate-200/80">
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <span className="text-[11px] font-bold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-full border border-slate-200/80">
                     {lang === 'bn'
                       ? `বক্তা ${formatNumber(activeMobileIndex + 1, lang, 2, false)} / ${formatNumber(SPEAKERS.length, lang, 2, false)}`
-                      : `${activeMobileIndex + 1} / 10`}
+                      : `${activeMobileIndex + 1} / ${SPEAKERS.length}`}
                   </span>
 
                   <div className="inline-flex items-center p-0.5 rounded-full bg-white border border-slate-200 shadow-2xs">
                     <button
+                      type="button"
                       onClick={prevMobileSpeaker}
                       disabled={activeMobileIndex === 0}
                       className={`p-1 rounded-full transition-all ${
@@ -562,6 +705,7 @@ export function Speakers() {
                       <ChevronUp className="w-3.5 h-3.5" />
                     </button>
                     <button
+                      type="button"
                       onClick={nextMobileSpeaker}
                       disabled={activeMobileIndex === totalMobileSpeakers - 1}
                       className={`p-1 rounded-full transition-all ${
@@ -577,34 +721,48 @@ export function Speakers() {
                 </div>
               </div>
 
-              {/* Mobile Viewport with 3-Line Depth */}
+              {/* Mobile Viewport (Top-aligned, compact height, zero empty top space) */}
               <div
                 ref={mobileStageRef}
-                onTouchStart={handleTouchStart}
-                onTouchEnd={handleMobileTouchEnd}
-                className="relative h-[480px] rounded-2xl border border-sky-100/90 bg-gradient-to-b from-slate-50/40 via-white to-slate-50/40 shadow-xs overflow-hidden select-none"
+                className="relative h-[278px] rounded-2xl border border-sky-100/90 bg-gradient-to-b from-white via-white to-slate-50/60 shadow-xs overflow-hidden select-none"
               >
-                {/* Top Frosted Fade Mask */}
-                <div className="pointer-events-none absolute top-0 inset-x-0 h-16 bg-gradient-to-b from-[var(--bg-page)] via-[var(--bg-page)]/80 to-transparent z-30 rounded-t-2xl" />
+                {/* Top Fade Mask (only on final speaker when previous speaker peeks at top) */}
+                {isMobileAtEnd && (
+                  <div className="pointer-events-none absolute top-0 inset-x-0 h-10 bg-gradient-to-b from-[var(--bg-page)]/90 to-transparent z-30 rounded-t-2xl" />
+                )}
 
-                {/* Bottom Frosted Fade Mask */}
-                <div className="pointer-events-none absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-[var(--bg-page)] via-[var(--bg-page)]/80 to-transparent z-30 rounded-b-2xl" />
+                {/* Bottom Fade Mask (when next speaker peeks at bottom) */}
+                {!isMobileAtEnd && (
+                  <div className="pointer-events-none absolute bottom-0 inset-x-0 h-14 bg-gradient-to-t from-[var(--bg-page)] via-[var(--bg-page)]/85 to-transparent z-30 rounded-b-2xl" />
+                )}
 
-                {/* Peeking Next Indicator */}
-                {activeMobileIndex < totalMobileSpeakers - 1 && (
+                {/* Peeking Next / Previous Indicator */}
+                {!isMobileAtEnd ? (
                   <div className="pointer-events-none absolute bottom-2 inset-x-0 z-40 flex justify-center">
                     <button
+                      type="button"
                       onClick={nextMobileSpeaker}
-                      className="pointer-events-auto inline-flex items-center gap-1 px-3 py-1 rounded-full text-[11px] font-bold bg-white text-sky-900 border border-sky-200/90 shadow-xs animate-bounce cursor-pointer"
+                      className="pointer-events-auto inline-flex items-center gap-1 px-3 py-1 rounded-full text-[11px] font-bold bg-white text-sky-900 border border-sky-200/90 shadow-sm active:scale-95 cursor-pointer"
                     >
-                      <span>{lang === 'bn' ? 'পরবর্তী বক্তা (টানুন বা ক্লিক)' : 'Next scholar'}</span>
+                      <span>{lang === 'bn' ? 'পরবর্তী বক্তা (উপরে সোয়াইপ বা ট্যাপ)' : 'Swipe up or tap for next'}</span>
                       <ChevronDown className="w-3 h-3 text-sky-600" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="pointer-events-none absolute top-2 inset-x-0 z-40 flex justify-center">
+                    <button
+                      type="button"
+                      onClick={prevMobileSpeaker}
+                      className="pointer-events-auto inline-flex items-center gap-1 px-3 py-0.5 rounded-full text-[10.5px] font-bold bg-white/95 text-sky-900 border border-sky-200/90 shadow-2xs active:scale-95 cursor-pointer"
+                    >
+                      <ChevronUp className="w-3 h-3 text-sky-600" />
+                      <span>{lang === 'bn' ? 'আগের বক্তা দেখুন' : 'Previous scholar'}</span>
                     </button>
                   </div>
                 )}
 
-                {/* 3D Stacked Cards Container */}
-                <div className="relative w-full h-full flex items-center justify-center p-3">
+                {/* Stacked Cards Container */}
+                <div className="relative w-full h-full px-2.5 pt-2.5">
                   {SPEAKERS.map((spk, idx) => {
                     const offset = idx - activeMobileIndex;
                     if (Math.abs(offset) > 1) return null;
@@ -613,10 +771,26 @@ export function Speakers() {
                     const isTop = offset === -1;
                     const isBottom = offset === 1;
 
-                    const translateY = offset * 215;
-                    const scale = isCenter ? 1.0 : 0.88;
-                    const opacity = isCenter ? 1.0 : 0.35;
-                    const blur = isCenter ? 'blur(0px)' : 'blur(0.8px)';
+                    // Top-aligned for speakers 1..9 (active at y=0, next peeking at y=200).
+                    // On 10th speaker: 9th peeks at top (y=0) and 10th sits cleanly at y=50.
+                    const translateY = isMobileAtEnd
+                      ? isCenter
+                        ? 50
+                        : isTop
+                          ? 0
+                          : 240
+                      : isCenter
+                        ? 0
+                        : isBottom
+                          ? 200
+                          : -200;
+
+                    const scale = isCenter ? 1.0 : 0.95;
+                    const opacity = isCenter
+                      ? 1.0
+                      : (isMobileAtEnd && isTop) || (!isMobileAtEnd && isBottom)
+                        ? 0.42
+                        : 0;
 
                     return (
                       <motion.div
@@ -624,23 +798,25 @@ export function Speakers() {
                         initial={false}
                         animate={{
                           y: translateY,
-                          scale: scale,
-                          opacity: opacity,
-                          filter: blur,
+                          scale,
+                          opacity,
                         }}
                         transition={{
                           type: 'spring',
-                          stiffness: 280,
-                          damping: 28,
+                          stiffness: 320,
+                          damping: 30,
                         }}
                         onClick={() => {
                           if (isTop) prevMobileSpeaker();
                           if (isBottom) nextMobileSpeaker();
                         }}
-                        className={`absolute inset-x-3 transition-shadow ${
+                        style={{ willChange: 'transform, opacity' }}
+                        className={`absolute inset-x-2.5 top-2.5 ${
                           isCenter
                             ? 'z-20 pointer-events-auto'
-                            : 'z-10 cursor-pointer hover:opacity-60'
+                            : opacity > 0
+                              ? 'z-10 cursor-pointer'
+                              : 'z-0 pointer-events-none'
                         }`}
                       >
                         <ScholarCard
@@ -654,13 +830,28 @@ export function Speakers() {
                   })}
                 </div>
               </div>
+
+              {/* Mobile Quick-Jump Progress Dots */}
+              <div className="flex items-center justify-center gap-1.5 pt-0.5">
+                {SPEAKERS.map((spk, i) => (
+                  <button
+                    key={spk.id}
+                    type="button"
+                    onClick={() => setActiveMobileIndex(i)}
+                    aria-label={lang === 'bn' ? `বক্তা ${formatNumber(i + 1, lang)}` : `Scholar ${i + 1}`}
+                    className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                      activeMobileIndex === i ? 'w-5 bg-sky-600' : 'w-1.5 bg-slate-300'
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         )}
 
         {/* --- ORGANIZERS TAB --- */}
         {activeTab === 'organizers' && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {ORGANIZERS.map((org, idx) => (
               <motion.div
                 key={org.id}
@@ -668,29 +859,29 @@ export function Speakers() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.05 }}
                 onClick={() => setSelectedProfile(org)}
-                className="catalis-card p-6 sm:p-7 flex flex-col justify-between group hover:scale-[1.03] transition-all duration-300 cursor-pointer"
+                className="catalis-card p-5 sm:p-6 flex flex-col justify-between group hover:scale-[1.02] transition-all duration-300 cursor-pointer"
               >
                 <div>
-                  <div className="flex items-start gap-4 mb-5">
+                  <div className="flex items-start gap-4 mb-4">
                     <div
-                      className={`relative w-20 h-20 sm:w-22 sm:h-22 rounded-2xl overflow-hidden border shadow-xs shrink-0 group-hover:scale-105 transition-transform duration-300 flex items-center justify-center ring-2 ring-black/5 ${
-                        org.photo ? '' : 'p-1'
-                      }`}
+                      className="relative w-18 h-18 sm:w-20 sm:h-20 rounded-2xl overflow-hidden border shadow-sm shrink-0 group-hover:scale-105 transition-transform duration-300 p-1 flex items-center justify-center"
                       style={{
                         backgroundColor: 'var(--bg-surface-subtle)',
-                        borderColor: 'var(--border-card)',
+                        borderColor: 'var(--border-subtle)',
                       }}
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={org.photo || '/assets/logo.png'}
-                        alt={org.photo ? org.name[lang] : (lang === 'bn' ? 'মাদরাসার লোগো' : 'Madrasah logo')}
-                        className={`w-full h-full ${org.photo ? 'object-cover object-top' : 'object-contain'}`}
+                        alt={org.photo ? org.name[lang] : lang === 'bn' ? 'মাদরাসার লোগো' : 'Madrasah logo'}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-contain"
                       />
                     </div>
 
                     <div className="min-w-0 flex-1">
-                      <span className="inline-block text-xs font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2 bg-sky-500/15 text-sky-800 border border-sky-400/30">
+                      <span className="inline-block text-xs font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-1.5 bg-sky-500/15 text-sky-800 border border-sky-400/30">
                         {org.role[lang]}
                       </span>
 
@@ -755,6 +946,7 @@ export function Speakers() {
               {/* Modal Top Hero Area */}
               <div className="relative bg-gradient-to-r from-slate-900 via-sky-950 to-slate-900 p-6 sm:p-7 text-white">
                 <button
+                  type="button"
                   onClick={() => setSelectedProfile(null)}
                   className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition cursor-pointer"
                   aria-label="Close"
@@ -795,53 +987,75 @@ export function Speakers() {
               </div>
 
               {/* Modal Body Info */}
-              <div className="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
+              <div
+                data-lenis-prevent
+                className="p-6 space-y-4 max-h-[60vh] overflow-y-auto overscroll-contain"
+              >
                 {/* Official Designation */}
                 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
                     {lang === 'bn' ? 'পদবী ও পরিচিতি' : 'Designation & Title'}
                   </span>
-                  <p className="text-sm font-semibold text-slate-900 leading-relaxed">
+                  <p className="text-sm sm:text-base font-bold text-slate-900">
                     {selectedProfile.title[lang]}
                   </p>
-                  <p className="text-xs text-slate-600 mt-1">
+                  <p className="text-xs sm:text-sm text-slate-600 mt-1">
                     {selectedProfile.affiliation[lang]}
                   </p>
                 </div>
 
-                {/* Keynote Topic (if Scholar) */}
+                {/* Lecture Topic if available */}
                 {'topic' in selectedProfile && selectedProfile.topic && (
-                  <div className="p-4 rounded-2xl bg-sky-500/10 border border-sky-300/40">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-sky-900 block mb-1 flex items-center gap-1.5">
+                  <div className="p-4 rounded-2xl bg-sky-50/70 border border-sky-200/70">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-sky-700 flex items-center gap-1.5 mb-1">
                       <BookOpen className="w-3.5 h-3.5 text-sky-600" />
-                      <span>{lang === 'bn' ? 'আলোচনার মূল বিষয়' : 'Keynote Discussion Topic'}</span>
+                      {lang === 'bn' ? 'নির্ধারিত আলোচনার বিষয়' : 'Keynote Topic'}
                     </span>
-                    <p className="text-sm font-bold text-sky-950 leading-relaxed">
+                    <p className="text-sm sm:text-base font-bold text-sky-950">
                       {selectedProfile.topic[lang]}
                     </p>
                   </div>
                 )}
 
-                {/* Event Schedule Info */}
-                <div className="flex items-center justify-between text-xs text-slate-500 pt-2 border-t border-slate-100">
-                  <span className="flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5 text-sky-600" />
-                    <span>{lang === 'bn' ? '৫ ডিসেম্বর ২০২৬, শনিবার' : 'Saturday, Dec 5, 2026'}</span>
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-[var(--brand-blue-ink)]" />
-                    <span>{lang === 'bn' ? 'মাদরাসা বালুর মাঠ' : 'Balur Math Grounds'}</span>
-                  </span>
+                {/* Event Venue & Date Context */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 flex items-center gap-3">
+                    <Calendar className="w-5 h-5 text-sky-600 shrink-0" />
+                    <div>
+                      <span className="text-[10px] font-bold text-slate-400 uppercase block">
+                        {lang === 'bn' ? 'তারিখ ও সময়' : 'Date & Time'}
+                      </span>
+                      <span className="text-xs font-bold text-slate-800">
+                        {lang === 'bn' ? '৫ ডিসেম্বর ২০২৬ • বাদ যোহর' : 'Dec 5, 2026 • After Zohr'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 flex items-center gap-3">
+                    <MapPin className="w-5 h-5 text-sky-600 shrink-0" />
+                    <div>
+                      <span className="text-[10px] font-bold text-slate-400 uppercase block">
+                        {lang === 'bn' ? 'মাহফিল প্রাঙ্গণ' : 'Venue'}
+                      </span>
+                      <span className="text-xs font-bold text-slate-800">
+                        {lang === 'bn' ? 'মাদরাসা সংলগ্ন বালুর মাঠ' : 'Madrasah Sand Field'}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* Modal Footer */}
-              <div className="p-4 border-t border-slate-100 bg-slate-50 flex items-center justify-end">
+              <div className="px-6 py-4 bg-slate-50 border-t border-slate-200/80 flex items-center justify-between">
+                <span className="text-xs font-semibold text-slate-500">
+                  {lang === 'bn' ? 'বার্ষিক তাফসীরুল কুরআন মাহফিল ২০২৬' : 'Annual Tafsirul Quran Mahfil 2026'}
+                </span>
                 <button
+                  type="button"
                   onClick={() => setSelectedProfile(null)}
-                  className="px-5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 text-white hover:bg-black transition cursor-pointer"
+                  className="px-5 py-2 rounded-full text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white transition cursor-pointer"
                 >
-                  {t.calendar.close[lang]}
+                  {lang === 'bn' ? 'বন্ধ করুন' : 'Close'}
                 </button>
               </div>
             </motion.div>

@@ -94,6 +94,14 @@
     transition: background-color 0.4s ease, color 0.4s ease;
   }
 
+  html.lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  section[id] {
+    scroll-margin-top: 4.75rem;
+  }
+
   @media (min-width: 640px) {
     html {
       font-size: 17px;

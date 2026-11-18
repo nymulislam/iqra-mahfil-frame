@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import Lenis from 'lenis';
+import 'lenis/dist/lenis.css';
 
 export function SmoothScroll() {
   useEffect(() => {
@@ -14,10 +15,12 @@ export function SmoothScroll() {
         ? null
         : new Lenis({
             autoRaf: true,
-            anchors: { offset: -70 },
-            lerp: 0.16,
+            anchors: { offset: -76 },
+            lerp: 0.12,
             smoothWheel: true,
+            wheelMultiplier: 1,
             syncTouch: false,
+            allowNestedScroll: true,
           });
     };
 
