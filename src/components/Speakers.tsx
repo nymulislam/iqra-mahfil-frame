@@ -673,17 +673,19 @@ export function Speakers() {
                 <div>
                   <div className="flex items-start gap-4 mb-5">
                     <div
-                      className="relative w-20 h-20 sm:w-22 sm:h-22 rounded-2xl overflow-hidden border shadow-sm shrink-0 group-hover:scale-105 transition-transform duration-300 p-1 flex items-center justify-center"
+                      className={`relative w-20 h-20 sm:w-22 sm:h-22 rounded-2xl overflow-hidden border shadow-xs shrink-0 group-hover:scale-105 transition-transform duration-300 flex items-center justify-center ring-2 ring-black/5 ${
+                        org.photo ? '' : 'p-1'
+                      }`}
                       style={{
                         backgroundColor: 'var(--bg-surface-subtle)',
-                        borderColor: 'var(--border-subtle)',
+                        borderColor: 'var(--border-card)',
                       }}
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={org.photo || '/assets/logo.png'}
                         alt={org.photo ? org.name[lang] : (lang === 'bn' ? 'মাদরাসার লোগো' : 'Madrasah logo')}
-                        className="w-full h-full object-contain"
+                        className={`w-full h-full ${org.photo ? 'object-cover object-top' : 'object-contain'}`}
                       />
                     </div>
 

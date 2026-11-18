@@ -299,6 +299,7 @@ export const ORGANIZERS: Organizer[] = [
       bn: 'সভাপতি',
       en: 'President',
     },
+    photo: '/assets/speakers/qari-siddikur-rahman.jpg',
   },
   {
     id: 'mufti-abu-taher',
@@ -322,7 +323,7 @@ export const ORGANIZERS: Organizer[] = [
       bn: 'প্রতিষ্ঠাতা মুহতামীম',
       en: 'Founder Principal',
     },
-    // Portrait pending verification by the organizers.
+    photo: '/assets/speakers/mufti-abu-taher.jpg',
   },
   {
     id: 'hafiz-alauddin',
@@ -346,6 +347,6 @@ export const ORGANIZERS: Organizer[] = [
       bn: 'ভাইস প্রিন্সিপাল',
       en: 'Vice Principal',
     },
-    // Portrait pending verification by the organizers.
+    photo: '/assets/speakers/hafiz-alauddin.jpg',
   },
 ];
