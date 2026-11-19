@@ -25,7 +25,7 @@ export const SITE = {
   },
   phones: CONTACT_PHONES,
   email: 'iqramadrasa25@gmail.com',
-  facebook: 'https://facebook.com/iqramadrasa25',
+  facebook: 'https://www.facebook.com/iqramadrasah25',
   mapUrl: `https://www.google.com/maps/dir/?api=1&destination=${MAHFIL_COORDS.latitude},${MAHFIL_COORDS.longitude}`,
   url: 'https://iqra.annujum.org',
   logo: '/assets/logo.png',
