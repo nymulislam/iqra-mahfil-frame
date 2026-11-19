@@ -17,6 +17,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useLiveTracking } from '@/context/LiveTrackingContext';
 import { AnimatedNumber } from './AnimatedNumber';
 import { SITE } from '@/content/site';
+import { ScrollReveal, StaggerGroup, StaggerItem } from './ScrollReveal';
 
 export function LiveTracking() {
   const { lang } = useLanguage();
@@ -67,51 +68,54 @@ export function LiveTracking() {
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Compact Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-6 sm:mb-9">
-          <h2
-            className="font-serif text-2xl sm:text-4xl font-extrabold tracking-tight leading-[1.25] sm:leading-[1.2] mb-2 overflow-visible"
-            style={{ color: 'var(--text-main)' }}
-          >
-            {lang === 'bn' ? (
-              <>
-                আপনার অংশগ্রহণ ও{' '}
-                <span className="text-sky-700 font-bold block sm:inline-block sm:pr-4">দূরত্ব পরিমাপ</span>
-              </>
-            ) : (
-              <>
-                Your Participation &{' '}
-                <span className="text-sky-700 font-bold block sm:inline-block sm:pr-4">Venue Distance</span>
-              </>
+        <ScrollReveal y={14}>
+          <div className="text-center max-w-2xl mx-auto mb-6 sm:mb-9">
+            <h2
+              className="font-serif text-2xl sm:text-4xl font-extrabold tracking-tight leading-[1.25] sm:leading-[1.2] mb-2 overflow-visible"
+              style={{ color: 'var(--text-main)' }}
+            >
+              {lang === 'bn' ? (
+                <>
+                  আপনার অংশগ্রহণ ও{' '}
+                  <span className="text-sky-700 font-bold block sm:inline-block sm:pr-4">দূরত্ব পরিমাপ</span>
+                </>
+              ) : (
+                <>
+                  Your Participation &{' '}
+                  <span className="text-sky-700 font-bold block sm:inline-block sm:pr-4">Venue Distance</span>
+                </>
+              )}
+            </h2>
+
+            <p
+              className="text-xs sm:text-sm max-w-xl mx-auto leading-relaxed"
+              style={{ color: 'var(--text-muted)' }}
+            >
+              {lang === 'bn'
+                ? 'পুরো সাইটের লাইভ হিসাব প্রতি ৩০ সেকেন্ডে আপডেট হয়।'
+                : 'Site-wide totals update every 30 seconds.'}
+            </p>
+
+            {livePaused && (
+              <div className="mt-2.5 flex justify-center">
+                <span
+                  role="status"
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-800 border border-amber-400/30"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                  <span>{lang === 'bn' ? 'লাইভ আপডেট সাময়িকভাবে বন্ধ' : 'Live updates paused'}</span>
+                </span>
+              </div>
             )}
-          </h2>
-
-          <p
-            className="text-xs sm:text-sm max-w-xl mx-auto leading-relaxed"
-            style={{ color: 'var(--text-muted)' }}
-          >
-            {lang === 'bn'
-              ? 'পুরো সাইটের লাইভ হিসাব প্রতি ৩০ সেকেন্ডে আপডেট হয়।'
-              : 'Site-wide totals update every 30 seconds.'}
-          </p>
-
-          {livePaused && (
-            <div className="mt-2.5 flex justify-center">
-              <span
-                role="status"
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-800 border border-amber-400/30"
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                <span>{lang === 'bn' ? 'লাইভ আপডেট সাময়িকভাবে বন্ধ' : 'Live updates paused'}</span>
-              </span>
-            </div>
-          )}
-        </div>
+          </div>
+        </ScrollReveal>
 
         {/* 3-Column HUD Metric Ribbon */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-5 sm:mb-7">
+        <StaggerGroup staggerDelay={0.07} className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-5 sm:mb-7">
           {/* Metric 1: Live Online */}
+          <StaggerItem className="flex">
           <div
-            className="catalis-card hover:translate-y-0! p-3.5 sm:p-5 flex sm:flex-col items-center sm:items-stretch justify-between gap-3 border shadow-xs"
+            className="w-full catalis-card hover:translate-y-0! p-3.5 sm:p-5 flex sm:flex-col items-center sm:items-stretch justify-between gap-3 border shadow-xs"
             style={{
               backgroundColor: 'var(--bg-surface)',
               borderColor: 'var(--border-card)',
@@ -140,10 +144,12 @@ export function LiveTracking() {
               </span>
             </div>
           </div>
+          </StaggerItem>
 
           {/* Metric 2: Frames Built */}
+          <StaggerItem className="flex">
           <div
-            className="catalis-card hover:translate-y-0! p-3.5 sm:p-5 flex sm:flex-col items-center sm:items-stretch justify-between gap-3 border shadow-xs"
+            className="w-full catalis-card hover:translate-y-0! p-3.5 sm:p-5 flex sm:flex-col items-center sm:items-stretch justify-between gap-3 border shadow-xs"
             style={{
               backgroundColor: 'var(--bg-surface)',
               borderColor: 'var(--border-card)',
@@ -172,10 +178,12 @@ export function LiveTracking() {
               </span>
             </div>
           </div>
+          </StaggerItem>
 
           {/* Metric 3: Attendees Pledged */}
+          <StaggerItem className="flex">
           <div
-            className="catalis-card hover:translate-y-0! p-3.5 sm:p-5 flex sm:flex-col items-center sm:items-stretch justify-between gap-3 border shadow-xs"
+            className="w-full catalis-card hover:translate-y-0! p-3.5 sm:p-5 flex sm:flex-col items-center sm:items-stretch justify-between gap-3 border shadow-xs"
             style={{
               backgroundColor: 'var(--bg-surface)',
               borderColor: 'var(--border-card)',
@@ -201,14 +209,16 @@ export function LiveTracking() {
               </span>
             </div>
           </div>
+          </StaggerItem>
 
-        </div>
+        </StaggerGroup>
 
         {/* 2-Column Unified Bento: Attendance Hub + Venue GPS Radar */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-stretch">
+        <StaggerGroup staggerDelay={0.09} className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-stretch">
           {/* Card A (7 Cols): Attendance Pledge Hub */}
+          <StaggerItem className="lg:col-span-7 flex">
           <div
-            className="lg:col-span-7 catalis-card hover:translate-y-0! p-5 sm:p-6 lg:p-7 flex flex-col justify-between border shadow-lg"
+            className="w-full catalis-card hover:translate-y-0! p-5 sm:p-6 lg:p-7 flex flex-col justify-between border shadow-lg"
             style={{
               backgroundColor: 'var(--bg-surface)',
               borderColor: 'var(--border-card)',
@@ -288,10 +298,12 @@ export function LiveTracking() {
               )}
             </div>
           </div>
+          </StaggerItem>
 
           {/* Card B (5 Cols): Live GPS Distance & Navigation Radar */}
+          <StaggerItem className="lg:col-span-5 flex">
           <div
-            className="lg:col-span-5 catalis-card hover:translate-y-0! p-5 sm:p-6 lg:p-7 flex flex-col justify-between border shadow-lg"
+            className="w-full catalis-card hover:translate-y-0! p-5 sm:p-6 lg:p-7 flex flex-col justify-between border shadow-lg"
             style={{
               backgroundColor: 'var(--bg-surface)',
               borderColor: 'var(--border-card)',
@@ -411,7 +423,8 @@ export function LiveTracking() {
               </a>
             </div>
           </div>
-        </div>
+          </StaggerItem>
+        </StaggerGroup>
       </div>
     </section>
   );

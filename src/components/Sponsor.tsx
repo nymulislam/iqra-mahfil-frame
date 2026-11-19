@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'motion/react';
 import {
   PhoneCall,
   Mail,
@@ -15,6 +14,7 @@ import {
 import { displayPhone, phoneHref } from '@/lib/phone';
 import { useLanguage } from '@/context/LanguageContext';
 import { SPONSOR_DATA } from '@/content/sponsor';
+import { ScrollReveal } from './ScrollReveal';
 
 interface SponsorProps {
   onOpenCard?: () => void;
@@ -46,36 +46,39 @@ export function Sponsor({ onOpenCard }: SponsorProps) {
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Compact Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-6 sm:mb-10">
-          <h2
-            className="font-serif text-2xl sm:text-4xl font-extrabold tracking-tight leading-[1.25] sm:leading-[1.2] mb-1.5 sm:mb-2 overflow-visible"
-            style={{ color: 'var(--text-main)' }}
-          >
-            {sponsor.name[lang]}{' '}
-            <span className="text-sky-700 font-bold block sm:inline-block sm:pr-4">
-              {lang === 'bn' ? '• হজ্ব ও উমরাহ' : '• Hajj & Umrah'}
-            </span>
-          </h2>
+        <ScrollReveal y={14}>
+          <div className="text-center max-w-2xl mx-auto mb-6 sm:mb-10">
+            <h2
+              className="font-serif text-2xl sm:text-4xl font-extrabold tracking-tight leading-[1.25] sm:leading-[1.2] mb-1.5 sm:mb-2 overflow-visible"
+              style={{ color: 'var(--text-main)' }}
+            >
+              {sponsor.name[lang]}{' '}
+              <span className="text-sky-700 font-bold block sm:inline-block sm:pr-4">
+                {lang === 'bn' ? '• হজ্ব ও উমরাহ' : '• Hajj & Umrah'}
+              </span>
+            </h2>
 
-          <p
-            className="hidden sm:block text-sm max-w-xl mx-auto leading-relaxed"
-            style={{ color: 'var(--text-muted)' }}
-          >
-            {sponsor.desc[lang]}
-          </p>
-        </div>
+            <p
+              className="hidden sm:block text-sm max-w-xl mx-auto leading-relaxed"
+              style={{ color: 'var(--text-muted)' }}
+            >
+              {sponsor.desc[lang]}
+            </p>
+          </div>
+        </ScrollReveal>
 
         {/* Ultra-Premium Dual-Pane Sponsor Bento Card */}
-        <div
-          className="catalis-card hover:translate-y-0! p-4 sm:p-7 lg:p-8 border shadow-xl overflow-hidden"
-          style={{
-            backgroundColor: 'var(--bg-surface)',
-            borderColor: 'var(--border-card)',
-          }}
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-center">
-            {/* Left Column: Agency Brand, Services & Quick Contacts (7 Cols) */}
-            <div className="lg:col-span-7 flex flex-col justify-between space-y-3.5 sm:space-y-5">
+        <ScrollReveal y={16}>
+          <div
+            className="catalis-card hover:translate-y-0! p-4 sm:p-7 lg:p-8 border shadow-xl overflow-hidden"
+            style={{
+              backgroundColor: 'var(--bg-surface)',
+              borderColor: 'var(--border-card)',
+            }}
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-center">
+              {/* Left Column: Agency Brand, Services & Quick Contacts (7 Cols) */}
+              <div className="lg:col-span-7 flex flex-col justify-between space-y-3.5 sm:space-y-5">
               <div>
                 {/* Agency Brand Bar with Logo */}
                 <div className="flex items-center gap-3 sm:gap-4 mb-3.5 sm:mb-4">
@@ -249,8 +252,9 @@ export function Sponsor({ onOpenCard }: SponsorProps) {
                 </div>
               </div>
             </div>
+            </div>
           </div>
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   );

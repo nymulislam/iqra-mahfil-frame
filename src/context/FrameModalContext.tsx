@@ -1,6 +1,7 @@
 'use client';
 
-import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
+import { useScrollLock } from '@/components/SmoothScroll';
 
 interface FrameModalContextType {
   isFrameModalOpen: boolean;
@@ -31,16 +32,7 @@ export function FrameModalProvider({ children }: { children: React.ReactNode }) 
     setIsFrameModalOpen((prev) => !prev);
   }, []);
 
-  // Lock body scroll when modal is open
-  useEffect(() => {
-    if (isFrameModalOpen) {
-      const originalStyle = window.getComputedStyle(document.body).overflow;
-      document.body.style.overflow = 'hidden';
-      return () => {
-        document.body.style.overflow = originalStyle;
-      };
-    }
-  }, [isFrameModalOpen]);
+  useScrollLock(isFrameModalOpen);
 
   return (
     <FrameModalContext.Provider

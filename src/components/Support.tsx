@@ -6,6 +6,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { displayPhone } from '@/lib/phone';
 import { usePhoneCopy } from '@/lib/usePhoneCopy';
 import { SITE } from '@/content/site';
+import { ScrollReveal, StaggerGroup, StaggerItem } from './ScrollReveal';
 
 export function Support() {
   const { lang, t } = useLanguage();
@@ -21,22 +22,25 @@ export function Support() {
     >
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <h2
-            className="font-serif text-3xl sm:text-5xl font-extrabold tracking-tight leading-[1.15] mb-4"
-            style={{ color: 'var(--text-main)' }}
-          >
-            {t.support.sectionTitle[lang]}
-          </h2>
-          <p className="text-base max-w-xl mx-auto" style={{ color: 'var(--text-muted)' }}>
-            {t.support.sectionDesc[lang]}
-          </p>
-        </div>
+        <ScrollReveal y={14}>
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <h2
+              className="font-serif text-3xl sm:text-5xl font-extrabold tracking-tight leading-[1.15] mb-4"
+              style={{ color: 'var(--text-main)' }}
+            >
+              {t.support.sectionTitle[lang]}
+            </h2>
+            <p className="text-base max-w-xl mx-auto" style={{ color: 'var(--text-muted)' }}>
+              {t.support.sectionDesc[lang]}
+            </p>
+          </div>
+        </ScrollReveal>
 
         {/* Donation Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8 max-w-3xl mx-auto">
+        <StaggerGroup staggerDelay={0.09} className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8 max-w-3xl mx-auto">
           {/* bKash */}
-          <div className="catalis-card p-6 sm:p-7 flex flex-col justify-between">
+          <StaggerItem className="flex">
+          <div className="w-full catalis-card p-6 sm:p-7 flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-base font-bold text-sky-700">
@@ -72,9 +76,11 @@ export function Support() {
               )}
             </button>
           </div>
+          </StaggerItem>
 
           {/* Rocket */}
-          <div className="catalis-card p-6 sm:p-7 flex flex-col justify-between">
+          <StaggerItem className="flex">
+          <div className="w-full catalis-card p-6 sm:p-7 flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-base font-bold text-sky-700">
@@ -111,7 +117,8 @@ export function Support() {
               )}
             </button>
           </div>
-        </div>
+          </StaggerItem>
+        </StaggerGroup>
 
         <p role="status" className="text-sm text-center mb-4" style={{ color: 'var(--brand-blue-ink)' }}>
           {status?.state === 'copied' && t.support.copied[lang]}
@@ -121,14 +128,16 @@ export function Support() {
         </p>
 
         {/* Security Note */}
-        <div className="flex items-center justify-center gap-2 text-xs" style={{ color: 'var(--text-muted)' }}>
-          <ShieldCheck className="w-4 h-4 text-sky-600" />
-          <span>
-            {lang === 'bn'
-              ? 'সকল অনুদান সরাসরি মাদরাসা ও মাহফিলের দায়িত্বশীলদের অ্যাকাউন্টে গৃহীত হয়।'
-              : 'All donations are directly received by the madrasah authorities.'}
-          </span>
-        </div>
+        <ScrollReveal y={10} delay={0.1}>
+          <div className="flex items-center justify-center gap-2 text-xs" style={{ color: 'var(--text-muted)' }}>
+            <ShieldCheck className="w-4 h-4 text-sky-600" />
+            <span>
+              {lang === 'bn'
+                ? 'সকল অনুদান সরাসরি মাদরাসা ও মাহফিলের দায়িত্বশীলদের অ্যাকাউন্টে গৃহীত হয়।'
+                : 'All donations are directly received by the madrasah authorities.'}
+            </span>
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );

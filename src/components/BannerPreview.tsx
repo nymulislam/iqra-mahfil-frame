@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { OFFICIAL_POSTER, sharePoster } from '@/lib/poster';
 import { useLanguage } from '@/context/LanguageContext';
+import { ScrollReveal } from './ScrollReveal';
 
 interface BannerPreviewProps {
   onOpenLightbox: () => void;
@@ -65,45 +66,48 @@ export function BannerPreview({ onOpenLightbox }: BannerPreviewProps) {
 
       <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Compact Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
-          <h2
-            className="font-serif text-2xl sm:text-4xl font-extrabold tracking-tight leading-[1.25] sm:leading-[1.2] mb-2 overflow-visible"
-            style={{ color: 'var(--text-main)' }}
-          >
-            {lang === 'bn' ? (
-              <>
-                মাহফিলের অফিসিয়াল{' '}
-                <span className="text-sky-700 font-bold block sm:inline-block pr-4">পোস্টার ও ব্যানার</span>
-              </>
-            ) : (
-              <>
-                Official Mahfil{' '}
-                <span className="text-sky-700 font-bold block sm:inline-block pr-4">Poster & Banner</span>
-              </>
-            )}
-          </h2>
+        <ScrollReveal y={14}>
+          <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
+            <h2
+              className="font-serif text-2xl sm:text-4xl font-extrabold tracking-tight leading-[1.25] sm:leading-[1.2] mb-2 overflow-visible"
+              style={{ color: 'var(--text-main)' }}
+            >
+              {lang === 'bn' ? (
+                <>
+                  মাহফিলের অফিসিয়াল{' '}
+                  <span className="text-sky-700 font-bold block sm:inline-block pr-4">পোস্টার ও ব্যানার</span>
+                </>
+              ) : (
+                <>
+                  Official Mahfil{' '}
+                  <span className="text-sky-700 font-bold block sm:inline-block pr-4">Poster & Banner</span>
+                </>
+              )}
+            </h2>
 
-          <p
-            className="text-xs sm:text-sm max-w-xl mx-auto leading-relaxed"
-            style={{ color: 'var(--text-muted)' }}
-          >
-            {lang === 'bn'
-              ? 'সম্মানিত ওলামায়ে কেরামের তালিকা ও মাহফিলের বিস্তারিত তথ্য সংবলিত মূল পোস্টার।'
-              : 'Official high-resolution poster featuring the full line-up of distinguished scholars.'}
-          </p>
-        </div>
+            <p
+              className="text-xs sm:text-sm max-w-xl mx-auto leading-relaxed"
+              style={{ color: 'var(--text-muted)' }}
+            >
+              {lang === 'bn'
+                ? 'সম্মানিত ওলামায়ে কেরামের তালিকা ও মাহফিলের বিস্তারিত তথ্য সংবলিত মূল পোস্টার।'
+                : 'Official high-resolution poster featuring the full line-up of distinguished scholars.'}
+            </p>
+          </div>
+        </ScrollReveal>
 
         {/* Ultra-Premium Compact Bento Showcase (Dual Pane) */}
-        <div
-          className="catalis-card hover:translate-y-0! p-4 sm:p-6 lg:p-7 shadow-xl border overflow-hidden"
-          style={{
-            backgroundColor: 'var(--bg-surface)',
-            borderColor: 'var(--border-card)',
-          }}
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
-            {/* Left Column: Quick Action & Spec Hub */}
-            <div className="lg:col-span-5 flex flex-col justify-between space-y-5 order-2 lg:order-1">
+        <ScrollReveal y={16}>
+          <div
+            className="catalis-card hover:translate-y-0! p-4 sm:p-6 lg:p-7 shadow-xl border overflow-hidden"
+            style={{
+              backgroundColor: 'var(--bg-surface)',
+              borderColor: 'var(--border-card)',
+            }}
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+              {/* Left Column: Quick Action & Spec Hub */}
+              <div className="lg:col-span-5 flex flex-col justify-between space-y-5 order-2 lg:order-1">
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-bold bg-[var(--surface-sky)] text-[var(--brand-blue-ink)] border border-sky-500/20">
@@ -231,8 +235,9 @@ export function BannerPreview({ onOpenLightbox }: BannerPreviewProps) {
                 </div>
               </div>
             </div>
+            </div>
           </div>
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   );

@@ -9,13 +9,11 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { SITE } from '@/content/site';
+import { useSmoothScroll } from './SmoothScroll';
 
 export function Footer() {
   const { lang, t } = useLanguage();
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  const { scrollToTop } = useSmoothScroll();
 
   const navLinks = [
     { label: t.nav.mahfil[lang], href: '#mahfil' },

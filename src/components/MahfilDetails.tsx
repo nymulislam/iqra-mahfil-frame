@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'motion/react';
 import {
   Crown,
   BookOpen,
@@ -20,6 +19,7 @@ import { MAHFIL } from '@/content/mahfil';
 import { mahfilCalendarUrl } from '@/lib/calendar';
 import { displayPhone, phoneHref } from '@/lib/phone';
 import { SITE } from '@/content/site';
+import { ScrollReveal, StaggerGroup, StaggerItem } from './ScrollReveal';
 
 const ICON_MAP: Record<string, React.ElementType> = {
   Crown,
@@ -45,43 +45,50 @@ export function MahfilDetails({ onOpenBanner }: { onOpenBanner?: () => void }) {
     >
       {/* Light Mesh Glows (Sky Cyan & Royal Blue - Zero Yellow) */}
       <div
-        className="absolute top-1/4 right-0 w-96 h-96 blur-[130px] rounded-full pointer-events-none -z-10 opacity-20"
-        style={{ backgroundColor: 'var(--accent-secondary)' }}
+        className="absolute top-1/4 right-0 w-96 h-96 rounded-full pointer-events-none -z-10 opacity-30"
+        style={{
+          background: 'radial-gradient(circle, var(--accent-secondary) 0%, transparent 70%)',
+        }}
       />
       <div
-        className="absolute bottom-10 left-0 w-80 h-80 blur-[130px] rounded-full pointer-events-none -z-10 opacity-15"
-        style={{ backgroundColor: 'var(--accent-primary)' }}
+        className="absolute bottom-10 left-0 w-80 h-80 rounded-full pointer-events-none -z-10 opacity-25"
+        style={{
+          background: 'radial-gradient(circle, var(--accent-primary) 0%, transparent 70%)',
+        }}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
-          <h2
-            className="font-serif text-3xl sm:text-5xl font-extrabold tracking-tight leading-[1.25] sm:leading-[1.2] mb-3 overflow-visible"
-            style={{ color: 'var(--text-main)' }}
-          >
-            {lang === 'bn' ? (
-              <>
-                মাহফিলের বিস্তারিত ও{' '}
-                <span className="text-sky-700 font-bold block sm:inline-block pr-4">পর্বভিত্তিক সময়সূচি</span>
-              </>
-            ) : (
-              <>
-                Mahfil Overview &{' '}
-                <span className="text-sky-700 font-bold block sm:inline-block pr-4">Event Details</span>
-              </>
-            )}
-          </h2>
+        <ScrollReveal y={14}>
+          <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
+            <h2
+              className="font-serif text-3xl sm:text-5xl font-extrabold tracking-tight leading-[1.25] sm:leading-[1.2] mb-3 overflow-visible"
+              style={{ color: 'var(--text-main)' }}
+            >
+              {lang === 'bn' ? (
+                <>
+                  মাহফিলের বিস্তারিত ও{' '}
+                  <span className="text-sky-700 font-bold block sm:inline-block pr-4">পর্বভিত্তিক সময়সূচি</span>
+                </>
+              ) : (
+                <>
+                  Mahfil Overview &{' '}
+                  <span className="text-sky-700 font-bold block sm:inline-block pr-4">Event Details</span>
+                </>
+              )}
+            </h2>
 
-          <p className="text-sm sm:text-base max-w-2xl mx-auto leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-            {t.mahfil.sectionDesc[lang]}
-          </p>
-        </div>
+            <p className="text-sm sm:text-base max-w-2xl mx-auto leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+              {t.mahfil.sectionDesc[lang]}
+            </p>
+          </div>
+        </ScrollReveal>
 
         {/* --- Bento Grid Layout --- */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 mb-12 sm:mb-16">
+        <StaggerGroup staggerDelay={0.09} className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 mb-12 sm:mb-16">
           {/* Bento Card 1 (Span 7 cols): Date, Time, Venue & Quick Map */}
-          <div className="lg:col-span-7 bg-[var(--brand-blue-ink)] rounded-3xl p-6 sm:p-8 flex flex-col justify-between">
+          <StaggerItem className="lg:col-span-7 flex">
+          <div className="w-full bg-[var(--brand-blue-ink)] rounded-3xl p-6 sm:p-8 flex flex-col justify-between">
             <div>
               <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
                 <span className="catalis-pill text-xs font-bold text-sky-800">
@@ -147,9 +154,11 @@ export function MahfilDetails({ onOpenBanner }: { onOpenBanner?: () => void }) {
               </a>
             </div>
           </div>
+          </StaggerItem>
 
           {/* Bento Card 2 (Span 5 cols): Supervision & Leadership */}
-          <div className="lg:col-span-5 catalis-card p-6 sm:p-8 flex flex-col justify-between">
+          <StaggerItem className="lg:col-span-5 flex">
+          <div className="w-full catalis-card p-6 sm:p-8 flex flex-col justify-between">
             <div>
               <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
                 <span className="catalis-pill text-xs text-sky-800 font-bold whitespace-nowrap">
@@ -234,11 +243,12 @@ export function MahfilDetails({ onOpenBanner }: { onOpenBanner?: () => void }) {
               </a>
             </div>
           </div>
-        </div>
+          </StaggerItem>
+        </StaggerGroup>
 
         {/* 4 Feature Highlights Grid (Clean, High-Readability Editorial Cards) */}
         <div className="mb-14">
-        <div className="flex overflow-x-auto snap-x snap-mandatory gap-3.5 pb-3 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 sm:pt-0 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-5 scrollbar-none">
+        <StaggerGroup staggerDelay={0.07} className="flex overflow-x-auto snap-x snap-mandatory gap-3.5 pb-3 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 sm:pt-0 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-5 scrollbar-none">
           {MAHFIL.highlights.map((item, idx) => {
             const IconComp = ICON_MAP[item.icon] || Award;
             const partLabels = [
@@ -248,10 +258,12 @@ export function MahfilDetails({ onOpenBanner }: { onOpenBanner?: () => void }) {
               { bn: 'মূল পর্ব', en: 'Session 4' },
             ];
             return (
-              <motion.div
+              <StaggerItem
                 key={item.id}
-                whileHover={{ y: -4 }}
-                className="catalis-card p-5 sm:p-6 flex flex-col justify-between w-[84vw] max-w-[295px] shrink-0 snap-center sm:w-auto sm:max-w-none sm:shrink group transition-all duration-300 relative overflow-hidden bg-white shadow-md hover:shadow-xl hover:border-sky-300"
+                className="flex w-[84vw] max-w-[295px] shrink-0 snap-center sm:w-auto sm:max-w-none sm:shrink"
+              >
+              <div
+                className="w-full catalis-card p-5 sm:p-6 flex flex-col justify-between group transition-all duration-300 relative overflow-hidden bg-white shadow-md hover:shadow-xl hover:border-sky-300 hover:-translate-y-1"
               >
                 {/* Subtle top specular accent border */}
                 <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-teal-500 via-sky-500 to-blue-600 opacity-80 group-hover:opacity-100 transition-opacity" />
@@ -301,10 +313,11 @@ export function MahfilDetails({ onOpenBanner }: { onOpenBanner?: () => void }) {
                     {item.desc[lang]}
                   </p>
                 </div>
-              </motion.div>
+              </div>
+              </StaggerItem>
             );
           })}
-        </div>
+        </StaggerGroup>
 
         {/* Mobile swipe hint */}
         <div className="sm:hidden flex items-center justify-center gap-1.5 text-[11px] font-bold text-sky-800/80 pt-1">
@@ -313,6 +326,7 @@ export function MahfilDetails({ onOpenBanner }: { onOpenBanner?: () => void }) {
         </div>
 
         {/* Next year's notice is secondary to the current event. */}
+        <ScrollReveal y={16}>
         <div className="rounded-3xl border border-[var(--border-card)] bg-[var(--surface-sky)] text-[var(--brand-blue-ink)] p-5 sm:p-6">
           <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="space-y-2 text-center md:text-left">
@@ -344,6 +358,7 @@ export function MahfilDetails({ onOpenBanner }: { onOpenBanner?: () => void }) {
             </div>
           </div>
         </div>
+        </ScrollReveal>
       </div>
     </section>
   );

@@ -220,14 +220,16 @@
 
 /* Marquee scrolling ticker animation */
 @keyframes marquee {
-  0% { transform: translateX(0%); }
-  100% { transform: translateX(-50%); }
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
 }
 
 .animate-marquee {
-  display: inline-block;
+  display: flex;
+  width: max-content;
   white-space: nowrap;
-  animation: marquee 35s linear infinite;
+  will-change: transform;
+  animation: marquee 48s linear infinite;
 }
 
 .animate-marquee:hover {

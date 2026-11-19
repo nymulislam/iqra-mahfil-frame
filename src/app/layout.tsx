@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { Providers } from '@/components/Providers';
-import { SmoothScroll } from '@/components/SmoothScroll';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://iqra.annujum.org'),
@@ -79,7 +78,6 @@ export default function RootLayout({
       </head>
       <body className="antialiased selection:bg-sky-600 selection:text-white transition-colors duration-500">
         <Providers>
-          <SmoothScroll />
           {children}
         </Providers>
         <script

@@ -4,18 +4,18 @@ export const CANVAS_WIDTH = 1080;
 export const CANVAS_HEIGHT = 1078;
 
 export const PHOTO_BOUNDS = {
-  x: 210,
-  y: 637,
-  w: 326,
-  h: 343,
+  x: 116,
+  y: 590,
+  w: 365,
+  h: 384,
 };
 
 export const TEXT_BOX = {
-  x: 565,
-  y: 738,
-  w: 420,
-  h: 122,
-  cx: 775,
+  x: 502,
+  y: 699,
+  w: 418,
+  h: 144,
+  cx: 727,
 };
 
 export interface FrameStudioState {
@@ -150,16 +150,24 @@ export function renderFrame(
 
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-  // 1. Draw the frame template (it already contains the photo-slot placeholder)
   const frameReady = !!(frameImg && frameImg.complete && frameImg.naturalWidth);
+
+  // 1. Draw the frame template first (so its empty state matches the asset image 1:1)
   if (frameReady) {
+    // Fill solid white behind the transparent photo slot when empty
+    if (!state.userImage) {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(R.x, R.y, R.w, R.h);
+    }
     ctx.drawImage(frameImg, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  } else if (!state.userImage) {
+    drawPlaceholder(ctx, R, isTeal, state.language ?? 'bn');
   }
 
-  // 2. Draw the user photo ON TOP of the frame, clipped to the photo card
-  //    (rounded top-left and bottom-right corners, like the frame artwork).
+  // 2. Draw the user photo ON TOP of the frame, tightly clipped inside the curved inner border
+  //    so it completely covers the baked-in placeholder ("এখানে আপনার ছবি") while keeping the border crisp.
   if (state.userImage && state.userImage.complete && state.userImage.naturalWidth) {
-    const r = 64;
+    const r = 82;
     ctx.save();
     ctx.beginPath();
     ctx.moveTo(R.x + r, R.y);
@@ -189,25 +197,31 @@ export function renderFrame(
       h
     );
     ctx.restore();
-  } else if (!frameReady) {
-    drawPlaceholder(ctx, R, isTeal, state.language ?? 'bn');
   }
-  // 3. Draw Name and Designation Box
+
+  // 3. Draw Name and Designation Box (keep exact frame artwork when empty in Bengali)
+  const hasCustomName = !!state.name.trim();
+  const hasCustomDesignation = !!state.designation.trim();
+  const lang = state.language ?? 'bn';
+  if (frameReady && lang === 'bn' && !hasCustomName && !hasCustomDesignation) {
+    return;
+  }
+
   const B = TEXT_BOX;
   const cx = B.cx;
 
-  // Background patch matching frame's card color
-  ctx.fillStyle = isTeal ? '#e6f5fc' : '#fcf2e6';
+  // Background patch matching frame's card color (covers baked-in placeholder text)
+  ctx.fillStyle = isTeal ? '#e8f6fe' : '#f8e5ac';
   ctx.fillRect(B.x, B.y, B.w, B.h);
 
   ctx.textAlign = 'center';
   ctx.textBaseline = 'alphabetic';
 
-  const name = state.name.trim() || (state.language === 'en' ? 'Your name' : 'আপনার নাম');
-  const designation = state.designation.trim() || (state.language === 'en' ? 'Your designation' : 'আপনার পরিচয়');
+  const name = state.name.trim() || (lang === 'en' ? 'Your name' : 'আপনার নাম');
+  const designation = state.designation.trim() || (lang === 'en' ? 'Your designation' : 'আপনার পরিচয়');
 
   // Check if designation needs multiple lines
-  ctx.font = "500 40px 'Hind Siliguri', sans-serif";
+  ctx.font = "500 38px 'Hind Siliguri', sans-serif";
   const desWidth = ctx.measureText(designation).width;
 
   if (desWidth > 400 && designation.includes(' ')) {
@@ -227,22 +241,22 @@ export function renderFrame(
     const line2 = words.slice(bestSplit).join(' ');
 
     ctx.fillStyle = '#c4161c';
-    fitText(ctx, name, 54, 28, 400, 700);
-    ctx.fillText(name, cx, 772);
+    fitText(ctx, name, 52, 26, 405, 700);
+    ctx.fillText(name, cx, 744);
 
     ctx.fillStyle = '#1a1a1a';
-    fitText(ctx, line1, 32, 20, 400, 500);
-    ctx.fillText(line1, cx, 812);
+    fitText(ctx, line1, 30, 18, 405, 500);
+    ctx.fillText(line1, cx, 788);
 
-    fitText(ctx, line2, 32, 20, 400, 500);
-    ctx.fillText(line2, cx, 848);
+    fitText(ctx, line2, 30, 18, 405, 500);
+    ctx.fillText(line2, cx, 824);
   } else {
     ctx.fillStyle = '#c4161c';
-    fitText(ctx, name, 62, 28, 400, 700);
-    ctx.fillText(name, cx, 787);
+    fitText(ctx, name, 60, 28, 405, 700);
+    ctx.fillText(name, cx, 758);
 
     ctx.fillStyle = '#1a1a1a';
-    fitText(ctx, designation, 40, 20, 400, 500);
-    ctx.fillText(designation, cx, 839);
+    fitText(ctx, designation, 38, 20, 405, 500);
+    ctx.fillText(designation, cx, 812);
   }
 }

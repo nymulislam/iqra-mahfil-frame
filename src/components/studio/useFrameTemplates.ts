@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-const SOURCES = ['/assets/frames/frame-1.png', '/assets/frames/frame-2.png'];
+const SOURCES = ['/assets/frames/frame-1.png?v=3', '/assets/frames/frame-2.png?v=3'];
 
 export function useFrameTemplates(enabled = true) {
   const templates = useRef<(HTMLImageElement | null)[]>([null, null]);

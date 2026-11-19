@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { m, AnimatePresence } from 'motion/react';
 import {
   BookOpen,
   Crown,
@@ -23,6 +23,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { MADRASAH_INFO } from '@/content/madrasah';
 import { displayPhone, phoneHref } from '@/lib/phone';
 import { SITE } from '@/content/site';
+import { ScrollReveal, StaggerGroup, StaggerItem, EASE_SMOOTH } from './ScrollReveal';
 
 const ICON_MAP: Record<string, React.ElementType> = {
   BookOpen,
@@ -44,6 +45,7 @@ export function Madrasah({
 }) {
   const { lang, t } = useLanguage();
   const [activeTab, setActiveTab] = useState<'departments' | 'facilities'>('departments');
+  const [hasSwitchedTab, setHasSwitchedTab] = useState(false);
 
   return (
     <section
@@ -56,31 +58,34 @@ export function Madrasah({
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Compact Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
-          <h2
-            className="font-serif text-2xl sm:text-4xl font-extrabold tracking-tight leading-snug mb-2"
-            style={{ color: 'var(--text-main)' }}
-          >
-            {t.madrasah.sectionTitle[lang]}
-          </h2>
+        <ScrollReveal y={14}>
+          <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
+            <h2
+              className="font-serif text-2xl sm:text-4xl font-extrabold tracking-tight leading-snug mb-2"
+              style={{ color: 'var(--text-main)' }}
+            >
+              {t.madrasah.sectionTitle[lang]}
+            </h2>
 
-          <p className="text-xs sm:text-sm font-semibold text-sky-700 mb-1">
-            {MADRASAH_INFO.slogan[lang]}
-          </p>
+            <p className="text-xs sm:text-sm font-semibold text-sky-700 mb-1">
+              {MADRASAH_INFO.slogan[lang]}
+            </p>
 
-          <p className="text-xs sm:text-sm max-w-2xl mx-auto" style={{ color: 'var(--text-muted)' }}>
-            {t.madrasah.sectionDesc[lang]}
-          </p>
-        </div>
+            <p className="text-xs sm:text-sm max-w-2xl mx-auto" style={{ color: 'var(--text-muted)' }}>
+              {t.madrasah.sectionDesc[lang]}
+            </p>
+          </div>
+        </ScrollReveal>
 
         {/* Admission 2027 Banner Bento Card */}
-        <div
-          className="catalis-card p-5 sm:p-7 mb-10 border shadow-lg backdrop-blur-sm"
-          style={{
-            backgroundColor: 'var(--bg-surface)',
-            borderColor: 'var(--border-card)',
-          }}
-        >
+        <ScrollReveal y={16} delay={0.04}>
+          <div
+            className="catalis-card hover:translate-y-0! p-5 sm:p-7 mb-10 border shadow-lg"
+            style={{
+              backgroundColor: 'var(--bg-surface)',
+              borderColor: 'var(--border-card)',
+            }}
+          >
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 sm:gap-6">
             <div className="flex items-start gap-4 min-w-0">
               <div
@@ -137,7 +142,8 @@ export function Madrasah({
 
             </div>
           </div>
-        </div>
+          </div>
+        </ScrollReveal>
 
         {/* Space-Saving Interactive Segmented Tab Switcher */}
         <div className="flex justify-center mb-8">
@@ -149,7 +155,7 @@ export function Madrasah({
             }}
           >
             <button
-              onClick={() => setActiveTab('departments')}
+              onClick={() => { setHasSwitchedTab(true); setActiveTab('departments'); }}
               className={`flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-6 py-2.5 rounded-full text-[11px] sm:text-sm font-bold leading-tight text-center transition-all duration-300 cursor-pointer ${
                 activeTab === 'departments'
                   ? 'bg-slate-900 text-white shadow-md'
@@ -168,7 +174,7 @@ export function Madrasah({
             </button>
 
             <button
-              onClick={() => setActiveTab('facilities')}
+              onClick={() => { setHasSwitchedTab(true); setActiveTab('facilities'); }}
               className={`flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-6 py-2.5 rounded-full text-[11px] sm:text-sm font-bold leading-tight text-center transition-all duration-300 cursor-pointer ${
                 activeTab === 'facilities'
                   ? 'bg-slate-900 text-white shadow-md'
@@ -191,20 +197,28 @@ export function Madrasah({
         {/* Tab Content Display */}
         <AnimatePresence mode="wait">
           {activeTab === 'departments' ? (
-            <motion.div
+            <m.div
               key="departments"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.25 }}
+              transition={{ duration: 0.28, ease: EASE_SMOOTH }}
             >
-              <div className="flex overflow-x-auto snap-x snap-mandatory gap-3.5 pb-3 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 sm:pt-0 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-5 scrollbar-none">
+              <StaggerGroup
+                mode={hasSwitchedTab ? 'mount' : 'inView'}
+                staggerDelay={0.06}
+                className="flex overflow-x-auto snap-x snap-mandatory gap-3.5 pb-3 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 sm:pt-0 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-5 scrollbar-none"
+              >
               {MADRASAH_INFO.departments.map((dept) => {
                 const IconComp = ICON_MAP[dept.icon] || BookOpen;
                 return (
-                  <div
+                  <StaggerItem
                     key={dept.id}
-                    className="catalis-card p-5 sm:p-6 flex flex-col justify-between group shadow-xs hover:shadow-md transition-all w-[82vw] max-w-[300px] shrink-0 snap-center sm:w-auto sm:max-w-none sm:shrink"
+                    y={14}
+                    className="flex w-[82vw] max-w-[300px] shrink-0 snap-center sm:w-auto sm:max-w-none sm:shrink"
+                  >
+                  <div
+                    className="w-full catalis-card p-5 sm:p-6 flex flex-col justify-between group shadow-xs hover:shadow-md transition-all"
                     style={{
                       backgroundColor: 'var(--bg-surface)',
                       borderColor: 'var(--border-card)',
@@ -238,28 +252,33 @@ export function Madrasah({
                       ))}
                     </ul>
                   </div>
+                  </StaggerItem>
                 );
               })}
-              </div>
+              </StaggerGroup>
               <div className="sm:hidden flex items-center justify-center gap-1.5 text-[11px] font-bold text-sky-800/80 pt-1">
                 <span>{lang === 'bn' ? '← সোয়াইপ করে সব বিভাগ দেখুন →' : '← Swipe to view all departments →'}</span>
               </div>
-            </motion.div>
+            </m.div>
           ) : (
-            <motion.div
+            <m.div
               key="facilities"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.25 }}
+              transition={{ duration: 0.28, ease: EASE_SMOOTH }}
             >
-              <div className="grid grid-rows-2 grid-flow-col auto-cols-[72vw] gap-3 overflow-x-auto snap-x snap-mandatory pb-3 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 sm:pt-0 sm:grid-rows-none sm:grid-flow-row sm:auto-cols-auto sm:grid-cols-2 lg:grid-cols-4 sm:gap-4 scrollbar-none">
+              <StaggerGroup
+                mode={hasSwitchedTab ? 'mount' : 'inView'}
+                staggerDelay={0.045}
+                className="grid grid-rows-2 grid-flow-col auto-cols-[72vw] gap-3 overflow-x-auto snap-x snap-mandatory pb-3 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 sm:pt-0 sm:grid-rows-none sm:grid-flow-row sm:auto-cols-auto sm:grid-cols-2 lg:grid-cols-4 sm:gap-4 scrollbar-none"
+              >
               {MADRASAH_INFO.facilities.map((fac, idx) => {
                 const IconComp = ICON_MAP[fac.icon] || Building2;
                 return (
+                  <StaggerItem key={idx} y={12} className="flex snap-start">
                   <div
-                    key={idx}
-                    className="catalis-card p-4 sm:p-5 shadow-xs hover:shadow-md transition-all snap-start flex flex-row sm:flex-col items-start gap-3 sm:gap-0"
+                    className="w-full catalis-card p-4 sm:p-5 shadow-xs hover:shadow-md transition-all flex flex-row sm:flex-col items-start gap-3 sm:gap-0"
                     style={{
                       backgroundColor: 'var(--bg-surface)',
                       borderColor: 'var(--border-card)',
@@ -284,13 +303,14 @@ export function Madrasah({
                       </p>
                     </div>
                   </div>
+                  </StaggerItem>
                 );
               })}
-              </div>
+              </StaggerGroup>
               <div className="sm:hidden flex items-center justify-center gap-1.5 text-[11px] font-bold text-sky-800/80 pt-1">
                 <span>{lang === 'bn' ? '← সোয়াইপ করে সব সুবিধা দেখুন →' : '← Swipe to view all facilities →'}</span>
               </div>
-            </motion.div>
+            </m.div>
           )}
         </AnimatePresence>
       </div>

@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
+import React, { useState, useEffect, useRef } from 'react';
+import { m, useScroll, useTransform, useReducedMotion } from 'motion/react';
+import { EASE_SMOOTH } from './ScrollReveal';
 import {
   Clock,
   MapPin,
@@ -64,22 +65,36 @@ export function Hero({
   const formatNum = (value: number | null) => formatNumber(value, lang, 2, false);
 
   const googleCalUrl = mahfilCalendarUrl(lang);
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ['start start', 'end start'],
+  });
+  const archY = useTransform(scrollYProgress, [0, 1], [0, 56]);
+  const reduceMotion = useReducedMotion();
 
   return (
     <section
+      ref={heroRef}
       className="mahfil-hero relative pt-20 sm:pt-24 pb-8 md:pt-32 md:pb-16 overflow-hidden bg-islamic-pattern transition-colors duration-500"
     >
-      <svg className="hero-arch" viewBox="0 0 800 600" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M28 600V310C28 162 245 146 400 12C555 146 772 162 772 310V600" fill="none" stroke="currentColor" strokeWidth="2" vectorEffect="non-scaling-stroke" />
-        <path d="M46 600V313C46 176 256 155 400 35C544 155 754 176 754 313V600" fill="none" stroke="currentColor" strokeWidth="1" vectorEffect="non-scaling-stroke" />
-      </svg>
+      <m.div
+        aria-hidden="true"
+        style={reduceMotion ? undefined : { y: archY, willChange: 'transform' }}
+        className="pointer-events-none absolute inset-0"
+      >
+        <svg className="hero-arch" viewBox="0 0 800 600" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M28 600V310C28 162 245 146 400 12C555 146 772 162 772 310V600" fill="none" stroke="currentColor" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+          <path d="M46 600V313C46 176 256 155 400 35C544 155 754 176 754 313V600" fill="none" stroke="currentColor" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+        </svg>
+      </m.div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center mb-8 sm:mb-12">
-          <motion.h1
+          <m.h1
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.08 }}
+            transition={{ duration: 0.48, delay: 0.04, ease: EASE_SMOOTH }}
             className="mb-6 grid gap-2 text-center font-serif font-bold text-[var(--text-main)] sm:mb-8"
           >
             <span className="text-balance font-sans text-[13px] font-semibold uppercase tracking-wide text-sky-700 sm:text-base">
@@ -94,13 +109,13 @@ export function Hero({
               </span>{'\u00a0'}
               <span>{lang === 'bn' ? '২০২৬' : '2026'}</span>
             </span>
-          </motion.h1>
+          </m.h1>
 
           {/* Action Buttons */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            transition={{ duration: 0.46, delay: 0.12, ease: EASE_SMOOTH }}
             className="mx-auto mb-5 grid w-full max-w-xs gap-2.5 sm:mb-7 sm:flex sm:max-w-none sm:justify-center sm:gap-4"
           >
             {/* Primary Action Button with Specular Glow */}
@@ -133,13 +148,13 @@ export function Hero({
               <BookOpen className="w-4 h-4 text-sky-600" />
               <span>{t.hero.ctaDetails[lang]}</span>
             </a>
-          </motion.div>
+          </m.div>
 
           {/* Real-time Status Micro-bar */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.25 }}
+          <m.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.48, delay: 0.18, ease: EASE_SMOOTH }}
             className="inline-grid max-w-full justify-items-center gap-1.5 rounded-2xl border px-4 py-2 text-xs lg:inline-flex lg:items-center lg:gap-3 lg:rounded-full"
             style={{
               backgroundColor: 'var(--bg-surface-subtle)',
@@ -163,17 +178,17 @@ export function Hero({
             <span className="hidden sm:inline font-semibold text-sky-700">
               {MAHFIL.timeDisplay[lang]}
             </span>
-          </motion.div>
+          </m.div>
         </div>
 
         {/* --- 4-Card Hero Showcase Strip (Smooth Snap Carousel on Mobile, 4-Col Grid on Desktop) --- */}
         <div className="relative mb-8 sm:mb-10">
           <div className="flex overflow-x-auto snap-x snap-mandatory gap-3.5 pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-5 scrollbar-none">
             {/* Card 1: Live Dynamic Countdown & Add to Calendar */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.15 }}
+              transition={{ duration: 0.46, delay: 0.18, ease: EASE_SMOOTH }}
               className="countdown-card catalis-card p-4 sm:p-5 flex flex-col justify-between w-[84vw] max-w-[295px] shrink-0 snap-center sm:w-auto sm:max-w-none sm:shrink"
             >
               <div>
@@ -232,13 +247,13 @@ export function Hero({
                 <CalendarDays className="w-3.5 h-3.5 text-sky-600" />
                 <span>{t.hero.ctaCalendar[lang]}</span>
               </a>
-            </motion.div>
+            </m.div>
 
             {/* Card 2: Invited Key Scholars */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.2 }}
+              transition={{ duration: 0.46, delay: 0.24, ease: EASE_SMOOTH }}
               className="catalis-card p-4 sm:p-5 flex flex-col justify-between w-[84vw] max-w-[295px] shrink-0 snap-center sm:w-auto sm:max-w-none sm:shrink"
             >
               <div>
@@ -303,13 +318,13 @@ export function Hero({
               >
                 <span>{lang === 'bn' ? 'বক্তাদের তালিকা দেখুন →' : 'View Scholars →'}</span>
               </a>
-            </motion.div>
+            </m.div>
 
             {/* Card 3: Keepsake Photo Frame Studio Teaser */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.25 }}
+              transition={{ duration: 0.46, delay: 0.3, ease: EASE_SMOOTH }}
               className="catalis-card p-4 sm:p-5 flex flex-col justify-between w-[84vw] max-w-[295px] shrink-0 snap-center sm:w-auto sm:max-w-none sm:shrink"
             >
               <div>
@@ -347,13 +362,13 @@ export function Hero({
                 <Camera className="w-3.5 h-3.5 text-sky-100" />
                 <span>{lang === 'bn' ? 'ফ্রেম তৈরি করুন →' : 'Build Frame →'}</span>
               </a>
-            </motion.div>
+            </m.div>
 
             {/* Card 4: Location & Venue Map */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.3 }}
+              transition={{ duration: 0.46, delay: 0.36, ease: EASE_SMOOTH }}
               className="catalis-card p-4 sm:p-5 flex flex-col justify-between w-[84vw] max-w-[295px] shrink-0 snap-center sm:w-auto sm:max-w-none sm:shrink"
             >
               <div>
@@ -385,7 +400,7 @@ export function Hero({
                 <ExternalLink className="w-3.5 h-3.5 text-sky-600" />
                 <span>{lang === 'bn' ? 'গুগল ম্যাপে দিকনির্ণয়' : 'Google Maps'}</span>
               </a>
-            </motion.div>
+            </m.div>
           </div>
 
           {/* Mobile Swipe Hint Pill */}

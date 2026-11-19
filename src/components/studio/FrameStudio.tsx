@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { m, AnimatePresence } from 'motion/react';
 import {
   Camera,
   Download,
@@ -25,11 +25,15 @@ import { readPhoto, exportFrame, downloadBlob } from './frameExport';
 import {
   CANVAS_WIDTH,
   CANVAS_HEIGHT,
+  PHOTO_BOUNDS,
+  TEXT_BOX,
   FrameStudioState,
   renderFrame,
 } from './frameDraw';
 import { useFrameGestures } from './useFrameGestures';
 import { MobileAppStudio } from './MobileAppStudio';
+import { ScrollReveal, EASE_SMOOTH } from '../ScrollReveal';
+import { useScrollLock } from '../SmoothScroll';
 
 const QUICK_ROLES_BN = [
   'হাফেজ',
@@ -85,6 +89,7 @@ export function FrameStudio() {
   latestSnapshot.current = snapshot;
 
   const [isSheetOpen, setIsSheetOpen] = useState<boolean>(false);
+  useScrollLock(isSheetOpen);
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<'photo' | 'name' | 'designation' | null>(null);
@@ -159,6 +164,26 @@ export function FrameStudio() {
       fileInputRef.current?.click();
     },
   });
+
+  const handleDesktopCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const canvas = desktopCanvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const x = (e.clientX - rect.left) * (CANVAS_WIDTH / rect.width);
+    const y = (e.clientY - rect.top) * (CANVAS_HEIGHT / rect.height);
+
+    const B = TEXT_BOX;
+    if (x >= B.x - 16 && x <= B.x + B.w + 35 && y >= B.y - 16 && y <= B.y + B.h + 16) {
+      nameInputRef.current?.focus();
+      return;
+    }
+
+    const R = PHOTO_BOUNDS;
+    if (!userImage && !(x >= R.x && x <= R.x + R.w && y >= R.y && y <= R.y + R.h)) {
+      fileInputRef.current?.click();
+    }
+  };
 
   const handlePhotoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -340,45 +365,41 @@ export function FrameStudio() {
       </div>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
-          <motion.h2
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="font-serif text-3xl sm:text-5xl font-extrabold tracking-tight leading-[1.25] sm:leading-[1.2] mb-3 overflow-visible"
-            style={{ color: 'var(--text-main)' }}
-          >
-            {lang === 'bn' ? (
-              <>
-                আপনার ছবি দিয়ে তৈরি করুন{' '}
-                <span className="italic-serif accent-shimmer block sm:inline-block font-bold pr-4">
-                  মাহফিল ফটো ফ্রেম
-                </span>
-              </>
-            ) : (
-              <>
-                Personalize & Generate Your{' '}
-                <span className="italic-serif accent-shimmer block sm:inline-block font-bold pr-4">
-                  Official Mahfil Frame
-                </span>
-              </>
-            )}
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.15 }}
-            className="text-xs sm:text-sm max-w-xl mx-auto leading-relaxed"
-            style={{ color: 'var(--text-muted)' }}
-          >
-            {t.studio.sectionDesc[lang]}
-          </motion.p>
-        </div>
+        <ScrollReveal y={14}>
+          <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
+            <h2
+              className="font-serif text-3xl sm:text-5xl font-extrabold tracking-tight leading-[1.25] sm:leading-[1.2] mb-3 overflow-visible"
+              style={{ color: 'var(--text-main)' }}
+            >
+              {lang === 'bn' ? (
+                <>
+                  আপনার ছবি দিয়ে তৈরি করুন{' '}
+                  <span className="italic-serif accent-shimmer block sm:inline-block font-bold pr-4">
+                    মাহফিল ফটো ফ্রেম
+                  </span>
+                </>
+              ) : (
+                <>
+                  Personalize & Generate Your{' '}
+                  <span className="italic-serif accent-shimmer block sm:inline-block font-bold pr-4">
+                    Official Mahfil Frame
+                  </span>
+                </>
+              )}
+            </h2>
+            <p
+              className="text-xs sm:text-sm max-w-xl mx-auto leading-relaxed"
+              style={{ color: 'var(--text-muted)' }}
+            >
+              {t.studio.sectionDesc[lang]}
+            </p>
+          </div>
+        </ScrollReveal>
 
         {/* =========================================================================
             MOBILE VIEW (md:hidden): Ultra-Premium App Preview Card with Instant Pop-up Trigger
            ========================================================================= */}
+        <ScrollReveal y={16} delay={0.06}>
         <div className="block md:hidden">
           <div
             className="catalis-card p-5 sm:p-6 rounded-3xl shadow-xl border relative overflow-hidden bg-white"
@@ -424,7 +445,7 @@ export function FrameStudio() {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={frameIndex === 0 ? '/assets/frames/frame-1.png' : '/assets/frames/frame-2.png'}
+                src={frameIndex === 0 ? '/assets/frames/frame-1.png?v=3' : '/assets/frames/frame-2.png?v=3'}
                 alt="Frame Mockup"
                 className="w-full h-full object-contain pointer-events-none"
               />
@@ -486,7 +507,7 @@ export function FrameStudio() {
                     ref={desktopCanvasRef}
                     width={CANVAS_WIDTH}
                     height={CANVAS_HEIGHT}
-                    className="w-full h-full object-contain cursor-grab active:cursor-grabbing touch-none select-none"
+                    onClick={handleDesktopCanvasClick} className={`w-full h-full object-contain touch-none select-none ${userImage ? "cursor-grab active:cursor-grabbing" : "cursor-pointer"}`}
                   />
                   {/* Touch / Drag hint when photo is loaded */}
                   {userImage && (
@@ -499,9 +520,10 @@ export function FrameStudio() {
 
                 {/* Live Zoom & Clear Controller Bar when photo is loaded */}
                 {userImage && (
-                  <motion.div
+                  <m.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.24, ease: EASE_SMOOTH }}
                     className="w-full max-w-[420px] mt-4 flex items-center gap-3 bg-sky-50/80 px-4 py-2.5 rounded-2xl border border-sky-200/80"
                   >
                     <ZoomOut className="w-4 h-4 text-slate-500 shrink-0" />
@@ -530,7 +552,7 @@ export function FrameStudio() {
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
-                  </motion.div>
+                  </m.div>
                 )}
               </div>
 
@@ -554,9 +576,9 @@ export function FrameStudio() {
                     >
                       <span className="text-xs sm:text-sm font-bold text-slate-900 flex items-center gap-1.5">
                         <span className="w-2.5 h-2.5 rounded-full bg-teal-500" />
-                        <span>{lang === 'bn' ? 'ফ্রেম ১' : 'Frame 1'}</span>
+                        <span>{lang === 'bn' ? 'ফ্রেম ১ (দেশে)' : 'Frame 1 (Local)'}</span>
                       </span>
-                      <span className="text-xs text-slate-500 font-medium mt-1">{lang === 'bn' ? 'রয়েল ব্লু ও টিল' : 'Royal Blue & Teal'}</span>
+                      <span className="text-xs text-slate-500 font-medium mt-1">{lang === 'bn' ? 'দেশবাসীর জন্য' : 'For Bangladesh'}</span>
                     </button>
 
                     <button
@@ -570,9 +592,9 @@ export function FrameStudio() {
                     >
                       <span className="text-xs sm:text-sm font-bold text-slate-900 flex items-center gap-1.5">
                         <span className="w-2.5 h-2.5 rounded-full bg-sky-500" />
-                        <span>{lang === 'bn' ? 'ফ্রেম ২' : 'Frame 2'}</span>
+                        <span>{lang === 'bn' ? 'ফ্রেম ২ (প্রবাসী)' : 'Frame 2 (Abroad)'}</span>
                       </span>
-                      <span className="text-xs text-slate-500 font-medium mt-1">{lang === 'bn' ? 'পোস্টার থিম' : 'Poster theme'}</span>
+                      <span className="text-xs text-slate-500 font-medium mt-1">{lang === 'bn' ? 'প্রবাসীদের জন্য' : 'For Expatriates'}</span>
                     </button>
                   </div>
                 </div>
@@ -725,6 +747,7 @@ export function FrameStudio() {
             </div>
           </div>
         </div>
+        </ScrollReveal>
 
         {/* =========================================================================
             GLOBAL MOBILE APP STUDIO POPUP MODAL
@@ -742,12 +765,13 @@ export function FrameStudio() {
         <AnimatePresence>
           {isSheetOpen && (
             <div className="fixed inset-0 z-60 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/70 backdrop-blur-md">
-              <motion.div
+              <m.div
                 initial={{ y: '100%', opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: '100%', opacity: 0 }}
                 transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                className="w-full max-w-lg bg-white border border-slate-200 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl text-slate-900 relative max-h-[90vh] overflow-y-auto"
+                data-lenis-prevent
+                className="w-full max-w-lg bg-white border border-slate-200 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl text-slate-900 relative max-h-[90vh] overflow-y-auto overscroll-contain"
               >
                 <div className="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
                   <div className="flex items-center gap-2">
@@ -825,7 +849,7 @@ export function FrameStudio() {
                   <Check className="w-4 h-4" />
                   <span>{t.studio.saveSheet[lang]}</span>
                 </button>
-              </motion.div>
+              </m.div>
             </div>
           )}
         </AnimatePresence>
@@ -833,7 +857,7 @@ export function FrameStudio() {
         {/* Global Toast Notification */}
         <AnimatePresence>
           {toastMessage && (
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
@@ -841,7 +865,7 @@ export function FrameStudio() {
             >
               <Sparkles className="w-4 h-4 text-sky-400" />
               <span>{toastMessage}</span>
-            </motion.div>
+            </m.div>
           )}
         </AnimatePresence>
       </div>

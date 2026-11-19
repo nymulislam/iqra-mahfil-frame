@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { m, AnimatePresence } from 'motion/react';
 import {
   Award,
   Shield,
@@ -17,6 +17,8 @@ import { formatNumber } from '@/lib/numbers';
 import { useLanguage } from '@/context/LanguageContext';
 import { SPEAKERS, ORGANIZERS } from '@/content/speakers';
 import type { Speaker, Organizer } from '@/content/types';
+import { ScrollReveal, EASE_SMOOTH } from './ScrollReveal';
+import { useScrollLock } from './SmoothScroll';
 
 function ScholarCard({
   spk,
@@ -322,6 +324,7 @@ export function Speakers() {
   const { lang, t } = useLanguage();
   const [activeTab, setActiveTab] = useState<'speakers' | 'organizers'>('speakers');
   const [selectedProfile, setSelectedProfile] = useState<Speaker | Organizer | null>(null);
+  useScrollLock(Boolean(selectedProfile));
 
   // Desktop row index (0..3, 3 items per row)
   const [activeRow, setActiveRow] = useState<number>(0);
@@ -380,6 +383,7 @@ export function Speakers() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
+        <ScrollReveal y={14}>
         <div className="text-center max-w-3xl mx-auto mb-5 sm:mb-7">
           <h2
             className="font-serif text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.25] sm:leading-[1.2] mb-2 overflow-visible"
@@ -402,8 +406,10 @@ export function Speakers() {
             {t.speakers.sectionDesc[lang]}
           </p>
         </div>
+        </ScrollReveal>
 
         {/* Switcher Tabs: Speakers vs Organizers */}
+        <ScrollReveal y={12} delay={0.04}>
         <div className="flex justify-center mb-5 sm:mb-6">
           <div
             className="grid grid-cols-2 w-full max-w-md sm:w-auto sm:max-w-none sm:inline-flex p-1 sm:p-1.5 rounded-full border shadow-2xs"
@@ -483,8 +489,10 @@ export function Speakers() {
             </button>
           </div>
         </div>
+        </ScrollReveal>
 
         {/* --- SPEAKERS ROLLER STAGE (Compact, Top-Aligned, Zero Empty Space) --- */}
+        <ScrollReveal y={16} delay={0.08}>
         {activeTab === 'speakers' && (
           <div className="space-y-2.5">
             {/* ================= DESKTOP ROLLER STAGE (MD+) ================= */}
@@ -634,7 +642,7 @@ export function Speakers() {
                         : 0;
 
                     return (
-                      <motion.div
+                      <m.div
                         key={rowIndex}
                         initial={false}
                         animate={{
@@ -677,7 +685,7 @@ export function Speakers() {
                             );
                           })}
                         </div>
-                      </motion.div>
+                      </m.div>
                     );
                   })}
                 </div>
@@ -807,7 +815,7 @@ export function Speakers() {
                         : 0;
 
                     return (
-                      <motion.div
+                      <m.div
                         key={spk.id}
                         initial={false}
                         animate={{
@@ -839,7 +847,7 @@ export function Speakers() {
                           isCenter={isCenter}
                           onSelect={(s) => setSelectedProfile(s)}
                         />
-                      </motion.div>
+                      </m.div>
                     );
                   })}
                 </div>
@@ -867,11 +875,11 @@ export function Speakers() {
         {activeTab === 'organizers' && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {ORGANIZERS.map((org, idx) => (
-              <motion.div
+              <m.div
                 key={org.id}
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.05 }}
+                transition={{ duration: 0.42, delay: idx * 0.05, ease: EASE_SMOOTH }}
                 onClick={() => setSelectedProfile(org)}
                 className="catalis-card p-5 sm:p-6 flex flex-col justify-between group hover:scale-[1.02] transition-all duration-300 cursor-pointer"
               >
@@ -938,10 +946,11 @@ export function Speakers() {
                     {lang === 'bn' ? 'ইক্বরা ইন্টারন্যাশনাল মাদরাসা' : 'Iqra International'}
                   </span>
                 </div>
-              </motion.div>
+              </m.div>
             ))}
           </div>
         )}
+        </ScrollReveal>
       </div>
 
       {/* ================= SCHOLAR / ORGANIZER DETAIL MODAL ================= */}
@@ -951,11 +960,11 @@ export function Speakers() {
             className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/70 backdrop-blur-md"
             onClick={() => setSelectedProfile(null)}
           >
-            <motion.div
+            <m.div
               initial={{ opacity: 0, scale: 0.94, y: 15 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.94, y: 15 }}
-              transition={{ duration: 0.2 }}
+              transition={{ duration: 0.22, ease: EASE_SMOOTH }}
               onClick={(e) => e.stopPropagation()}
               className="relative w-full max-w-lg bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-2xl flex flex-col text-slate-900"
             >
@@ -1074,7 +1083,7 @@ export function Speakers() {
                   {lang === 'bn' ? 'বন্ধ করুন' : 'Close'}
                 </button>
               </div>
-            </motion.div>
+            </m.div>
           </div>
         )}
       </AnimatePresence>

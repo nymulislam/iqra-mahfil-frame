@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { m, AnimatePresence } from 'motion/react';
 import {
   PhoneCall,
   Camera,
@@ -171,7 +171,7 @@ export function Nav() {
                 }`}
               >
                 {isActive && (
-                  <motion.div
+                  <m.div
                     layoutId="activeNavTabPill"
                     transition={{ type: 'spring', stiffness: 450, damping: 35 }}
                     className="absolute inset-0 rounded-full bg-gradient-to-b from-white via-white to-sky-50/90 border border-sky-300/60 shadow-[0_3px_10px_rgba(2,108,182,0.18),0_1px_2px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,1)]"
@@ -219,7 +219,7 @@ export function Nav() {
             {/* Smart Helpline 3D Popover Card */}
             <AnimatePresence>
               {showHelpline && (
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, y: 10, scale: 0.96 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 8, scale: 0.96 }}
@@ -301,7 +301,7 @@ export function Nav() {
                       {lang === 'bn' ? 'সকাল ৯টা - রাত ১০টা' : '9 AM - 10 PM'}
                     </span>
                   </div>
-                </motion.div>
+                </m.div>
               )}
             </AnimatePresence>
           </div>
@@ -319,7 +319,7 @@ export function Nav() {
               }`}
             >
               {lang === 'bn' && (
-                <motion.div
+                <m.div
                   layoutId="activeLangIndicator"
                   transition={{ type: 'spring', stiffness: 500, damping: 35 }}
                   className="absolute inset-0 rounded-full bg-gradient-to-b from-white to-slate-50 border border-slate-200/80 shadow-[0_2px_4px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,1)]"
@@ -335,7 +335,7 @@ export function Nav() {
               }`}
             >
               {lang === 'en' && (
-                <motion.div
+                <m.div
                   layoutId="activeLangIndicator"
                   transition={{ type: 'spring', stiffness: 500, damping: 35 }}
                   className="absolute inset-0 rounded-full bg-gradient-to-b from-white to-slate-50 border border-slate-200/80 shadow-[0_2px_4px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,1)]"

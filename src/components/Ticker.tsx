@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import {
   BookOpen,
   Bell,
@@ -9,7 +9,6 @@ import {
   MapPin,
   Camera,
   Users,
-  ShieldCheck,
   GraduationCap,
   PhoneCall,
   Volume2,
@@ -21,7 +20,6 @@ import { SITE } from '@/content/site';
 
 export function Ticker() {
   const { lang } = useLanguage();
-  const [isPaused, setIsPaused] = useState(false);
 
   const items = [
     {
@@ -90,16 +88,6 @@ export function Ticker() {
       href: '#frame',
     },
     {
-      icon: <ShieldCheck className="w-3.5 h-3.5 text-sky-300 shrink-0" />,
-      tag: lang === 'bn' ? 'মা-বোনদের সুব্যবস্থা' : 'Sisters Enclosure',
-      text:
-        lang === 'bn'
-          ? 'পর্দানশীন মা-বোনদের জন্য সম্পূর্ণ পৃথক প্যান্ডেল ও প্রজেক্টর'
-          : 'Dedicated separate enclosure and screens for women',
-      highlight: false,
-      href: '#mahfil',
-    },
-    {
       icon: <GraduationCap className="w-3.5 h-3.5 text-teal-300 shrink-0" />,
       tag: lang === 'bn' ? 'ভর্তি বিজ্ঞপ্তি ২০২৭' : 'Admission 2027',
       text:
@@ -131,74 +119,71 @@ export function Ticker() {
       <div className="flex items-center">
         {/* Fixed Left Badge: Live News Pill */}
         <div
-          className="relative z-10 shrink-0 flex items-center gap-2 pl-3 sm:pl-6 pr-4 sm:pr-5 py-1 border-r backdrop-blur-md shadow-md"
+          className="relative z-10 shrink-0 flex items-center gap-1.5 sm:gap-2 pl-2.5 sm:pl-5 pr-3 sm:pr-4 py-1 border-r shadow-md"
           style={{
             backgroundColor: 'var(--ticker-bg)',
             borderColor: 'var(--border-subtle)',
           }}
         >
-          <span className="relative flex h-2.5 w-2.5">
+          <span className="relative flex h-2 w-2 sm:h-2.5 sm:w-2.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full brand-live-dot opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 brand-live-dot"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 sm:h-2.5 sm:w-2.5 brand-live-dot"></span>
           </span>
           <span className="font-extrabold text-[11px] sm:text-xs tracking-wider uppercase text-white flex items-center gap-1.5">
             <Volume2 className="w-3.5 h-3.5 text-sky-300 shrink-0" />
-            <span>{lang === 'bn' ? 'ঘোষণা' : 'ANNOUNCEMENTS'}</span>
+            <span>{lang === 'bn' ? 'ঘোষণা' : 'Notice'}</span>
           </span>
         </div>
 
         {/* Marquee Glide Track */}
-        <div
-          className="flex-1 overflow-hidden relative"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-        >
-          <div
-            className={`flex items-center gap-6 whitespace-nowrap will-change-transform ${
-              isPaused ? '' : 'animate-marquee'
-            }`}
-          >
+        <div className="flex-1 overflow-hidden relative">
+          <div className="animate-marquee flex items-center">
             {/* Set 1 */}
-            {items.map((item, idx) => (
-              <a
-                key={`a-${idx}`}
-                href={item.href}
-                target={item.external ? '_blank' : '_self'}
-                rel={item.external ? 'noopener noreferrer' : undefined}
-                className={`inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all hover:scale-105 ${
-                  item.dateStyle ?? (item.highlight
-                    ? 'bg-white/10 text-white border-white/20 shadow-xs'
-                    : 'bg-black/20 text-slate-200 border-white/10')
-                }`}
-              >
-                {item.icon}
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border border-current/25 uppercase tracking-wider">
-                  {item.tag}
-                </span>
-                <span>{item.text}</span>
-              </a>
-            ))}
+            <div className="flex items-center gap-5 pr-5 shrink-0">
+              {items.map((item, idx) => (
+                <a
+                  key={`a-${idx}`}
+                  href={item.href}
+                  target={item.external ? '_blank' : '_self'}
+                  rel={item.external ? 'noopener noreferrer' : undefined}
+                  className={`inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-transform hover:scale-105 ${
+                    item.dateStyle ?? (item.highlight
+                      ? 'bg-white/10 text-white border-white/20 shadow-xs'
+                      : 'bg-black/20 text-slate-200 border-white/10')
+                  }`}
+                >
+                  {item.icon}
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border border-current/25 uppercase tracking-wider">
+                    {item.tag}
+                  </span>
+                  <span>{item.text}</span>
+                </a>
+              ))}
+            </div>
 
             {/* Set 2 for seamless continuous infinite loop */}
-            {items.map((item, idx) => (
-              <a
-                key={`b-${idx}`}
-                href={item.href}
-                target={item.external ? '_blank' : '_self'}
-                rel={item.external ? 'noopener noreferrer' : undefined}
-                className={`inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all hover:scale-105 ${
-                  item.dateStyle ?? (item.highlight
-                    ? 'bg-white/10 text-white border-white/20 shadow-xs'
-                    : 'bg-black/20 text-slate-200 border-white/10')
-                }`}
-              >
-                {item.icon}
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
-                  {item.tag}
-                </span>
-                <span>{item.text}</span>
-              </a>
-            ))}
+            <div className="flex items-center gap-5 pr-5 shrink-0" aria-hidden="true">
+              {items.map((item, idx) => (
+                <a
+                  key={`b-${idx}`}
+                  href={item.href}
+                  tabIndex={-1}
+                  target={item.external ? '_blank' : '_self'}
+                  rel={item.external ? 'noopener noreferrer' : undefined}
+                  className={`inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-transform hover:scale-105 ${
+                    item.dateStyle ?? (item.highlight
+                      ? 'bg-white/10 text-white border-white/20 shadow-xs'
+                      : 'bg-black/20 text-slate-200 border-white/10')
+                  }`}
+                >
+                  {item.icon}
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border border-current/25 uppercase tracking-wider">
+                    {item.tag}
+                  </span>
+                  <span>{item.text}</span>
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </div>

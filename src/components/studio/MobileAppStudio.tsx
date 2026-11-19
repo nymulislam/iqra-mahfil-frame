@@ -436,8 +436,9 @@ export function MobileAppStudio() {
 
     // 1. Click on Name & Designation box
     const B = TEXT_BOX;
-    if (x >= B.x - 25 && x <= B.x + B.w + 25 && y >= B.y - 25 && y <= B.y + B.h + 30) {
+    if (x >= B.x - 20 && x <= B.x + B.w + 35 && y >= B.y - 20 && y <= B.y + B.h + 25) {
       setActiveSheet('info');
+      setTimeout(() => document.getElementById('nm')?.focus(), 120);
       return;
     }
 
@@ -757,7 +758,7 @@ export function MobileAppStudio() {
             onClick={() => handleSelectFrame(0)}
           >
             <span className="tab-dot dot-1" />
-            <span>{text("ফ্রেম ১")}</span>
+            <span>{text("ফ্রেম ১ (দেশে)")}</span>
           </button>
           <button
             type="button"
@@ -766,7 +767,7 @@ export function MobileAppStudio() {
             onClick={() => handleSelectFrame(1)}
           >
             <span className="tab-dot dot-2" />
-            <span>{text("ফ্রেম ২")}</span>
+            <span>{text("ফ্রেম ২ (প্রবাসী)")}</span>
           </button>
         </div>
 

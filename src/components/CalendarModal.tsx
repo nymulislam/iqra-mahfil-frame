@@ -2,9 +2,10 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { OFFICIAL_POSTER } from '@/lib/poster';
-import { motion, AnimatePresence } from 'motion/react';
+import { m, AnimatePresence } from 'motion/react';
 import { X, Download, Calendar, FileText, Image as ImageIcon, Briefcase } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
+import { useScrollLock } from './SmoothScroll';
 
 interface ModalProps {
   isOpen: boolean;
@@ -19,13 +20,13 @@ export function CalendarModal({ isOpen, onClose, type }: ModalProps) {
   const [zoomed, setZoomed] = useState(false);
   const [imageError, setImageError] = useState(false);
 
+  useScrollLock(isOpen);
+
   useEffect(() => {
     if (!isOpen) return;
     setZoomed(false);
     setImageError(false);
     const previous = document.activeElement as HTMLElement | null;
-    const overflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
     panel.current?.focus();
     const key = (event: KeyboardEvent) => {
       if (event.key === 'Escape') onClose();
@@ -40,7 +41,6 @@ export function CalendarModal({ isOpen, onClose, type }: ModalProps) {
     };
     document.addEventListener('keydown', key);
     return () => {
-      document.body.style.overflow = overflow;
       document.removeEventListener('keydown', key);
       previous?.focus();
     };
@@ -94,7 +94,7 @@ export function CalendarModal({ isOpen, onClose, type }: ModalProps) {
         className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-slate-950/75 backdrop-blur-md"
         onClick={onClose}
       >
-        <motion.div
+        <m.div
           ref={panel} role="dialog" aria-modal="true" aria-labelledby="poster-modal-title" tabIndex={-1}
           initial={{ opacity: 0, scale: 0.94 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -131,7 +131,7 @@ export function CalendarModal({ isOpen, onClose, type }: ModalProps) {
           </div>
 
           {/* Form-fitting Scrollable Image Container with Minimal Padding */}
-          <div className="min-h-0 flex-1 overflow-auto p-1.5 sm:p-2.5 bg-slate-900/5" style={{ touchAction: 'pan-x pan-y pinch-zoom' }}>
+          <div data-lenis-prevent className="min-h-0 flex-1 overflow-auto overscroll-contain p-1.5 sm:p-2.5 bg-slate-900/5" style={{ touchAction: 'pan-x pan-y pinch-zoom' }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={imageSrc}
@@ -171,7 +171,7 @@ export function CalendarModal({ isOpen, onClose, type }: ModalProps) {
               </button>
             </div>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </AnimatePresence>
   );

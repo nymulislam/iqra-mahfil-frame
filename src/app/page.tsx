@@ -17,6 +17,7 @@ import { Footer } from '@/components/Footer';
 import { TabBar } from '@/components/TabBar';
 import { CalendarModal } from '@/components/CalendarModal';
 import { ScrollReveal } from '@/components/ScrollReveal';
+import { ScrollProgressBar } from '@/components/ScrollProgressBar';
 
 export default function HomePage() {
   const [modalState, setModalState] = useState<{
@@ -55,6 +56,9 @@ export default function HomePage() {
         color: 'var(--text-main)',
       }}
     >
+      {/* Top Scroll Reading Progress Bar */}
+      <ScrollProgressBar />
+
       {/* Top Sticky Fluid Glass Navbar */}
       <Nav />
 
@@ -67,50 +71,32 @@ export default function HomePage() {
         <Ticker />
 
         {/* 2. Highlighted Mahfil Overview Bento (Date, Venue & Supervision) */}
-        <ScrollReveal>
-          <MahfilDetails onOpenBanner={openBanner} />
-        </ScrollReveal>
+        <MahfilDetails onOpenBanner={openBanner} />
 
         {/* 3. Official Mahfil Banner & Poster Dual-Pane Showcase */}
-        <ScrollReveal>
-          <BannerPreview onOpenLightbox={openBanner} />
-        </ScrollReveal>
+        <BannerPreview onOpenLightbox={openBanner} />
 
-        {/* 4. Invited Keynote Scholars & Organizers (3-Line Depth Roller) */}
-        <ScrollReveal y={0}>
-          <Speakers />
-        </ScrollReveal>
+        {/* 4. Invited Keynote Scholars & Organizers */}
+        <Speakers />
 
         {/* 5. Viral Keepsake Frame Studio */}
-        <ScrollReveal y={0}>
-          <FrameStudio />
-        </ScrollReveal>
+        <FrameStudio />
 
         {/* 6. Ultra-Premium Live Community Pulse & GPS Distance Radar */}
-        <ScrollReveal>
-          <LiveTracking />
-        </ScrollReveal>
+        <LiveTracking />
 
         {/* 7. Madrasah Departments & Admissions 2027 */}
-        <ScrollReveal>
-          <Madrasah
-            onOpenBrochure={openBrochure}
-          />
-        </ScrollReveal>
+        <Madrasah onOpenBrochure={openBrochure} />
 
         {/* 8. Sadaqah Jariyah & Support */}
-        <ScrollReveal>
-          <Support />
-        </ScrollReveal>
+        <Support />
 
         {/* 9. Official Travel Partner & Sponsor: Ar-Rahman Travels (Hajj & Umrah) */}
-        <ScrollReveal>
-          <Sponsor onOpenCard={openSponsorCard} />
-        </ScrollReveal>
+        <Sponsor onOpenCard={openSponsorCard} />
       </main>
 
       {/* Minimal & Ultra-Modern Footer */}
-      <ScrollReveal y={16}>
+      <ScrollReveal y={14}>
         <Footer />
       </ScrollReveal>
 
