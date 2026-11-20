@@ -71,7 +71,7 @@ export default function HomePage() {
         <Ticker />
 
         {/* 2. Highlighted Mahfil Overview Bento (Date, Venue & Supervision) */}
-        <MahfilDetails onOpenBanner={openBanner} />
+        <MahfilDetails onOpenBanner={openBanner} onOpenCalendar={openCalendar} />
 
         {/* 3. Official Mahfil Banner & Poster Dual-Pane Showcase */}
         <BannerPreview onOpenLightbox={openBanner} />
@@ -86,7 +86,7 @@ export default function HomePage() {
         <LiveTracking />
 
         {/* 7. Madrasah Departments & Admissions 2027 */}
-        <Madrasah onOpenBrochure={openBrochure} />
+        <Madrasah onOpenBrochure={openBrochure} onOpenCalendar={openCalendar} />
 
         {/* 8. Sadaqah Jariyah & Support */}
         <Support />

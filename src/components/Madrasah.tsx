@@ -40,8 +40,10 @@ const ICON_MAP: Record<string, React.ElementType> = {
 
 export function Madrasah({
   onOpenBrochure,
+  onOpenCalendar,
 }: {
   onOpenBrochure: () => void;
+  onOpenCalendar: () => void;
 }) {
   const { lang, t } = useLanguage();
   const [activeTab, setActiveTab] = useState<'departments' | 'facilities'>('departments');
@@ -117,29 +119,42 @@ export function Madrasah({
               </div>
             </div>
 
-            <div className="grid grid-cols-1 min-[420px]:grid-cols-2 md:flex md:flex-nowrap gap-2.5 shrink-0 w-full md:w-auto pt-4 border-t md:border-t-0 md:pt-0" style={{ borderColor: 'var(--border-subtle)' }}>
+            <div className="grid grid-cols-2 md:flex md:flex-wrap lg:flex-nowrap gap-2.5 shrink-0 w-full md:w-auto pt-4 border-t md:border-t-0 md:pt-0" style={{ borderColor: 'var(--border-subtle)' }}>
               <a
                 href={phoneHref(SITE.phones[0])}
-                className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-full font-bold text-xs sm:text-sm bg-slate-900 hover:bg-black text-white shadow-xs active:scale-95 transition-all md:flex-none text-center whitespace-nowrap"
+                className="col-span-2 md:col-span-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-full font-bold text-xs sm:text-sm bg-slate-900 hover:bg-black text-white shadow-xs active:scale-95 transition-all md:flex-none text-center whitespace-nowrap"
               >
                 <PhoneCall className="w-3.5 h-3.5 text-teal-400" />
                 <span className="font-mono">{displayPhone(SITE.phones[0], lang)}</span>
               </a>
 
               <button
+                type="button"
                 onClick={onOpenBrochure}
-                className="inline-flex items-center justify-center gap-1.5 px-4 py-3 rounded-full font-semibold text-xs sm:text-sm border shadow-2xs hover:bg-slate-100/60 active:scale-95 transition-all md:flex-none cursor-pointer whitespace-nowrap"
+                className="inline-flex items-center justify-center gap-1.5 px-3.5 sm:px-4 py-3 rounded-full font-semibold text-xs sm:text-sm border shadow-2xs hover:bg-slate-100/60 active:scale-95 transition-all md:flex-none cursor-pointer whitespace-nowrap"
                 style={{
                   backgroundColor: 'var(--bg-surface-subtle)',
                   color: 'var(--text-main)',
                   borderColor: 'var(--border-subtle)',
                 }}
               >
-                <FileText className="w-3.5 h-3.5 text-sky-600" />
-                <span>{t.madrasah.brochureBtn[lang]}</span>
+                <FileText className="w-3.5 h-3.5 text-sky-600 shrink-0" />
+                <span className="truncate">{t.madrasah.brochureBtn[lang]}</span>
               </button>
 
-
+              <button
+                type="button"
+                onClick={onOpenCalendar}
+                className="inline-flex items-center justify-center gap-1.5 px-3.5 sm:px-4 py-3 rounded-full font-semibold text-xs sm:text-sm border shadow-2xs hover:bg-sky-50 active:scale-95 transition-all md:flex-none cursor-pointer whitespace-nowrap"
+                style={{
+                  backgroundColor: 'var(--bg-surface)',
+                  color: 'var(--text-main)',
+                  borderColor: 'var(--border-subtle)',
+                }}
+              >
+                <Calendar className="w-3.5 h-3.5 text-sky-600 shrink-0" />
+                <span className="truncate">{t.madrasah.calendarBtn[lang]}</span>
+              </button>
             </div>
           </div>
           </div>

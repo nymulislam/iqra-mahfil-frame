@@ -18,13 +18,12 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useLiveTracking } from '@/context/LiveTrackingContext';
 import { useFrameModal } from '@/context/FrameModalContext';
 import { MAHFIL } from '@/content/mahfil';
-import { mahfilCalendarUrl } from '@/lib/calendar';
 import { formatNumber } from '@/lib/numbers';
 import { SITE } from '@/content/site';
 import { SPEAKERS } from '@/content/speakers';
 
 export function Hero({
-  onOpenBanner,
+  onOpenCalendar,
 }: {
   onOpenCalendar?: () => void;
   onOpenBanner?: () => void;
@@ -64,7 +63,6 @@ export function Hero({
 
   const formatNum = (value: number | null) => formatNumber(value, lang, 2, false);
 
-  const googleCalUrl = mahfilCalendarUrl(lang);
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -232,11 +230,10 @@ export function Hero({
                   ))}
                 </div>
               </div>
-              {/* Directly Add to Google Calendar */}
-              <a
-                href={googleCalUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+              {/* Open 2026 Calendar Preview */}
+              <button
+                type="button"
+                onClick={onOpenCalendar}
                 className="w-full inline-flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold border transition-colors cursor-pointer hover:border-sky-300"
                 style={{
                   backgroundColor: 'var(--bg-surface-subtle)',
@@ -246,7 +243,7 @@ export function Hero({
               >
                 <CalendarDays className="w-3.5 h-3.5 text-sky-600" />
                 <span>{t.hero.ctaCalendar[lang]}</span>
-              </a>
+              </button>
             </m.div>
 
             {/* Card 2: Invited Key Scholars */}

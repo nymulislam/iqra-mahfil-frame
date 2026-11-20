@@ -3,7 +3,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { OFFICIAL_POSTER } from '@/lib/poster';
 import { m, AnimatePresence } from 'motion/react';
-import { X, Download, Calendar, FileText, Image as ImageIcon, Briefcase } from 'lucide-react';
+import {
+  X,
+  Download,
+  Calendar,
+  FileText,
+  Image as ImageIcon,
+  Briefcase,
+  ExternalLink,
+  ZoomIn,
+  ZoomOut,
+  RotateCcw,
+} from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useScrollLock } from './SmoothScroll';
 
@@ -13,18 +24,36 @@ interface ModalProps {
   type: 'calendar' | 'brochure' | 'banner' | 'sponsor';
 }
 
+const BROCHURE_PDF_SRC = '/assets/posters/admission-brouchure.pdf';
+const BROCHURE_PDF_FILENAME = 'iqra-madrasah-admission-brochure-2027.pdf';
+const ZOOM_MIN = 1;
+const ZOOM_MAX = 3;
+const ZOOM_STEP = 0.5;
+
 export function CalendarModal({ isOpen, onClose, type }: ModalProps) {
   const { lang, t } = useLanguage();
 
   const panel = useRef<HTMLDivElement | null>(null);
-  const [zoomed, setZoomed] = useState(false);
+  const viewportRef = useRef<HTMLDivElement | null>(null);
+  const dragRef = useRef<{ active: boolean; moved: boolean; startX: number; startY: number; scrollLeft: number; scrollTop: number }>({
+    active: false,
+    moved: false,
+    startX: 0,
+    startY: 0,
+    scrollLeft: 0,
+    scrollTop: 0,
+  });
+
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [isDragging, setIsDragging] = useState(false);
   const [imageError, setImageError] = useState(false);
 
   useScrollLock(isOpen);
 
   useEffect(() => {
     if (!isOpen) return;
-    setZoomed(false);
+    setZoomLevel(1);
+    setIsDragging(false);
     setImageError(false);
     const previous = document.activeElement as HTMLElement | null;
     panel.current?.focus();
@@ -61,20 +90,18 @@ export function CalendarModal({ isOpen, onClose, type }: ModalProps) {
 
   if (type === 'calendar') {
     imageSrc = '/assets/posters/calendar-2027.jpg';
-    downloadFileName = 'iqra-madrasah-calendar-2027.jpg';
+    downloadFileName = 'iqra-madrasah-calendar-2026.jpg';
     title = t.calendar.modalTitle[lang];
     subtitle = t.calendar.modalDesc[lang];
   } else if (type === 'brochure') {
-    imageSrc = '/assets/posters/admission-brochure.jpg';
-    downloadFileName = 'iqra-madrasah-admission-brochure.jpg';
     title =
       lang === 'bn'
-        ? 'ইক্বরা মাদরাসা ভর্তি প্রসপেক্টাস ২০২৭'
-        : 'Iqra Madrasah Admission Brochure 2027';
+        ? 'ইক্বরা মাদরাসা ভর্তি প্রসপেক্টাস'
+        : 'Iqra Madrasah Admission Brochure';
     subtitle =
       lang === 'bn'
-        ? 'প্লে থেকে ৫ম শ্রেণি ও হিফজুল কুরআন বিভাগে ভর্তি তথ্য'
-        : 'Admissions Open: Play to Grade 5 & Tahfizul Quran';
+        ? '৮ পৃষ্ঠার সম্পূর্ণ ভর্তি প্রসপেক্টাস (PDF)'
+        : 'Complete 8-Page Admission Prospectus (PDF)';
   } else if (type === 'sponsor') {
     imageSrc = '/assets/sponsor/ar-rahman-card.jpg';
     downloadFileName = 'ar-rahman-travels-card.jpg';
@@ -88,6 +115,54 @@ export function CalendarModal({ isOpen, onClose, type }: ModalProps) {
         : 'Official Travel Partner • Director: Hafiz Maulana Mufti Muhammad Ismail';
   }
 
+  const isPdfView = type === 'brochure';
+
+  const applyZoom = (nextZoom: number) => {
+    const clamped = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, Number(nextZoom.toFixed(2))));
+    setZoomLevel(clamped);
+    if (clamped === 1 && viewportRef.current) {
+      viewportRef.current.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (zoomLevel <= 1 || e.pointerType === 'touch') return;
+    const el = viewportRef.current;
+    if (!el) return;
+    dragRef.current = {
+      active: true,
+      moved: false,
+      startX: e.clientX,
+      startY: e.clientY,
+      scrollLeft: el.scrollLeft,
+      scrollTop: el.scrollTop,
+    };
+    setIsDragging(true);
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!dragRef.current.active || !viewportRef.current) return;
+    const dx = e.clientX - dragRef.current.startX;
+    const dy = e.clientY - dragRef.current.startY;
+    if (Math.abs(dx) + Math.abs(dy) > 4) dragRef.current.moved = true;
+    viewportRef.current.scrollLeft = dragRef.current.scrollLeft - dx;
+    viewportRef.current.scrollTop = dragRef.current.scrollTop - dy;
+  };
+
+  const handlePointerUp = () => {
+    dragRef.current.active = false;
+    setIsDragging(false);
+  };
+
+  const handleImageClick = () => {
+    if (dragRef.current.moved) {
+      dragRef.current.moved = false;
+      return;
+    }
+    applyZoom(zoomLevel > 1 ? 1 : 2);
+  };
+
   return (
     <AnimatePresence>
       <div
@@ -95,13 +170,21 @@ export function CalendarModal({ isOpen, onClose, type }: ModalProps) {
         onClick={onClose}
       >
         <m.div
-          ref={panel} role="dialog" aria-modal="true" aria-labelledby="poster-modal-title" tabIndex={-1}
+          ref={panel}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="poster-modal-title"
+          tabIndex={-1}
           initial={{ opacity: 0, scale: 0.94 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.94 }}
           transition={{ duration: 0.2 }}
           onClick={(e) => e.stopPropagation()}
-          className="relative w-auto max-w-[94vw] sm:max-w-xl md:max-w-2xl max-h-[96vh] bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl flex flex-col text-slate-900"
+          className={`relative max-h-[96vh] bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl flex flex-col text-slate-900 ${
+            isPdfView
+              ? 'w-full max-w-[95vw] sm:max-w-2xl md:max-w-4xl'
+              : 'w-auto max-w-[94vw] sm:max-w-xl md:max-w-3xl'
+          }`}
         >
           {/* Header */}
           <div className="flex items-center justify-between px-4 sm:px-5 py-3 border-b border-slate-100 bg-white shrink-0">
@@ -121,47 +204,198 @@ export function CalendarModal({ isOpen, onClose, type }: ModalProps) {
               <p className="text-[11px] sm:text-xs text-slate-500 font-medium truncate mt-0.5">{subtitle}</p>
             </div>
 
-            <button
-              onClick={onClose}
-              className="p-1.5 sm:p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-800 transition shrink-0 cursor-pointer"
-              aria-label={lang === 'bn' ? 'বন্ধ করুন' : 'Close'}
-            >
-              <X className="w-5 h-5" />
-            </button>
+            <div className="flex items-center gap-2 shrink-0">
+              {isPdfView && (
+                <a
+                  href={BROCHURE_PDF_SRC}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-sky-700 hover:bg-sky-50 transition"
+                >
+                  <span>{lang === 'bn' ? 'নতুন ট্যাবে খুলুন' : 'Open in new tab'}</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              )}
+              <button
+                onClick={onClose}
+                className="p-1.5 sm:p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-800 transition shrink-0 cursor-pointer"
+                aria-label={lang === 'bn' ? 'বন্ধ করুন' : 'Close'}
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
-          {/* Form-fitting Scrollable Image Container with Minimal Padding */}
-          <div data-lenis-prevent className="min-h-0 flex-1 overflow-auto overscroll-contain p-1.5 sm:p-2.5 bg-slate-900/5" style={{ touchAction: 'pan-x pan-y pinch-zoom' }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={imageSrc}
-              onError={() => setImageError(true)}
-              alt={title}
-              className={zoomed ? 'max-w-none w-[1066px] h-auto' : 'w-auto h-auto max-w-full mx-auto rounded-xl object-contain max-h-[70vh]'}
-            />
-          </div>
+          {/* Body: PDF-only Brochure Reader OR Upgraded Smooth Zoom/Pan Image Viewer */}
+          {isPdfView ? (
+            <div data-lenis-prevent className="min-h-0 flex-1 overflow-auto overscroll-contain p-3 sm:p-4 bg-slate-100/80">
+              {/* Desktop Inline PDF Viewer */}
+              <div className="hidden md:block">
+                <iframe
+                  src={`${BROCHURE_PDF_SRC}#view=FitH`}
+                  title={title}
+                  className="w-full h-[68vh] min-h-[440px] rounded-xl border border-slate-200 bg-white shadow-inner"
+                />
+              </div>
 
-          {imageError && <p role="alert" className="p-3 text-sm">{lang === 'bn' ? 'ছবি লোড হয়নি। আবার চেষ্টা করুন।' : 'Image failed to load. Please try again.'}</p>}
-          <button type="button" onClick={() => setZoomed(value => !value)} className="px-4 py-2 text-sm">
-            {zoomed ? (lang === 'bn' ? 'স্বাভাবিক আকার' : 'Fit image') : (lang === 'bn' ? 'বড় করে দেখুন' : 'Zoom image')}
-          </button>
+              {/* Mobile / Touch Smart PDF Card */}
+              <div className="md:hidden flex flex-col items-center text-center bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
+                <div className="w-16 h-16 rounded-2xl bg-sky-50 border border-sky-200 text-sky-600 flex items-center justify-center shadow-xs">
+                  <FileText className="w-8 h-8" />
+                </div>
+
+                <div className="space-y-1.5">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[11px] font-bold bg-sky-50 text-sky-800 border border-sky-200">
+                    <span>{lang === 'bn' ? 'PDF • ৮ পৃষ্ঠার সম্পূর্ণ প্রসপেক্টাস' : 'PDF • 8-Page Prospectus'}</span>
+                  </span>
+                  <h4 className="font-serif text-base font-bold text-slate-900 pt-1">
+                    {lang === 'bn' ? 'ইক্বরা ইন্টারন্যাশনাল মাদরাসা' : 'Iqra International Madrasah'}
+                  </h4>
+                  <p className="text-xs text-slate-600 leading-relaxed max-w-xs mx-auto">
+                    {lang === 'bn'
+                      ? 'সবগুলো বিভাগ, ভর্তি নিয়মাবলি, ইউনিফর্ম ও শিক্ষকদের পূর্ণ তালিকা পড়তে নিচের বাটনে ট্যাপ করুন।'
+                      : 'Tap below to read all 8 pages smoothly in your device’s native PDF reader.'}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 gap-2.5 w-full">
+                  <a
+                    href={BROCHURE_PDF_SRC}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-bold text-xs primary-action text-white shadow-sm active:scale-95 transition"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    <span>{lang === 'bn' ? 'PDF রিডারে পূর্ণ ৮ পৃষ্ঠা পড়ুন' : 'Open Full 8-Page PDF'}</span>
+                  </a>
+                  <a
+                    href={BROCHURE_PDF_SRC}
+                    download={BROCHURE_PDF_FILENAME}
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs bg-slate-900 text-white active:scale-95 transition"
+                  >
+                    <Download className="w-4 h-4 text-sky-400" />
+                    <span>{lang === 'bn' ? 'PDF ডাউনলোড করুন' : 'Download PDF'}</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="relative min-h-0 flex-1 bg-slate-900/5 flex flex-col">
+              <div
+                ref={viewportRef}
+                data-lenis-prevent
+                onPointerDown={handlePointerDown}
+                onPointerMove={handlePointerMove}
+                onPointerUp={handlePointerUp}
+                onPointerCancel={handlePointerUp}
+                className={`min-h-0 flex-1 overflow-auto overscroll-contain p-2 sm:p-3 pb-14 flex ${
+                  zoomLevel > 1
+                    ? `items-start justify-start ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`
+                    : 'items-center justify-center'
+                }`}
+                style={{ touchAction: 'pan-x pan-y pinch-zoom' }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={imageSrc}
+                  onError={() => setImageError(true)}
+                  onClick={handleImageClick}
+                  draggable={false}
+                  alt={title}
+                  style={
+                    zoomLevel > 1
+                      ? { width: `${zoomLevel * 100}%`, maxWidth: 'none' }
+                      : undefined
+                  }
+                  className={`select-none rounded-xl transition-[width] duration-200 ease-out ${
+                    zoomLevel > 1
+                      ? 'h-auto shrink-0'
+                      : 'w-auto h-auto max-w-full max-h-[68vh] object-contain cursor-zoom-in shadow-sm'
+                  }`}
+                />
+              </div>
+
+              {imageError && (
+                <p role="alert" className="p-3 text-sm text-rose-600 text-center">
+                  {lang === 'bn' ? 'ছবি লোড হয়নি। আবার চেষ্টা করুন।' : 'Image failed to load. Please try again.'}
+                </p>
+              )}
+
+              {/* Floating Glass Zoom Toolbar */}
+              <div className="pointer-events-none absolute bottom-3 inset-x-0 flex justify-center px-3">
+                <div className="pointer-events-auto inline-flex items-center gap-1 px-2 py-1 rounded-full bg-slate-900/85 text-white backdrop-blur-md border border-white/15 shadow-xl">
+                  <button
+                    type="button"
+                    onClick={() => applyZoom(zoomLevel - ZOOM_STEP)}
+                    disabled={zoomLevel <= ZOOM_MIN}
+                    aria-label={lang === 'bn' ? 'জুম আউট' : 'Zoom out'}
+                    className="p-1.5 rounded-full hover:bg-white/15 disabled:opacity-35 transition cursor-pointer disabled:cursor-not-allowed"
+                  >
+                    <ZoomOut className="w-3.5 h-3.5" />
+                  </button>
+
+                  <span className="px-2 text-[11px] font-mono font-bold tabular-nums min-w-[44px] text-center">
+                    {Math.round(zoomLevel * 100)}%
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={() => applyZoom(zoomLevel + ZOOM_STEP)}
+                    disabled={zoomLevel >= ZOOM_MAX}
+                    aria-label={lang === 'bn' ? 'জুম ইন' : 'Zoom in'}
+                    className="p-1.5 rounded-full hover:bg-white/15 disabled:opacity-35 transition cursor-pointer disabled:cursor-not-allowed"
+                  >
+                    <ZoomIn className="w-3.5 h-3.5" />
+                  </button>
+
+                  {zoomLevel > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => applyZoom(1)}
+                      aria-label={lang === 'bn' ? 'স্বাভাবিক আকার' : 'Reset zoom'}
+                      className="ml-0.5 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-white/15 hover:bg-white/25 text-[11px] font-semibold transition cursor-pointer"
+                    >
+                      <RotateCcw className="w-3 h-3" />
+                      <span>{lang === 'bn' ? 'রিসেট' : 'Fit'}</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Compact Footer Controls */}
-          <div className="px-4 sm:px-5 py-2.5 sm:py-3 border-t border-slate-100 bg-slate-50 flex items-center justify-between gap-3 shrink-0">
-            <span className="text-[11px] text-slate-500 hidden sm:inline font-medium">
-              {lang === 'bn'
-                ? 'পূর্ণ রেজোলিউশনে দেখতে ডাউনলোড করুন'
-                : 'Download for full HD print quality'}
+          <div className="px-4 sm:px-5 py-2.5 sm:py-3 border-t border-slate-100 bg-slate-50 flex flex-wrap items-center justify-between gap-2 sm:gap-3 shrink-0">
+            <span className="text-[11px] text-slate-500 hidden lg:inline font-medium">
+              {isPdfView
+                ? lang === 'bn'
+                  ? '৮ পৃষ্ঠার সম্পূর্ণ ভর্তি প্রসপেক্টাস (PDF)'
+                  : 'Complete 8-page admission prospectus (PDF)'
+                : lang === 'bn'
+                ? 'ছবিতে ক্লিক বা নিচের +/− দিয়ে জুম করুন'
+                : 'Click image or use +/− controls to zoom'}
             </span>
 
-            <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-end">
-              <a
-                href={imageSrc}
-                download={downloadFileName}
-                className="inline-flex items-center justify-center gap-1.5 px-4 sm:px-5 py-2 rounded-xl font-bold text-xs sm:text-sm primary-action text-white shadow-sm transition active:scale-95 w-full sm:w-auto cursor-pointer"
-              >
-                <Download className="w-4 h-4" />
-                <span>{lang === 'bn' ? 'এইচডি ডাউনলোড' : 'Download HD'}</span>
-              </a>
+            <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto justify-end">
+              {isPdfView ? (
+                <a
+                  href={BROCHURE_PDF_SRC}
+                  download={BROCHURE_PDF_FILENAME}
+                  className="inline-flex items-center justify-center gap-1.5 px-4 sm:px-5 py-2 rounded-xl font-bold text-xs sm:text-sm primary-action text-white shadow-sm transition active:scale-95 flex-1 sm:flex-none cursor-pointer"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>{lang === 'bn' ? 'PDF ডাউনলোড (৮ পৃষ্ঠা)' : 'Download PDF (8p)'}</span>
+                </a>
+              ) : (
+                <a
+                  href={imageSrc}
+                  download={downloadFileName}
+                  className="inline-flex items-center justify-center gap-1.5 px-4 sm:px-5 py-2 rounded-xl font-bold text-xs sm:text-sm primary-action text-white shadow-sm transition active:scale-95 flex-1 sm:flex-none cursor-pointer"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>{lang === 'bn' ? 'এইচডি ডাউনলোড' : 'Download HD'}</span>
+                </a>
+              )}
 
               <button
                 onClick={onClose}

@@ -10,8 +10,7 @@ import {
   ChevronUp,
   Layers,
   X,
-  MapPin,
-  Calendar,
+  Building2,
 } from 'lucide-react';
 import { formatNumber } from '@/lib/numbers';
 import { useLanguage } from '@/context/LanguageContext';
@@ -966,114 +965,88 @@ export function Speakers() {
               exit={{ opacity: 0, scale: 0.94, y: 15 }}
               transition={{ duration: 0.22, ease: EASE_SMOOTH }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-lg bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-2xl flex flex-col text-slate-900"
+              className="relative w-full max-w-md max-h-[94dvh] bg-white border border-slate-200/90 rounded-3xl overflow-hidden shadow-2xl flex flex-col text-slate-900"
             >
-              {/* Modal Top Hero Area */}
-              <div className="relative bg-gradient-to-r from-slate-900 via-sky-950 to-slate-900 p-6 sm:p-7 text-white">
+              {/* Portrait Stage: square photo shown in full, face-safe focus */}
+              <div className="relative w-full aspect-square max-h-[52dvh] bg-gradient-to-br from-slate-900 via-sky-950 to-slate-900 overflow-hidden shrink-0">
+                {'photo' in selectedProfile && selectedProfile.photo ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={selectedProfile.photo}
+                    alt={selectedProfile.name[lang]}
+                    className="w-full h-full object-cover"
+                    style={{ objectPosition: '50% 18%' }}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <span className="font-serif font-bold text-6xl text-sky-300/80">
+                      {selectedProfile.name[lang].split(' ').slice(-1)[0][0]}
+                    </span>
+                  </div>
+                )}
+
+                <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/10" />
+                <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-slate-950/45 to-transparent" />
                 <button
                   type="button"
                   onClick={() => setSelectedProfile(null)}
-                  className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition cursor-pointer"
+                  className="absolute top-3 right-3 z-10 p-2 rounded-full bg-slate-950/55 hover:bg-slate-950/80 backdrop-blur-md text-white border border-white/20 transition cursor-pointer"
                   aria-label="Close"
                 >
                   <X className="w-5 h-5" />
                 </button>
 
-                <div className="flex items-center gap-4 sm:gap-5">
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border-2 border-sky-400/60 shadow-lg shrink-0 bg-slate-800 flex items-center justify-center">
-                    {'photo' in selectedProfile && selectedProfile.photo ? (
-                      /* eslint-disable-next-line @next/next/no-img-element */
-                      <img
-                        src={selectedProfile.photo}
-                        alt={selectedProfile.name[lang]}
-                        className="w-full h-full object-cover object-top"
-                      />
-                    ) : (
-                      <span className="font-serif font-bold text-2xl text-sky-300">
-                        {selectedProfile.name[lang].split(' ').slice(-1)[0][0]}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    {selectedProfile.badge && (
-                      <span className="inline-block text-[11px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2 bg-sky-400/20 text-sky-300 border border-sky-400/40">
-                        {selectedProfile.badge[lang]}
-                      </span>
-                    )}
-                    <h3 className="font-serif text-xl sm:text-2xl font-bold leading-tight text-white">
-                      {selectedProfile.name[lang]}
-                    </h3>
-                    <p className="text-xs sm:text-sm text-sky-300 font-semibold mt-1">
-                      {selectedProfile.role[lang]}
-                    </p>
-                  </div>
+                {/* Compact bottom scrim keeps the face clear */}
+                <div className="absolute inset-x-0 bottom-0 pt-14 pb-4 px-5 bg-gradient-to-t from-slate-950/95 via-slate-950/60 to-transparent text-white">
+                  {selectedProfile.badge && (
+                    <span className="inline-block text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-1.5 bg-sky-400/25 text-sky-100 border border-sky-300/40">
+                      {selectedProfile.badge[lang]}
+                    </span>
+                  )}
+                  <h3 className="font-serif text-lg sm:text-2xl font-extrabold leading-tight text-white">
+                    {selectedProfile.name[lang]}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-sky-200 font-semibold mt-0.5">
+                    {selectedProfile.role[lang]}
+                  </p>
                 </div>
               </div>
 
-              {/* Modal Body Info */}
+              {/* Body */}
               <div
                 data-lenis-prevent
-                className="p-6 space-y-4 max-h-[60vh] overflow-y-auto overscroll-contain"
+                className="p-4 sm:p-5 space-y-2.5 flex-1 min-h-0 overflow-y-auto overscroll-contain bg-white"
               >
-                {/* Official Designation */}
                 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
-                    {lang === 'bn' ? 'পদবী ও পরিচিতি' : 'Designation & Title'}
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-sky-700 flex items-center gap-1.5 mb-1.5">
+                    <Award className="w-3.5 h-3.5 text-sky-600" />
+                    {lang === 'bn' ? 'পদবী ও দায়িত্ব' : 'Title & Position'}
                   </span>
-                  <p className="text-sm sm:text-base font-bold text-slate-900">
+                  <p className="text-sm sm:text-base font-bold text-slate-900 leading-snug">
                     {selectedProfile.title[lang]}
-                  </p>
-                  <p className="text-xs sm:text-sm text-slate-600 mt-1">
-                    {selectedProfile.affiliation[lang]}
                   </p>
                 </div>
 
-                {/* Lecture Topic if available */}
-                {'topic' in selectedProfile && selectedProfile.topic && (
+                {selectedProfile.affiliation[lang] && (
                   <div className="p-4 rounded-2xl bg-sky-50/70 border border-sky-200/70">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-sky-700 flex items-center gap-1.5 mb-1">
-                      <BookOpen className="w-3.5 h-3.5 text-sky-600" />
-                      {lang === 'bn' ? 'নির্ধারিত আলোচনার বিষয়' : 'Keynote Topic'}
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-sky-700 flex items-center gap-1.5 mb-1.5">
+                      <Building2 className="w-3.5 h-3.5 text-sky-600" />
+                      {lang === 'bn' ? 'পরিচিতি ও কর্মস্থল' : 'Affiliation & Distinction'}
                     </span>
-                    <p className="text-sm sm:text-base font-bold text-sky-950">
-                      {selectedProfile.topic[lang]}
+                    <p className="text-xs sm:text-sm font-semibold text-sky-950 leading-relaxed">
+                      {selectedProfile.affiliation[lang]}
                     </p>
                   </div>
                 )}
-
-                {/* Event Venue & Date Context */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 flex items-center gap-3">
-                    <Calendar className="w-5 h-5 text-sky-600 shrink-0" />
-                    <div>
-                      <span className="text-[10px] font-bold text-slate-400 uppercase block">
-                        {lang === 'bn' ? 'তারিখ ও সময়' : 'Date & Time'}
-                      </span>
-                      <span className="text-xs font-bold text-slate-800">
-                        {lang === 'bn' ? '৫ ডিসেম্বর ২০২৬ • বাদ যোহর' : 'Dec 5, 2026 • After Zohr'}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 flex items-center gap-3">
-                    <MapPin className="w-5 h-5 text-sky-600 shrink-0" />
-                    <div>
-                      <span className="text-[10px] font-bold text-slate-400 uppercase block">
-                        {lang === 'bn' ? 'মাহফিল প্রাঙ্গণ' : 'Venue'}
-                      </span>
-                      <span className="text-xs font-bold text-slate-800">
-                        {lang === 'bn' ? 'মাদরাসা সংলগ্ন বালুর মাঠ' : 'Madrasah Sand Field'}
-                      </span>
-                    </div>
-                  </div>
-                </div>
               </div>
 
               {/* Modal Footer */}
-              <div className="px-6 py-4 bg-slate-50 border-t border-slate-200/80 flex items-center justify-between">
-                <span className="text-xs font-semibold text-slate-500">
-                  {lang === 'bn' ? 'বার্ষিক তাফসীরুল কুরআন মাহফিল ২০২৬' : 'Annual Tafsirul Quran Mahfil 2026'}
+              <div className="px-5 sm:px-6 py-3.5 bg-slate-50 border-t border-slate-200/80 flex items-center justify-between">
+                <span className="text-[11px] font-semibold text-slate-500 flex items-center gap-1.5">
+                  <Shield className="w-3.5 h-3.5 text-sky-600" />
+                  {'topic' in selectedProfile
+                    ? (lang === 'bn' ? 'সম্মানিত আলোচক ও মেহমান' : 'Distinguished Scholar')
+                    : (lang === 'bn' ? 'আয়োজক ও তত্ত্বাবধায়ক' : 'Organizer & Leadership')}
                 </span>
                 <button
                   type="button"

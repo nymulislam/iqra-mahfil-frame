@@ -16,7 +16,6 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { MAHFIL } from '@/content/mahfil';
-import { mahfilCalendarUrl } from '@/lib/calendar';
 import { displayPhone, phoneHref } from '@/lib/phone';
 import { SITE } from '@/content/site';
 import { ScrollReveal, StaggerGroup, StaggerItem } from './ScrollReveal';
@@ -29,10 +28,13 @@ const ICON_MAP: Record<string, React.ElementType> = {
   Award,
 };
 
-export function MahfilDetails({ onOpenBanner }: { onOpenBanner?: () => void }) {
+export function MahfilDetails({
+  onOpenCalendar,
+}: {
+  onOpenBanner?: () => void;
+  onOpenCalendar?: () => void;
+}) {
   const { lang, t } = useLanguage();
-
-  const googleCalUrl = mahfilCalendarUrl(lang);
 
   return (
     <section
@@ -138,11 +140,10 @@ export function MahfilDetails({ onOpenBanner }: { onOpenBanner?: () => void }) {
                 <ExternalLink className="w-3.5 h-3.5 opacity-60" />
               </a>
 
-              <a
-                href={googleCalUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-full text-xs sm:text-sm font-semibold border shadow-2xs hover:border-sky-400 active:scale-95 transition-all"
+              <button
+                type="button"
+                onClick={onOpenCalendar}
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-full text-xs sm:text-sm font-semibold border shadow-2xs hover:border-sky-400 active:scale-95 transition-all cursor-pointer"
                 style={{
                   backgroundColor: 'var(--bg-surface)',
                   color: 'var(--text-main)',
@@ -151,7 +152,7 @@ export function MahfilDetails({ onOpenBanner }: { onOpenBanner?: () => void }) {
               >
                 <CalendarPlus className="w-4 h-4 text-sky-600" />
                 <span>{t.mahfil.addToCalendar[lang]}</span>
-              </a>
+              </button>
             </div>
           </div>
           </StaggerItem>

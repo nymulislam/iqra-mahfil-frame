@@ -5,7 +5,6 @@ import confetti from 'canvas-confetti';
 import { useFrameModal } from '@/context/FrameModalContext';
 import { useLiveTracking } from '@/context/LiveTrackingContext';
 import { MAHFIL } from '@/content/mahfil';
-import { mahfilCalendarUrl } from '@/lib/calendar';
 import { displayPhone, phoneHref } from '@/lib/phone';
 import { usePhoneCopy } from '@/lib/usePhoneCopy';
 import { useLanguage } from '@/context/LanguageContext';
@@ -85,7 +84,8 @@ export function MobileAppStudio() {
   const [dialogState, setDialogState] = useState<'none' | 'contact' | 'delete' | 'prompt-photo'>('none');
   const [resultBlob, setResultBlob] = useState<Blob | null>(null);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
-  const [isPosterZoomed, setIsPosterZoomed] = useState<boolean>(false);
+  const [posterZoom, setPosterZoom] = useState<number>(1);
+  const [posterTab, setPosterTab] = useState<'poster' | 'calendar'>('poster');
   const [toastText, setToastText] = useState<string | null>(null);
   const [showTip, setShowTip] = useState<boolean>(false);
   const [isZoomOn, setIsZoomOn] = useState<boolean>(false);
@@ -1062,10 +1062,10 @@ export function MobileAppStudio() {
                 <use href="#i-x" />
               </svg>
             </button>
-            <b>{text("মাহফিলের পোস্টার")}</b>
+            <b>{posterTab === 'calendar' ? (lang === 'bn' ? 'মাদরাসা ক্যালেন্ডার ২০২৬' : 'Calendar 2026') : text("মাহফিলের পোস্টার")}</b>
             <a
-              href={OFFICIAL_POSTER.src}
-              download={OFFICIAL_POSTER.filename}
+              href={posterTab === 'calendar' ? '/assets/posters/calendar-2027.jpg' : OFFICIAL_POSTER.src}
+              download={posterTab === 'calendar' ? 'iqra-madrasah-calendar-2026.jpg' : OFFICIAL_POSTER.filename}
               className="ib"
               id="pd"
               aria-label={text("ডাউনলোড")}
@@ -1101,16 +1101,94 @@ export function MobileAppStudio() {
             </button>
           </div>
           <div className="sc">
+            <div style={{ display: 'flex', gap: 6, marginBottom: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
+              <button
+                type="button"
+                onClick={() => { setPosterTab('poster'); setPosterZoom(1); }}
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: 999,
+                  fontSize: 12,
+                  fontWeight: 700,
+                  border: '1px solid #cbd5e1',
+                  background: posterTab === 'poster' ? '#026cb6' : '#f8fafc',
+                  color: posterTab === 'poster' ? '#ffffff' : '#334155',
+                  cursor: 'pointer',
+                }}
+              >
+                {lang === 'bn' ? 'মাহফিলের পোস্টার' : 'Mahfil Poster'}
+              </button>
+              <button
+                type="button"
+                onClick={() => { setPosterTab('calendar'); setPosterZoom(1); }}
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: 999,
+                  fontSize: 12,
+                  fontWeight: 700,
+                  border: '1px solid #cbd5e1',
+                  background: posterTab === 'calendar' ? '#026cb6' : '#f8fafc',
+                  color: posterTab === 'calendar' ? '#ffffff' : '#334155',
+                  cursor: 'pointer',
+                }}
+              >
+                {lang === 'bn' ? 'ক্যালেন্ডার ২০২৬' : '2026 Calendar'}
+              </button>
+            </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               id="pm"
-              src={OFFICIAL_POSTER.src}
+              src={posterTab === 'calendar' ? '/assets/posters/calendar-2027.jpg' : OFFICIAL_POSTER.src}
               width={OFFICIAL_POSTER.width} height={OFFICIAL_POSTER.height}
-              onError={() => toast(lang === 'bn' ? 'পোস্টার লোড হয়নি। আবার খুলে দেখুন।' : 'Poster failed to load. Please reopen it.')}
-              alt={text("মাহফিলের পোস্টার")}
-              className={isPosterZoomed ? 'zoom' : ''}
-              onClick={() => setIsPosterZoomed((z) => !z)}
+              onError={() => toast(lang === 'bn' ? 'ছবি লোড হয়নি। আবার খুলে দেখুন।' : 'Image failed to load. Please reopen it.')}
+              alt={posterTab === 'calendar' ? (lang === 'bn' ? 'মাদরাসা ক্যালেন্ডার ২০২৬' : 'Madrasah Calendar 2026') : text("মাহফিলের পোস্টার")}
+              style={posterZoom > 1 ? { width: `${posterZoom * 100}%`, maxWidth: 'none', margin: 0 } : undefined}
+              onClick={() => setPosterZoom((z) => (z > 1 ? 1 : 2))}
             />
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 10 }}>
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '4px 10px',
+                borderRadius: 999,
+                background: '#0f172a',
+                color: '#ffffff',
+                fontSize: 12,
+                fontWeight: 700,
+              }}>
+                <button
+                  type="button"
+                  disabled={posterZoom <= 1}
+                  onClick={() => setPosterZoom((z) => Math.max(1, Number((z - 0.5).toFixed(2))))}
+                  style={{ background: 'transparent', border: 0, color: '#ffffff', padding: '2px 6px', opacity: posterZoom <= 1 ? 0.35 : 1, cursor: 'pointer' }}
+                  aria-label="Zoom out"
+                >
+                  −
+                </button>
+                <span style={{ minWidth: 42, textAlign: 'center', fontVariantNumeric: 'tabular-nums' }}>
+                  {Math.round(posterZoom * 100)}%
+                </span>
+                <button
+                  type="button"
+                  disabled={posterZoom >= 3}
+                  onClick={() => setPosterZoom((z) => Math.min(3, Number((z + 0.5).toFixed(2))))}
+                  style={{ background: 'transparent', border: 0, color: '#ffffff', padding: '2px 6px', opacity: posterZoom >= 3 ? 0.35 : 1, cursor: 'pointer' }}
+                  aria-label="Zoom in"
+                >
+                  +
+                </button>
+                {posterZoom > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => setPosterZoom(1)}
+                    style={{ background: 'rgba(255,255,255,0.16)', border: 0, borderRadius: 999, color: '#ffffff', padding: '2px 8px', fontSize: 11, cursor: 'pointer' }}
+                  >
+                    {lang === 'bn' ? 'রিসেট' : 'Fit'}
+                  </button>
+                )}
+              </div>
+            </div>
             <p className="hint">{text("ছোট লেখা পড়তে পোস্টারে ট্যাপ করে জুম করুন")}</p>
           </div>
         </div>
@@ -1193,17 +1271,21 @@ export function MobileAppStudio() {
                   </svg>
                   <span>{text("গুগল ম্যাপ")}</span>
                 </a>
-                <a
+                <button
+                  type="button"
                   className="fbk"
-                  href={mahfilCalendarUrl(lang)}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  onClick={() => {
+                    setDialogState('none');
+                    setPosterTab('calendar');
+                    setPosterZoom(1);
+                    setActiveSheet('poster');
+                  }}
                 >
                   <svg className="ic">
                     <use href="#i-cal" />
                   </svg>
                   <span>{text("ক্যালেন্ডার")}</span>
-                </a>
+                </button>
                 <a
                   className="fbk"
                   href={`https://wa.me/${MAHFIL.helplinePhone.replace(/\D/g, '').replace(/^0/, '880')}`}
