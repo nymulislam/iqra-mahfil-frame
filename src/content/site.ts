@@ -12,8 +12,8 @@ export const SITE = {
     en: 'Iqra Int. Madrasah',
   },
   tagline: {
-    bn: 'শারয়ী ও জেনারেল শিক্ষার সমন্বয়ে যুগোপযোগী শিক্ষা প্রদান',
-    en: 'A Modern Educational Mission Combining Shariah & Academic Excellence',
+    bn: 'শারয়ী ও জেনারেল শিক্ষার সমন্বয়ে যুগোপযোগী শিক্ষা মিশন',
+    en: 'A Modern Educational Mission Combining Shariah & General Studies',
   },
   location: {
     bn: 'পাটওয়ারী বাজার, ফরিদগঞ্জ, চাঁদপুর',
@@ -21,7 +21,7 @@ export const SITE = {
   },
   locationDetails: {
     bn: 'মাদরাসা সংলগ্ন বালুর মাঠ, পাটওয়ারী বাজার দক্ষিণ মাথা, ফরিদগঞ্জ, চাঁদপুর।',
-    en: 'Madrasah Central Grounds (Balur Math), South End of Patwari Bazar, Faridganj, Chandpur.',
+    en: 'Balur Math (Adjacent to the Madrasah), Patwari Bazar (South End), Faridganj, Chandpur.',
   },
   phones: CONTACT_PHONES,
   email: 'iqramadrasa25@gmail.com',
@@ -38,11 +38,11 @@ export const SITE = {
     },
     note: {
       bn: 'রেফারেন্সে "Mahfil" বা "Madrasah" লিখুন',
-      en: 'Enter "Mahfil" or "Madrasah" as reference',
+      en: 'Use "Mahfil" or "Madrasah" as reference',
     },
     rocketNote: {
       bn: '12 ডিজিটের নম্বর (শেষে ৪ সহ) · রেফারেন্সে "Mahfil" লিখুন',
-      en: '12-digit Rocket number (with trailing 4) · Ref: "Mahfil"',
+      en: '12-digit Rocket number (with trailing 4) · Reference: "Mahfil" or "Madrasah"',
     },
   },
 };

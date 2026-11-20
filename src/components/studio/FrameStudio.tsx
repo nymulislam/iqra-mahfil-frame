@@ -15,6 +15,7 @@ import {
   User,
   ShieldCheck,
   Layers,
+  Loader2,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useLanguage } from '@/context/LanguageContext';
@@ -22,6 +23,7 @@ import { useLiveTracking } from '@/context/LiveTrackingContext';
 import { useFrameModal } from '@/context/FrameModalContext';
 import { useFrameTemplates } from './useFrameTemplates';
 import { readPhoto, exportFrame, downloadBlob } from './frameExport';
+import { SmartImage } from '../SmartImage';
 import {
   CANVAS_WIDTH,
   CANVAS_HEIGHT,
@@ -443,8 +445,7 @@ export function FrameStudio() {
               onClick={openFrameModal}
               className="relative max-w-[290px] mx-auto aspect-square rounded-2xl overflow-hidden shadow-lg ring-1 ring-sky-950/10 bg-slate-50 group cursor-pointer transition-transform active:scale-98"
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <SmartImage
                 src={frameIndex === 0 ? '/assets/frames/frame-1.png?v=3' : '/assets/frames/frame-2.png?v=3'}
                 alt="Frame Mockup"
                 className="w-full h-full object-contain pointer-events-none"
@@ -514,6 +515,20 @@ export function FrameStudio() {
                     <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-[11px] text-slate-700 font-semibold px-3 py-1 rounded-full border border-sky-200/80 shadow-xs pointer-events-none flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-sky-500 animate-pulse" />
                       <span>{t.studio.touchHint[lang]}</span>
+                    </div>
+                  )}
+
+                  {/* Skeleton / Loading Overlay while frame template or photo is loading */}
+                  {(templateStatus[frameIndex] === 'loading' || isReadingPhoto) && (
+                    <div className="absolute inset-0 z-10 skeleton-shimmer flex flex-col items-center justify-center gap-2.5 bg-slate-100/80 backdrop-blur-[2px]">
+                      <div className="w-10 h-10 rounded-full bg-white/90 shadow-md flex items-center justify-center">
+                        <Loader2 className="w-5 h-5 text-sky-600 animate-spin" />
+                      </div>
+                      <span className="text-xs font-bold text-slate-700 bg-white/90 px-3 py-1 rounded-full shadow-xs">
+                        {isReadingPhoto
+                          ? (lang === 'bn' ? 'ছবি প্রস্তুত হচ্ছে…' : 'Preparing photo…')
+                          : (lang === 'bn' ? 'ফ্রেম লোড হচ্ছে…' : 'Loading frame…')}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -728,7 +743,11 @@ export function FrameStudio() {
                       boxShadow: '0 8px 24px var(--accent-blue-glow)',
                     }}
                   >
-                    <Download className="w-4 h-4 text-sky-100" />
+                    {isDownloading ? (
+                      <Loader2 className="w-4 h-4 text-sky-100 animate-spin" />
+                    ) : (
+                      <Download className="w-4 h-4 text-sky-100" />
+                    )}
                     <span>{isDownloading ? t.studio.downloading[lang] : t.studio.downloadBtn[lang]}</span>
                     <Sparkles className="w-3.5 h-3.5 text-sky-200" />
                   </button>

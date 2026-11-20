@@ -9,7 +9,7 @@ export const MAHFIL = {
     en: 'Annual Tafsirul Quran Mahfil 2026',
   },
   subtitle: {
-    bn: 'কুরআনের আলো ছড়াতে এবং দ্বীনি জাগরণে এক মহা সম্মিলন',
+    bn: 'কুরআনের আলো ছড়াতে এবং দ্বীনি জাগরণে লক্ষ্যে আয়োজিত এক মহা সম্মিলন',
     en: 'A grand spiritual gathering to illuminate hearts with the Holy Quran and Islamic guidance',
   },
   dateISO: '2026-12-05T14:00:00+06:00', // 5 Dec 2026 Bad Zohr
@@ -24,11 +24,11 @@ export const MAHFIL = {
   },
   venue: {
     bn: 'মাদরাসা সংলগ্ন বালুর মাঠ',
-    en: 'Madrasah Central Grounds (Balur Math)',
+    en: 'Balur Math (Adjacent to the Madrasah)',
   },
   location: {
     bn: 'পাটওয়ারী বাজার দক্ষিণ মাথা, ফরিদগঞ্জ, চাঁদপুর',
-    en: 'South End of Patwari Bazar, Faridganj, Chandpur',
+    en: 'Patwari Bazar (South End), Faridganj, Chandpur',
   },
   patron: {
     bn: 'উস্তাযুল হুফ্ফাজ শায়খ আব্দুল হক',
@@ -36,7 +36,7 @@ export const MAHFIL = {
   },
   patronRole: {
     bn: 'সভাপতিত্ব ও মাশকুল কুরআনের দারস প্রদান করবেন',
-    en: 'President & Chief Quran Recitation Mentor',
+    en: 'Presiding Chair & Mashqul Quran Mentor',
   },
   patronTitle: {
     bn: 'চেয়ারম্যান, হুফফাজুল কুরআন ফাউন্ডেশন বাংলাদেশ ও তত্ত্বাবধায়ক, ইক্বরা ইন্টারন্যাশনাল মাদরাসা।',
@@ -51,11 +51,11 @@ export const MAHFIL = {
     en: 'Qari Siddiqur Rahman (President) • Mufti Abu Taher Siddiqui (Founder Principal) • Hafiz Maulana Alauddin (Vice Principal)',
   },
   slogan: {
-    bn: 'একে অপরকে দাওয়াত দিন, দলে দলে যোগ দিন।',
-    en: 'Cordially inviting you and your family to join this blessed gathering.',
+     bn: 'নিজে আসুন এবং প্রিয়জনদের দাওয়াত দিয়ে এই বরকতময় মাহফিলে শরিক হোন।',
+    en: 'Join this blessed gathering and invite your family and friends to attend.',
   },
   nextYearMahfil: {
-    bn: '১৬ নভেম্বর ২০২৭ইং, মঙ্গলবার',
+    bn: '১৬ নভেম্বর ২০২৭, মঙ্গলবার',
     en: 'Tuesday, November 16, 2027',
   },
   helplinePhone: SITE.phones[1],
@@ -72,7 +72,7 @@ export const MAHFIL = {
       },
       title: {
         bn: 'মাশকুল কুরআন দারস',
-        en: 'Quran Masterclass',
+        en: 'Mashqul Quran Session',
       },
       speaker: {
         bn: 'শায়খ আব্দুল হক',
@@ -80,7 +80,7 @@ export const MAHFIL = {
       },
       desc: {
         bn: 'বিশুদ্ধ তিলাওয়াত ও মাশক প্রশিক্ষণ',
-        en: 'Phonetic recitation & Tajweed practice',
+        en: 'Authentic recitation & Tajweed practice',
       },
       icon: 'BookOpen',
     },
@@ -88,7 +88,7 @@ export const MAHFIL = {
       id: 'maghrib',
       badge: {
         bn: 'বাদ মাগরিব',
-        en: 'Post-Maghrib',
+        en: 'After Maghrib',
       },
       time: {
         bn: 'সন্ধ্যা ৫:৪৫',
@@ -103,7 +103,7 @@ export const MAHFIL = {
         en: 'Mufti Anisur Rahman Ashrafi',
       },
       desc: {
-        bn: 'পবিত্র জীবন গঠন ও আত্মশুদ্ধি',
+        bn: 'আদর্শ জীবন গঠন ও আত্মশুদ্ধিমূলক আলোচনা',
         en: 'Spiritual guidance & righteous living',
       },
       icon: 'Clock',
@@ -111,32 +111,32 @@ export const MAHFIL = {
     {
       id: 'qirat',
       badge: {
-        bn: 'পবিত্র সুর',
-        en: 'Sacred Melodies',
+        bn: 'কুরআনের সুর',
+        en: 'Qirat Sessions',
       },
       time: {
-        bn: 'সন্ধ্যা ৭:১৫',
+        bn: 'রাত ৭:১৫',
         en: '7:15 PM',
       },
       title: {
         bn: 'আন্তর্জাতিক ক্বিরাত মাহফিল',
-        en: 'International Qirat Assembly',
+        en: 'International Qirat Recitation',
       },
       speaker: {
         bn: 'হাফেজ নাজমুস সাকিব ও ক্বারী আবু তালহা',
         en: 'Hafiz Najmus Sakib & Qari Abu Talha',
       },
       desc: {
-        bn: 'বিশ্বজয়ী ক্বারীদের সুমধুর তিলাওয়াত',
-        en: 'Soul-stirring recitations by champions',
+        bn: 'বিশ্বজয়ী হাফেজ ও ক্বারীদের সুমধুর তিলাওয়াত',
+        en: 'Heart-touching recitations by World Champion Hafiz & Qari',
       },
       icon: 'Mic',
     },
     {
       id: 'tafsir',
       badge: {
-        bn: 'মূল আকর্ষণ',
-        en: 'Grand Finale',
+        bn: 'মূল পর্ব',
+        en: 'Main Session',
       },
       time: {
         bn: 'রাত ৮:১৫ - মধ্যরাত',
@@ -144,15 +144,15 @@ export const MAHFIL = {
       },
       title: {
         bn: 'তাফসির ও আখেরী মুনাজাত',
-        en: 'Grand Tafsir & Dua',
+        en: 'Main Tafsir & Dua',
       },
       speaker: {
         bn: 'আল্লামা আশেকে এলাহী ও মুফতী মুস্তাকুন্নবী কাসেমী',
-        en: 'Allama Asheke Elahi & Mufti Mustaqun Nabi',
+        en: 'Allama Asheke Elahi & Mufti Mustaqunnabi Qasemi',
       },
       desc: {
         bn: 'সারগর্ভ তাফসির ও আখেরী বয়ান',
-        en: 'Deep Quranic insights & closing supplication',
+        en: 'Deep Quranic Tafsir & closing supplication',
       },
       icon: 'Award',
     },

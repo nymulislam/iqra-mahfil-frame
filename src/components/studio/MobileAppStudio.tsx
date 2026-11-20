@@ -11,6 +11,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { studioText } from '@/content/studio';
 import { formatNumber } from '@/lib/numbers';
 import { SITE } from '@/content/site';
+import { SmartImage } from '../SmartImage';
 import {
   CANVAS_WIDTH,
   CANVAS_HEIGHT,
@@ -733,7 +734,7 @@ export function MobileAppStudio() {
       <div className="stage" id="stage" ref={stageRef}>
         <div className={`tip ${showTip ? 'on' : ''}`} id="tip">{text("টেনে সরান · দুই আঙুলে জুম করুন")}</div>
 
-        <div className="frame-wrap" id="fwrap">
+        <div className="frame-wrap relative" id="fwrap">
           <canvas
             className="fc"
             id="c0"
@@ -747,6 +748,20 @@ export function MobileAppStudio() {
             onPointerCancel={handlePointerUp}
             onLostPointerCapture={handlePointerUp}
           />
+          {(templateStatus[frameIndex] === 'loading' || isReadingPhoto || isPreparing) && (
+            <div
+              aria-live="polite"
+              className="absolute inset-0 z-10 rounded-[18px] skeleton-shimmer flex flex-col items-center justify-center gap-2 bg-slate-100/80"
+            >
+              <span className="px-3 py-1 rounded-full bg-white/95 text-slate-800 text-xs font-bold shadow-sm">
+                {isPreparing
+                  ? (lang === 'bn' ? 'ফ্রেম তৈরি হচ্ছে…' : 'Preparing frame…')
+                  : isReadingPhoto
+                  ? (lang === 'bn' ? 'ছবি খোলা হচ্ছে…' : 'Opening photo…')
+                  : (lang === 'bn' ? 'ফ্রেম লোড হচ্ছে…' : 'Loading frame…')}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Frame Tabs */}
@@ -1135,8 +1150,7 @@ export function MobileAppStudio() {
                 {lang === 'bn' ? 'ক্যালেন্ডার ২০২৬' : '2026 Calendar'}
               </button>
             </div>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <SmartImage
               id="pm"
               src={posterTab === 'calendar' ? '/assets/posters/calendar-2027.jpg' : OFFICIAL_POSTER.src}
               width={OFFICIAL_POSTER.width} height={OFFICIAL_POSTER.height}

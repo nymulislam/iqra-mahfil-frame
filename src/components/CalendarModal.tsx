@@ -14,6 +14,7 @@ import {
   ZoomIn,
   ZoomOut,
   RotateCcw,
+  Loader2,
 } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useScrollLock } from './SmoothScroll';
@@ -35,6 +36,7 @@ export function CalendarModal({ isOpen, onClose, type }: ModalProps) {
 
   const panel = useRef<HTMLDivElement | null>(null);
   const viewportRef = useRef<HTMLDivElement | null>(null);
+  const imgRef = useRef<HTMLImageElement | null>(null);
   const dragRef = useRef<{ active: boolean; moved: boolean; startX: number; startY: number; scrollLeft: number; scrollTop: number }>({
     active: false,
     moved: false,
@@ -46,7 +48,9 @@ export function CalendarModal({ isOpen, onClose, type }: ModalProps) {
 
   const [zoomLevel, setZoomLevel] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [pdfLoaded, setPdfLoaded] = useState(false);
 
   useScrollLock(isOpen);
 
@@ -55,6 +59,9 @@ export function CalendarModal({ isOpen, onClose, type }: ModalProps) {
     setZoomLevel(1);
     setIsDragging(false);
     setImageError(false);
+    setPdfLoaded(false);
+    const img = imgRef.current;
+    setImageLoaded(Boolean(img && img.complete && img.naturalWidth > 0));
     const previous = document.activeElement as HTMLElement | null;
     panel.current?.focus();
     const key = (event: KeyboardEvent) => {
@@ -230,10 +237,34 @@ export function CalendarModal({ isOpen, onClose, type }: ModalProps) {
           {isPdfView ? (
             <div data-lenis-prevent className="min-h-0 flex-1 overflow-auto overscroll-contain p-3 sm:p-4 bg-slate-100/80">
               {/* Desktop Inline PDF Viewer */}
-              <div className="hidden md:block">
+              <div className="hidden md:block relative">
+                {!pdfLoaded && (
+                  <div className="absolute inset-0 z-10 rounded-xl border border-slate-200 bg-white p-6 flex flex-col justify-between">
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl skeleton-shimmer" />
+                        <div className="space-y-2 flex-1">
+                          <div className="h-4 w-48 rounded-md skeleton-shimmer" />
+                          <div className="h-3 w-32 rounded-md skeleton-shimmer" />
+                        </div>
+                      </div>
+                      <div className="h-52 w-full rounded-xl skeleton-shimmer" />
+                      <div className="space-y-2">
+                        <div className="h-3.5 w-full rounded skeleton-shimmer" />
+                        <div className="h-3.5 w-5/6 rounded skeleton-shimmer" />
+                        <div className="h-3.5 w-4/6 rounded skeleton-shimmer" />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-center gap-2 text-xs font-semibold text-sky-700 pt-2">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>{lang === 'bn' ? '৮ পৃষ্ঠার প্রসপেক্টাস PDF লোড হচ্ছে…' : 'Loading 8-page PDF prospectus…'}</span>
+                    </div>
+                  </div>
+                )}
                 <iframe
                   src={`${BROCHURE_PDF_SRC}#view=FitH`}
                   title={title}
+                  onLoad={() => setPdfLoaded(true)}
                   className="w-full h-[68vh] min-h-[440px] rounded-xl border border-slate-200 bg-white shadow-inner"
                 />
               </div>
@@ -295,9 +326,19 @@ export function CalendarModal({ isOpen, onClose, type }: ModalProps) {
                 }`}
                 style={{ touchAction: 'pan-x pan-y pinch-zoom' }}
               >
+                {!imageLoaded && !imageError && (
+                  <div
+                    aria-hidden="true"
+                    className="w-[74vw] sm:w-[420px] h-[54vh] rounded-xl skeleton-shimmer border border-slate-200/70 flex items-center justify-center"
+                  >
+                    <Loader2 className="w-6 h-6 text-sky-600/70 animate-spin" />
+                  </div>
+                )}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
+                  ref={imgRef}
                   src={imageSrc}
+                  onLoad={() => setImageLoaded(true)}
                   onError={() => setImageError(true)}
                   onClick={handleImageClick}
                   draggable={false}
@@ -307,9 +348,11 @@ export function CalendarModal({ isOpen, onClose, type }: ModalProps) {
                       ? { width: `${zoomLevel * 100}%`, maxWidth: 'none' }
                       : undefined
                   }
-                  className={`select-none rounded-xl transition-[width] duration-200 ease-out ${
+                  className={`select-none rounded-xl transition-opacity duration-300 ${
+                    imageLoaded ? 'opacity-100' : 'opacity-0 absolute pointer-events-none'
+                  } ${
                     zoomLevel > 1
-                      ? 'h-auto shrink-0'
+                      ? 'h-auto shrink-0 transition-[width] duration-200 ease-out'
                       : 'w-auto h-auto max-w-full max-h-[68vh] object-contain cursor-zoom-in shadow-sm'
                   }`}
                 />

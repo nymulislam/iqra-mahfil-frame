@@ -15,6 +15,7 @@ import { displayPhone, phoneHref } from '@/lib/phone';
 import { useLanguage } from '@/context/LanguageContext';
 import { SPONSOR_DATA } from '@/content/sponsor';
 import { ScrollReveal } from './ScrollReveal';
+import { SmartImage } from './SmartImage';
 
 interface SponsorProps {
   onOpenCard?: () => void;
@@ -86,8 +87,7 @@ export function Sponsor({ onOpenCard }: SponsorProps) {
                     className="relative w-14 h-14 sm:w-20 sm:h-20 rounded-2xl p-1.5 border shadow-sm shrink-0 flex items-center justify-center bg-white"
                     style={{ borderColor: 'var(--border-card)' }}
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <SmartImage
                       src={sponsor.logo}
                       alt={sponsor.name[lang]}
                       className="w-full h-full object-contain"
@@ -208,8 +208,7 @@ export function Sponsor({ onOpenCard }: SponsorProps) {
                 <div className="flex flex-row items-center sm:items-start gap-3.5 sm:gap-4 mb-3.5 sm:mb-4 text-left">
                   {/* Director Portrait with Specular Sky Ring */}
                   <div className="relative w-20 h-24 sm:w-28 sm:h-32 rounded-2xl overflow-hidden border shadow-md shrink-0 group-hover:scale-105 transition-transform duration-300 ring-2 ring-sky-500/30 bg-slate-900">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <SmartImage
                       src={sponsor.director.photo}
                       alt={sponsor.director.name[lang]}
                       className="w-full h-full object-cover object-top"

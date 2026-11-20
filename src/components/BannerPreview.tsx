@@ -13,6 +13,7 @@ import {
 import { OFFICIAL_POSTER, sharePoster } from '@/lib/poster';
 import { useLanguage } from '@/context/LanguageContext';
 import { ScrollReveal } from './ScrollReveal';
+import { SmartImage } from './SmartImage';
 
 interface BannerPreviewProps {
   onOpenLightbox: () => void;
@@ -203,10 +204,10 @@ export function BannerPreview({ onOpenLightbox }: BannerPreviewProps) {
               >
                 {/* Poster Preview Image */}
                 <div className="relative w-full h-[320px] sm:h-[380px] overflow-hidden flex items-center justify-center bg-gradient-to-b from-sky-950/5 via-transparent to-sky-950/10">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <SmartImage
                     src={OFFICIAL_POSTER.src}
-              width={OFFICIAL_POSTER.width} height={OFFICIAL_POSTER.height}
+                    width={OFFICIAL_POSTER.width}
+                    height={OFFICIAL_POSTER.height}
                     onError={() => setImageError(true)}
                     alt="Iqra Mahfil 2026 Official Poster"
                     className="w-full h-full object-cover object-top group-hover:scale-[1.03] transition-transform duration-500 ease-out"

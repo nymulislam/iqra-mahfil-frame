@@ -17,6 +17,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { SPEAKERS, ORGANIZERS } from '@/content/speakers';
 import type { Speaker, Organizer } from '@/content/types';
 import { ScrollReveal, EASE_SMOOTH } from './ScrollReveal';
+import { SmartImage } from './SmartImage';
 import { useScrollLock } from './SmoothScroll';
 
 function ScholarCard({
@@ -56,8 +57,7 @@ function ScholarCard({
             }}
           >
             {spk.photo ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img
+              <SmartImage
                 src={spk.photo}
                 alt={spk.name[lang]}
                 loading="lazy"
@@ -893,8 +893,7 @@ export function Speakers() {
                         borderColor: 'var(--border-card)',
                       }}
                     >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
+                      <SmartImage
                         src={org.photo || '/assets/logo.png'}
                         alt={org.photo ? org.name[lang] : lang === 'bn' ? 'মাদরাসার লোগো' : 'Madrasah logo'}
                         loading="lazy"
@@ -970,8 +969,7 @@ export function Speakers() {
               {/* Portrait Stage: square photo shown in full, face-safe focus */}
               <div className="relative w-full aspect-square max-h-[52dvh] bg-gradient-to-br from-slate-900 via-sky-950 to-slate-900 overflow-hidden shrink-0">
                 {'photo' in selectedProfile && selectedProfile.photo ? (
-                  /* eslint-disable-next-line @next/next/no-img-element */
-                  <img
+                  <SmartImage
                     src={selectedProfile.photo}
                     alt={selectedProfile.name[lang]}
                     className="w-full h-full object-cover"

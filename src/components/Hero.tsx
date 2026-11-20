@@ -21,6 +21,7 @@ import { MAHFIL } from '@/content/mahfil';
 import { formatNumber } from '@/lib/numbers';
 import { SITE } from '@/content/site';
 import { SPEAKERS } from '@/content/speakers';
+import { SmartImage } from './SmartImage';
 
 export function Hero({
   onOpenCalendar,
@@ -276,8 +277,7 @@ export function Hero({
                       title={spk.name[lang]}
                     >
                       {spk.photo ? (
-                        /* eslint-disable-next-line @next/next/no-img-element */
-                        <img
+                        <SmartImage
                           src={spk.photo}
                           alt={spk.name[lang]}
                           className="w-full h-full object-cover object-top"

@@ -5,7 +5,7 @@ export const SPEAKERS: Speaker[] = [
     id: 'shaykh-abdul-haque',
     name: {
       bn: 'উস্তাযুল হুফ্ফাজ শায়খ আব্দুল হক',
-      en: 'Ustadzul Huffaz Shaykh Abdul Haque',
+      en: 'Ustazul Huffaz Shaykh Abdul Haque',
     },
     title: {
       bn: 'চেয়ারম্যান, হুফফাজুল কুরআন ফাউন্ডেশন বাংলাদেশ',
@@ -13,7 +13,7 @@ export const SPEAKERS: Speaker[] = [
     },
     role: {
       bn: 'সভাপতিত্ব ও মাশকুল কুরআনের দারস প্রদান করবেন',
-      en: 'Presidency & Mashq-ul-Quran Recitation Masterclass',
+      en: 'Presidency Chair & Mashq-ul-Quran Session',
     },
     affiliation: {
       bn: 'তত্ত্বাবধায়ক, ইক্বরা ইন্টারন্যাশনাল মাদরাসা',
@@ -55,7 +55,7 @@ export const SPEAKERS: Speaker[] = [
     photo: '/assets/speakers/allama-asheke-elahi.jpg?v=2',
     topic: {
       bn: 'কুরআনের আলোয় ব্যক্তি ও পারিবারিক জীবন সংস্কার',
-      en: 'Reforming Personal & Family Life through Quran',
+      en: 'Reforming Personal & Family Life in the Light of the Quran',
     },
     highlight: true,
   },
@@ -63,7 +63,7 @@ export const SPEAKERS: Speaker[] = [
     id: 'mufti-mustaqun-nabi',
     name: {
       bn: 'মুফতী মুস্তাকুন্নবী কাসেমী',
-      en: 'Mufti Mustaqun Nabi Qasemi',
+      en: 'Mufti Mustaqunnabi Qasemi',
     },
     title: {
       bn: 'মুহতামীম, মাদরাসায়ে ইসলামীয়া দারুল উলূম, সুধন্যপুর, কুমিল্লা',
@@ -71,15 +71,15 @@ export const SPEAKERS: Speaker[] = [
     },
     role: {
       bn: 'তাফসির পেশ করবেন (আখেরী বয়ান)',
-      en: 'Mufassir of the Quran (Concluding Address)',
+      en: 'Concluding Tafsir & Akheri Bayan',
     },
     affiliation: {
       bn: 'প্রখ্যাত মুফাসসিরে কুরআন ও ওয়ায়েজ',
-      en: 'Renowned Quranic Orator & Islamic Thinker',
+      en: 'Renowned Mufassir & Islamic Scholar',
     },
     badge: {
       bn: 'আখেরী বয়ান',
-      en: 'Concluding Address',
+      en: 'Concluding Bayan',
     },
     photo: '/assets/speakers/mufti-mustaqun-nabi.jpg?v=2',
     topic: {
@@ -99,7 +99,7 @@ export const SPEAKERS: Speaker[] = [
       en: 'Secretary General, Qawmi Madrasah Teachers Council',
     },
     role: {
-      bn: 'বিশেষ আলোচক ও তাফসিরকারক',
+      bn: 'বিশেষ আলোচক ও মুফাসসিরে কুরআন',
       en: 'Special Speaker & Mufassir',
     },
     affiliation: {
@@ -112,8 +112,8 @@ export const SPEAKERS: Speaker[] = [
     },
     photo: '/assets/speakers/shaykh-mustaqim-hamidi.jpg?v=2',
     topic: {
-      bn: 'দ্বীনি শিক্ষার বিস্তার ও সমাজ বিনির্মাণ',
-      en: 'Spreading Islamic Knowledge & Societal Harmony',
+      bn: 'দ্বীনি শিক্ষার বিস্তার ও আদর্শ সমাজ বিনির্মাণ',
+      en: 'Expanding Islamic Education & Building an Ideal Society',
     },
     highlight: true,
   },
@@ -128,8 +128,8 @@ export const SPEAKERS: Speaker[] = [
       en: 'Principal, Madrasah Ashraful Uloom, Maynamati, Cumilla',
     },
     role: {
-      bn: 'তাফসির পেশ করবেন (বাদ মাগরিব)',
-      en: 'Mufassir (After Maghrib Session)',
+      bn: 'তাফসীর পেশ করবেন (বাদ মাগরিব)',
+      en: 'Evening Tafsir (After Maghrib)',
     },
     affiliation: {
       bn: 'বিশিষ্ট ইসলামী আইনজ্ঞ ও গবেষক',
@@ -137,12 +137,12 @@ export const SPEAKERS: Speaker[] = [
     },
     badge: {
       bn: 'বাদ মাগরিব বয়ান',
-      en: 'Maghrib Keynote',
+      en: 'After Maghrib',
     },
     photo: '/assets/speakers/mufti-anisur-rahman.jpg?v=2',
     topic: {
       bn: 'সমকালীন প্রেক্ষাপটে সুন্নাহর অনুসরণ',
-      en: 'Adhering to the Prophetic Sunnah in Modern Times',
+      en: 'Following the Prophetic Sunnah in Contemporary Times',
     },
   },
   {
@@ -160,7 +160,7 @@ export const SPEAKERS: Speaker[] = [
       en: 'International Guest & World Champion Hafiz',
     },
     affiliation: {
-      bn: 'বিশ্ব হিফজুল কুরআন বিজয়ী ব্যক্তিত্ব',
+      bn: 'বিশ্ব হিফজুল কুরআন প্রতিযোগিতার বিজয়ী',
       en: 'International Quran Competition Winner',
     },
     badge: {
@@ -232,21 +232,21 @@ export const SPEAKERS: Speaker[] = [
       en: '1st Place, Saudi Arabia & Dubai International Quran Contests',
     },
     role: {
-      bn: 'মধুর সুরে পবিত্র কুরআনের তিলাওয়াত',
-      en: 'Melodious Quranic Recitation & Qirat',
+      bn: 'সুললিত কণ্ঠে পবিত্র কুরআনের তিলাওয়াত',
+      en: 'Soulful Quranic Recitation & Qirat',
     },
     affiliation: {
-      bn: 'আন্তর্জাতিক ক্বারী ও জাতীয় গৌরব',
-      en: 'International Reciter & National Icon',
+      bn: 'আন্তর্জাতিক ক্বারী ও বাংলাদেশের গৌরব',
+      en: 'International Acclaimed Qari',
     },
     badge: {
-      bn: 'বিশ্বজয়ী ক্বারী',
+      bn: 'বিশ্বজয়ী হাফেজ',
       en: 'World Champion',
     },
     photo: '/assets/speakers/hafiz-najmus-sakib.jpg?v=2',
     topic: {
-      bn: 'মনোমুগ্ধকর আন্তর্জাতিক ক্বিরাত মাহফিল',
-      en: 'Soulful Quran Recitation & Melodies',
+      bn: 'মনোমুগ্ধকর আন্তর্জাতিক ক্বিরাত পরিবেশনা',
+      en: 'Heart-touching International Qirat Recitation',
     },
     highlight: true,
   },
@@ -261,7 +261,7 @@ export const SPEAKERS: Speaker[] = [
       en: 'Chairman, Ma\'hadu Talha Bangladesh',
     },
     role: {
-      bn: 'পবিত্র কুরআনের মধুর সুর পরিবেশন',
+      bn: 'সুমধুর কণ্ঠে পবিত্র কুরআনের তিলাওয়াত',
       en: 'Melodious Quranic Recitation',
     },
     affiliation: {
@@ -284,8 +284,8 @@ export const ORGANIZERS: Organizer[] = [
       en: 'Qari Siddiqur Rahman',
     },
     role: {
-      bn: 'শুভেচ্ছান্তে ও সভাপতি',
-      en: 'President',
+      bn: 'সভাপতি, পরিচালনা পর্ষদ',
+      en: 'President, Governing Body',
     },
     title: {
       bn: 'সভাপতি, ইক্বরা ইন্টারন্যাশনাল মাদরাসা',
@@ -293,7 +293,7 @@ export const ORGANIZERS: Organizer[] = [
     },
     affiliation: {
       bn: 'ইক্বরা ইন্টারন্যাশনাল মাদরাসা ব্যবস্থাপনা পরিষদ',
-      en: 'Iqra International Madrasah Governing Council',
+      en: 'Iqra International Madrasah Governing Committee',
     },
     badge: {
       bn: 'সভাপতি',
@@ -332,8 +332,8 @@ export const ORGANIZERS: Organizer[] = [
       en: 'Hafiz Maulana Alauddin Bin Siddiq',
     },
     role: {
-      bn: 'ভাইস প্রিন্সিপাল ও সমন্বয়ক',
-      en: 'Vice Principal & Coordinator',
+      bn: 'ভাইস প্রিন্সিপাল ও শিক্ষা সচিব',
+      en: 'Vice Principal & Academic Coordinator',
     },
     title: {
       bn: 'ভাইস প্রিন্সিপাল, ইক্বরা ইন্টারন্যাশনাল মাদরাসা',
