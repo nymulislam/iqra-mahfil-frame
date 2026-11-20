@@ -16,6 +16,7 @@ import confetti from 'canvas-confetti';
 import { useLanguage } from '@/context/LanguageContext';
 import { useLiveTracking } from '@/context/LiveTrackingContext';
 import { AnimatedNumber } from './AnimatedNumber';
+import { formatNumber } from '@/lib/numbers';
 import { SITE } from '@/content/site';
 import { ScrollReveal, StaggerGroup, StaggerItem } from './ScrollReveal';
 
@@ -24,7 +25,8 @@ export function LiveTracking() {
 
   const {
     livePaused,
-    onlineVisitors,
+    totalVisitors,
+    countries,
     totalFrames,
     pledgedAttendees,
     hasPledged,
@@ -34,6 +36,15 @@ export function LiveTracking() {
     recordPledge,
     trackUserDistance,
   } = useLiveTracking();
+
+  const regionNames = React.useMemo(() => typeof Intl.DisplayNames === 'function'
+    ? new Intl.DisplayNames([lang], { type: 'region' }) : null, [lang]);
+  const countryRow = ({ country, count }: { country: string; count: number }) => (
+    <li key={country} className="flex justify-between gap-3 py-0.5">
+      <span>{country === 'ZZ' ? (lang === 'bn' ? 'দেশ অজানা' : 'Unknown country') : regionNames?.of(country) || country}</span>
+      <span className="tabular-nums">{formatNumber(count, lang)}</span>
+    </li>
+  );
 
   const handlePledgeClick = () => {
     recordPledge();
@@ -112,38 +123,30 @@ export function LiveTracking() {
 
         {/* 3-Column HUD Metric Ribbon */}
         <StaggerGroup staggerDelay={0.07} className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-5 sm:mb-7">
-          {/* Metric 1: Live Online */}
           <StaggerItem className="flex">
-          <div
-            className="w-full catalis-card hover:translate-y-0! p-3.5 sm:p-5 flex sm:flex-col items-center sm:items-stretch justify-between gap-3 border shadow-xs"
-            style={{
-              backgroundColor: 'var(--bg-surface)',
-              borderColor: 'var(--border-card)',
-            }}
-          >
-            <div className="flex items-center justify-between sm:mb-2 order-2 sm:order-1">
-              <span className="hidden sm:inline text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
-                {lang === 'bn' ? 'অনলাইন দর্শক' : 'Online visitors'}
-              </span>
-              <span className="w-8 h-8 rounded-xl bg-sky-500/10 text-sky-600 flex items-center justify-center shrink-0">
-                <Activity className="w-4 h-4" />
-              </span>
-            </div>
-            <div className="order-1 sm:order-2">
-              <span className="sm:hidden text-[11px] font-bold uppercase tracking-wider block mb-0.5" style={{ color: 'var(--text-muted)' }}>
-                {lang === 'bn' ? 'অনলাইন দর্শক' : 'Online visitors'}
-              </span>
-              <div
-                className="font-serif text-xl sm:text-3xl font-extrabold tracking-tight leading-none mb-1"
-                style={{ color: 'var(--text-main)' }}
-              >
-                <AnimatedNumber value={onlineVisitors} />
+            <div className="w-full catalis-card p-3.5 sm:p-5 border shadow-xs">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
+                  {lang === 'bn' ? 'মোট দর্শক' : 'Total visitors'}
+                </span>
+                <Activity aria-hidden="true" className="w-4 h-4 text-sky-600" />
               </div>
-              <span className="text-[11px] sm:text-xs font-medium block" style={{ color: 'var(--text-muted)' }}>
-                {lang === 'bn' ? 'গত ৯০ সেকেন্ডে সক্রিয় ব্রাউজার' : 'Active browsers in the last 90s'}
-              </span>
+              <div className="font-serif text-xl sm:text-3xl font-extrabold">
+                <AnimatedNumber value={totalVisitors} />
+              </div>
+              <p className="text-xs text-[var(--text-muted)]">
+                {lang === 'bn' ? 'প্রতি ব্রাউজার একবার' : 'Each browser counted once'}
+              </p>
+              {countries.length > 0 && <ul className="mt-3 text-sm">{countries.slice(0, 3).map(countryRow)}</ul>}
+              {countries.length > 3 && (
+                <details className="mt-2 text-sm">
+                  <summary className="cursor-pointer font-semibold text-sky-700">
+                    {lang === 'bn' ? 'সব দেশ দেখুন' : 'Show all countries'}
+                  </summary>
+                  <ul>{countries.slice(3).map(countryRow)}</ul>
+                </details>
+              )}
             </div>
-          </div>
           </StaggerItem>
 
           {/* Metric 2: Frames Built */}

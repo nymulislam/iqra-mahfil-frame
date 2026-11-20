@@ -13,6 +13,8 @@ export class LiveCounters extends DurableObject {
       CREATE INDEX IF NOT EXISTS expiry ON presence(seen);
       CREATE TABLE IF NOT EXISTS frames (id TEXT PRIMARY KEY);
       CREATE TABLE IF NOT EXISTS pledges (id TEXT PRIMARY KEY);
+      CREATE TABLE IF NOT EXISTS visitors (id TEXT PRIMARY KEY);
+      CREATE TABLE IF NOT EXISTS visitor_countries (country TEXT PRIMARY KEY, count INTEGER NOT NULL);
       CREATE TABLE IF NOT EXISTS config (secret BLOB NOT NULL);`);
     this.sql.exec("INSERT INTO config SELECT randomblob(32) WHERE NOT EXISTS (SELECT 1 FROM config)");
     const { secret } = this.sql.exec("SELECT secret FROM config").one();
@@ -45,9 +47,16 @@ export class LiveCounters extends DurableObject {
       this.sql.exec("INSERT OR REPLACE INTO presence VALUES (?,?)",id,now);
       for (const frame of data.frames) this.sql.exec("INSERT OR IGNORE INTO frames VALUES (?)",frame);
       if (data.pledge) this.sql.exec("INSERT OR IGNORE INTO pledges VALUES (?)",id);
-      return json(this.sql.exec(`SELECT (SELECT count(*) FROM presence) AS onlineVisitors,
+      const inserted = this.sql.exec("INSERT OR IGNORE INTO visitors VALUES (?)", id).rowsWritten;
+      if (inserted) {
+        const country = request.headers.get("X-Visitor-Country") || "ZZ";
+        this.sql.exec("INSERT INTO visitor_countries VALUES (?,1) ON CONFLICT(country) DO UPDATE SET count=count+1", country);
+      }
+      const countries = this.sql.exec("SELECT country,count FROM visitor_countries ORDER BY count DESC,country").toArray();
+      const totals = this.sql.exec(`SELECT (SELECT count(*) FROM presence) AS onlineVisitors,
         (SELECT count(*) FROM frames) AS totalFrames, (SELECT count(*) FROM pledges) AS pledgedAttendees,
-        EXISTS(SELECT 1 FROM pledges WHERE id=?) AS hasPledged`,id).one());
+        EXISTS(SELECT 1 FROM pledges WHERE id=?) AS hasPledged`,id).one();
+      return json({...totals, countries, totalVisitors: countries.reduce((sum, row) => sum + row.count, 0)});
     });
   }
 }
@@ -59,6 +68,9 @@ export default {
     if (!["/api/live/session","/api/live/sync"].includes(url.pathname)) return json({},404);
     if (request.method !== "POST") return json({},405,{Allow:"POST"});
     if (request.headers.get("Origin") !== url.origin || request.headers.get("Content-Type") !== "application/json") return json({},403);
-    return env.LIVE.getByName("mahfil-2026").fetch(request);
+    const forwarded = new Request(request);
+    const country = request.cf?.country;
+    forwarded.headers.set("X-Visitor-Country", /^[A-Z]{2}$/.test(country) && country !== "XX" ? country : "ZZ");
+    return env.LIVE.getByName("mahfil-2026").fetch(forwarded);
   }
 };

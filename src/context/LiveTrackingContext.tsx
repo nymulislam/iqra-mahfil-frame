@@ -12,7 +12,11 @@ export interface ActivityEvent {
   time: number; // timestamp
 }
 
+type CountryCount = { country: string; count: number };
+
 interface LiveTrackingContextType {
+  totalVisitors: number | null;
+  countries: CountryCount[];
   livePaused: boolean;
   onlineVisitors: number | null;
   totalFrames: number | null;
@@ -32,7 +36,7 @@ const LiveTrackingContext = createContext<LiveTrackingContextType | undefined>(u
 
 export const LiveTrackingProvider = ({ children }: { children: ReactNode }) => {
   const { lang } = useLanguage();
-  const [totals, setTotals] = useState<{onlineVisitors: number; totalFrames: number; pledgedAttendees: number} | null>(null);
+  const [totals, setTotals] = useState<{totalVisitors: number; countries: CountryCount[]; onlineVisitors: number; totalFrames: number; pledgedAttendees: number} | null>(null);
   const [livePaused, setLivePaused] = useState(false);
   const [hasPledged, setHasPledged] = useState(false);
   const pledgeRef = useRef(false);
@@ -187,6 +191,8 @@ export const LiveTrackingProvider = ({ children }: { children: ReactNode }) => {
     <LiveTrackingContext.Provider
       value={{
         livePaused,
+        totalVisitors: totals?.totalVisitors ?? null,
+        countries: totals?.countries ?? [],
         onlineVisitors: totals?.onlineVisitors ?? null,
         totalFrames: totals?.totalFrames ?? null,
         pledgedAttendees: totals?.pledgedAttendees ?? null,
